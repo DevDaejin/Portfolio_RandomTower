@@ -4,30 +4,20 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    public static SceneLoader Instance { get; private set; }
-    private GameObject _lodingUI;
+    public LoadingUI LoadingUI => _loadingUI ??= GetComponentInChildren<LoadingUI>(true);
+    [SerializeField] private LoadingUI _loadingUI;
     private float _loadDelay;
-
-    private void Awake()
-    {
-        if(Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    public void Initialize(GameObject loadingUI)
-    {
-        _lodingUI = loadingUI;
-    }
 
     public void LoadSceneAsync(string name)
     {
+        Scene scene = SceneManager.GetSceneByName(name);
+        if (scene == null)
+        {
+            Debug.Log("Scene name is not valid");
+            return;
+        }
+
+        LoadingUI.Show();
         StartCoroutine(LoadSceneRoutine(name));
     }
 
@@ -42,6 +32,7 @@ public class SceneLoader : MonoBehaviour
             {
                 yield return new WaitForSeconds(_loadDelay);
                 operation.allowSceneActivation = true;
+                LoadingUI.Hide();
             }
 
             yield return null;
