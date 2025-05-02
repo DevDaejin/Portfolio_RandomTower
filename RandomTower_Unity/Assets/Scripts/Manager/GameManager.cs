@@ -3,9 +3,23 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private GameObject _uiManagerPrefab;
+
     public static GameManager Instance { get; private set; }
 
-    public UIManager UIManager => _uiManager ??= GetComponentInChildren<UIManager>();
+    public UIManager UIManager
+    {
+        get
+        {
+            if(_uiManager == null)
+            {
+                _uiManager = Instantiate(_uiManagerPrefab).GetComponent<UIManager>();
+            }
+
+            return _uiManager;
+        }
+
+    }
     private UIManager _uiManager;
 
     public SceneLoader SceneLoader => _sceneLoader ??= GetComponentInChildren<SceneLoader>();
@@ -23,6 +37,11 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    public void Initialize()
+    {
+        UIManager.Initialize();
     }
 
     private void Start()

@@ -6,7 +6,7 @@ public class GameEntry : MonoBehaviour
 
     private void Awake()
     {
-        GameManager gameManager = Instantiate(GameManagerPrefab).GetComponent<GameManager>();
-        //gameManager.
+        Instantiate(GameManagerPrefab).GetComponent<GameManager>();
+        GameManager.Instance.Initialize();
     }
 }

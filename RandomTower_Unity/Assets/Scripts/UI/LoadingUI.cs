@@ -30,7 +30,7 @@ public class LoadingUI : MonoBehaviour
         ShowTips();
         gameObject.SetActive(true);
     }
-
+      
     private void Initialize()
     {
         _isShow = true;
