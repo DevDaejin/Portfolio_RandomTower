@@ -7,8 +7,9 @@ public class Grid
     private int _maxCount;
 
     private List<BaseTower> towers;
-    
 
+    private const int MaxSpecial = 1;
+    private const int MaxNormal = 3;
 
     public Grid(Transform t)
     {
@@ -18,13 +19,15 @@ public class Grid
 
     public bool TryAddTower(BaseTower tower)
     {
+        //TODO : 스페셜 타워, 현재 타워 갯수 체크 로직 필요
+        //_maxCount = tower.IsSpecial ? MaxSpecial : MaxNormal;
+
         if (towers.Count < _maxCount)
         {
             towers.Add(tower);
+            tower.transform.position = _transform.position;
             return true;
         }
-
-        tower.transform.position = _transform.position;
 
         return false;
     }

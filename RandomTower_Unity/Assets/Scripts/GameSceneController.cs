@@ -3,11 +3,11 @@ using UnityEngine;
 public class GameSceneController : MonoBehaviour
 {
     private GridController gridController;
-    private TowerSpawner towerSpawner;
+    private TowerManager towerSpawner;
 
     private void Awake()
     {
-        towerSpawner = GetComponent<TowerSpawner>();
+        towerSpawner = GetComponent<TowerManager>();
     }
 
     private void Update()
