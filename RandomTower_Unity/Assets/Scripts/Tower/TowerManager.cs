@@ -5,36 +5,36 @@ public class TowerManager : MonoBehaviour
 {
     [SerializeField] private Transform _installationGrid;
     [SerializeField] private TowerDatabase _towerDatabase;
+    [SerializeField] private TowerChanceTable _towerChanceTable;
     private GridController _gridController;
     private TowerFactory _towerFactory;
-    private Transform _towerGroup;
-    private const string TowerGroupName = "TowerGroup";
+    
 
     private void Awake()
     {
-        Transform[] tree = _installationGrid.GetComponentsInChildren<Transform>();
-        tree = tree.Where(branch => branch != _installationGrid).ToArray();
+        Transform[] tree = 
+            _installationGrid.GetComponentsInChildren<Transform>()
+            .Where(branch => branch != _installationGrid)
+            .ToArray();
 
         _gridController = new GridController(tree);
-        _towerFactory = new TowerFactory(_towerDatabase, _towerGroup);
+        _towerFactory = new TowerFactory(_towerDatabase);
     }
 
     private void Start()
     {
-        _towerGroup = new GameObject(TowerGroupName).transform;
-        _towerGroup.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
-        AdjustTowerLevel();
+        ApplyTowerLevel();
     }
 
-    private void AdjustTowerLevel()
+    private void ApplyTowerLevel()
     {// TODO : 타워 데이터베이스에서 타워들 레벨 업데이트 쳐야 함
 
     }
 
-    public void SpawnTower()
+    public void SpawnTower(int towerSpawnChancePassiveLevel)
     {
-        // TODO : 타워 생성 확율 테이블 적용해야함
-        TowerData data = _towerFactory.GetTowerRandomData(1);
+        int towerGrade = _towerChanceTable.GetRandomGrade(towerSpawnChancePassiveLevel);
+        TowerData data = _towerFactory.GetTowerRandomData(towerGrade);
 
         Grid grid = _gridController.GetTowerInstallableGrid(data);
 
@@ -45,11 +45,8 @@ public class TowerManager : MonoBehaviour
         }
 
         BaseTower tower = _towerFactory.CreateTowerByData(data);
-        if (grid.TryAddTower(tower))
-        {
-            tower.transform.SetParent(_towerGroup);
-        }
-        else
+
+        if (!grid.TryAddTower(tower))
         {
             _towerFactory.Return(tower);
         }

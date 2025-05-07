@@ -6,10 +6,14 @@ public class TowerFactory
     private TowerDatabase _database;
     private Transform _towerGroup;
 
-    public TowerFactory(TowerDatabase database, Transform towerGroup)
+    private const string TowerGroupName = "TowerGroup";
+    public TowerFactory(TowerDatabase database)
     {
         _database = database;
-        _towerGroup = towerGroup;
+
+        _towerGroup = new GameObject(TowerGroupName).transform;
+        _towerGroup.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+
         // 풀링 작업해야 함
     }
 

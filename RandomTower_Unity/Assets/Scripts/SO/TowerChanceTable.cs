@@ -1,7 +1,6 @@
 using System;
-using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Rendering.VirtualTexturing;
+using Random = UnityEngine.Random;
 
 [CreateAssetMenu(fileName = "TowerChanceTable", menuName = "Random TD/TowerChanceTable")]
 public class TowerChanceTable : ScriptableObject
@@ -16,28 +15,27 @@ public class TowerChanceTable : ScriptableObject
 
     [SerializeField] private GradeWeight[] _gradeWeight;
 
-    private float[] GetNormalizeWeights(int level)
+    private float[] GetNormalizedWeights(int level)
     {
         float t = Mathf.InverseLerp(1, 5, level);
-        float[] grades = new float[3];
-        float total = 0;
-        
-        for (int index = 0; index < grades.Length; index++)
-        {
-            grades[index] = Mathf.Lerp(_gradeWeight[index].MinWeight, _gradeWeight[index].MaxWeight, t);
-            total += grades[index];
-        }
 
-        for (int index = 0; index < grades.Length; index++)
-        {
-            grades[index] /= total;
-        }
+        float g1 = Mathf.Lerp(_gradeWeight[0].MinWeight, _gradeWeight[0].MaxWeight, t);
+        float g2 = Mathf.Lerp(_gradeWeight[1].MinWeight, _gradeWeight[1].MaxWeight, t);
+        float g3 = Mathf.Lerp(_gradeWeight[2].MinWeight, _gradeWeight[2].MaxWeight, t);
 
-        return grades;
+        float total = g1 + g2 + g3;
+        return new[] { g1 / total, g2 / total, g3 / total };
     }
 
-    //public int GetRandomGrade(int level)
-    //{ 
-    //    Vector3 weights = GetNormalizeWeights(level);
-    //}
+    public int GetRandomGrade(int level)
+    {
+        float[] weights = GetNormalizedWeights(level);
+        float rand = Random.value;
+
+        if (rand < weights[0]) return 1;
+        if (rand < weights[0] + weights[1]) return 2;
+        if (rand < weights[0] + weights[1] + weights[2]) return 3;
+        
+        return -1;
+    }
 }

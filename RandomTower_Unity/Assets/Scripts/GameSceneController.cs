@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class GameSceneController : MonoBehaviour
 {
-    private GridController gridController;
     private TowerManager towerSpawner;
 
     private void Awake()
@@ -14,7 +13,7 @@ public class GameSceneController : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            towerSpawner.SpawnTower();
+            towerSpawner.SpawnTower(1);
         }
     }
 }
