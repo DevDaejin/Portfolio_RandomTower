@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Level: 1
   grade: 1
-  id: 1
+  id: 2
   towerName: "\uB9C8\uBC95\uC0AC"
   prefab: {fileID: 5521364266558028829, guid: 89e0929c08d16b84589ba64a01cc5f0e, type: 3}
   baseDamage: 1

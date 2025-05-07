@@ -39,7 +39,6 @@ public class GridFactory : MonoBehaviour
         Vector2Int totalSize = Vector2Int.RoundToInt(_totalMapSize);
         Vector2Int playableSize = Vector2Int.RoundToInt(_playableMapSize);
 
-        // 1. 플레이어블 시작 위치 (전체 맵 기준)
         Vector2Int playableStart = new Vector2Int(
             Mathf.FloorToInt((totalSize.x - playableSize.x) * 0.5f),
             Mathf.FloorToInt((totalSize.y - playableSize.y) * 0.5f)
@@ -52,18 +51,14 @@ public class GridFactory : MonoBehaviour
                 position.x = col * tileSize.x;
                 position.z = row * tileSize.z;
 
-                // 기본 높이 = 전체 타일 (비플레이어블)
                 position.y = 1f;
 
-                // 2. 플레이어블 영역 여부 확인
                 if (col >= playableStart.x && col < playableStart.x + playableSize.x &&
                     row >= playableStart.y && row < playableStart.y + playableSize.y)
                 {
-                    // 플레이어블 내 상대 좌표
                     int playableCol = col - playableStart.x;
                     int playableRow = row - playableStart.y;
 
-                    // 3. 경로에 해당하면 0.5, 아니면 0
                     if (System.Array.Exists(_pathRow, r => r == playableRow) ||
                         System.Array.Exists(_pathColumn, c => c == playableCol))
                     {
@@ -87,5 +82,4 @@ public class GridFactory : MonoBehaviour
         position.x -= ((gridSize.x) * 0.5f) * tileSize.x - (tileSize.x * 0.5f);
         position.z -= ((gridSize.y) * 0.5f) * tileSize.z - (tileSize.z * 0.5f);
     }
-
 }

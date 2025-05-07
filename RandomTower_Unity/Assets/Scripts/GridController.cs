@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class GridController
 {
+    private const int MaxTowerCount = 3;
     private List<Grid> _grids = new();
+    
 
     public GridController(Transform[] grid)
     {
@@ -18,7 +20,7 @@ public class GridController
     {
         Grid availabaleGrid = null;
 
-        if (data.IsSpecial)
+        if (!data.IsSpecial)
         {
             availabaleGrid = GetSameTowerInstalledGrid(data);
         }
@@ -37,7 +39,7 @@ public class GridController
 
         if(installableGrids == null || installableGrids.Length == 0) return null;
 
-        installableGrids = installableGrids.Where(grid => grid.GetTowerCount() < 3).ToArray();
+        installableGrids = installableGrids.Where(grid => grid.GetTowerCount() < MaxTowerCount).ToArray();
 
         if (installableGrids.Length == 0) return null;
 
