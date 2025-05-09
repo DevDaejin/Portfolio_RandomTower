@@ -28,4 +28,7 @@ public class TowerData : ScriptableObject
 
     [SerializeField] private bool isSpecial;
     public bool IsSpecial => isSpecial;
+
+    [SerializeField] private int targetCount;
+    public int TargetCount => targetCount;
 }

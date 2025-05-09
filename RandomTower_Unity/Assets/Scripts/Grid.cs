@@ -5,7 +5,7 @@ public class Grid
 {
     private readonly Transform _transform;
     private int _maxCount = 3;
-    private List<BaseTower> _towers;
+    private List<ITower> _towers;
 
     private const float LeftSideX = -0.2f;
     private const float RightSideX = 0.2f;
@@ -30,9 +30,10 @@ public class Grid
         _towers = new();
     }
 
-    public bool TryAddTower(BaseTower tower)
+    public bool TryAddTower(ITower tower)
     {
-        if ((_towers.Count == 0 ||_towers[0].Grade != 4 ) && _towers.Count < _maxCount)
+        if ((_towers.Count == 0 ||_towers[0].Grade != 4 ) 
+            && _towers.Count < _maxCount)
         {
             _towers.Add(tower);
             UpdateTowerPosition();
@@ -47,18 +48,16 @@ public class Grid
         return _towers.Count;
     }
 
-    public BaseTower GetTower()
+    public ITower GetTower()
     {
-        if (_towers.Count <= 0) return null;
-
-        return _towers[0];
+        return (_towers.Count > 0) ? _towers[0] : null;
     }
 
     private void UpdateTowerPosition()
     {
         if (_towers.Count == 1)
         {
-            _towers[0].transform.position = _transform.position;
+            _towers[0].Transform.position = _transform.position;
         }
         else
         {
@@ -73,7 +72,7 @@ public class Grid
 
             for (int index = 0; index < offsets.Length; index++)
             {
-                _towers[index].transform.position = _transform.position + offsets[index];
+                _towers[index].Transform.position = _transform.position + offsets[index];
             }
         }
     }

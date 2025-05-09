@@ -6,6 +6,8 @@ public class TowerManager : MonoBehaviour
     [SerializeField] private Transform _installationGrid;
     [SerializeField] private TowerDatabase _towerDatabase;
     [SerializeField] private TowerChanceTable _towerChanceTable;
+    
+    private IEnemyProvider _enemyProvider;
     private GridController _gridController;
     private TowerFactory _towerFactory;
     
@@ -13,7 +15,7 @@ public class TowerManager : MonoBehaviour
     private void Awake()
     {
         Transform[] tree = 
-            _installationGrid.GetComponentsInChildren<Transform>()
+            _installationGrid.GetComponentsInChildren<Transform>(true)
             .Where(branch => branch != _installationGrid)
             .ToArray();
 
@@ -21,8 +23,10 @@ public class TowerManager : MonoBehaviour
         _towerFactory = new TowerFactory(_towerDatabase);
     }
 
-    private void Start()
+    //TODO : 타워 강화 로직 파라미터로 전달 받기
+    public void Initialize(IEnemyProvider enemyProvider)
     {
+        _enemyProvider = enemyProvider;
         ApplyTowerLevel();
     }
 
@@ -44,7 +48,7 @@ public class TowerManager : MonoBehaviour
             return;
         }
 
-        BaseTower tower = _towerFactory.CreateTowerByData(data);
+        ITower tower = _towerFactory.CreateTowerByData(data, _enemyProvider);
 
         if (!grid.TryAddTower(tower))
         {
