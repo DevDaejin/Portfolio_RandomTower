@@ -16,13 +16,13 @@ public class GridController
         }
     }
 
-    public Grid GetTowerInstallableGrid(TowerData data)
+    public Grid GetTowerInstallableGrid(TowerDataConfig config)
     {
         Grid availabaleGrid = null;
 
-        if (!data.IsSpecial)
+        if (!config.Data.IsSpecial)
         {
-            availabaleGrid = GetSameTowerInstalledGrid(data);
+            availabaleGrid = GetSameTowerInstalledGrid(config);
         }
 
         if (availabaleGrid == null)
@@ -33,9 +33,9 @@ public class GridController
         return availabaleGrid;
     }
 
-    private Grid GetSameTowerInstalledGrid(TowerData data)
+    private Grid GetSameTowerInstalledGrid(TowerDataConfig configata)
     {
-        Grid[] installableGrids = GetSameTowerGrids(data);
+        Grid[] installableGrids = GetSameTowerGrids(configata);
 
         if(installableGrids == null || installableGrids.Length == 0) return null;
 
@@ -47,9 +47,9 @@ public class GridController
         return installableGrids[rand];
     }
 
-    private Grid[] GetSameTowerGrids(TowerData data)
+    private Grid[] GetSameTowerGrids(TowerDataConfig config)
     {
-        Grid[] sameTowerGrids = _grids.Where(grid => grid.GetTower() != null && grid.GetTower().ID == data.ID).ToArray();
+        Grid[] sameTowerGrids = _grids.Where(grid => grid.GetTower() != null && grid.GetTower().Data.ID == config.Data.ID).ToArray();
         return sameTowerGrids;
     }
 

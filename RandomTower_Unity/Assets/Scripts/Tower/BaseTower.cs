@@ -3,28 +3,21 @@ using UnityEngine;
 
 public class BaseTower : MonoBehaviour, ITower
 {
-    [SerializeField] private TowerData _data;
-    public TowerData Data => _data;
+    public TowerData Data { get; private set; }
 
-    public int Level { private set; get; }
-
-    public int ID => _data.ID;
-    public int Grade => _data.Grade;
-    public string TowerName => _data.TowerName;
-
-    public float Damage => _data.BaseDamage + ((Level - 1) * 0.1f);
-    public float Range => _data.BaseRange + ((Level - 1) * 0.1f);
-    public float FireRate => _data.BaseFireRate + ((Level - 1) * 0.1f);
+    public int Level { get; private set; }
 
     public Transform Transform => transform;
 
-    public int TargetCount => _data.TargetCount;
+    public float Damage => Data.Damage + ((Level - 1) * 0.1f);
+    public float Range => Data.Range + ((Level - 1) * 0.1f);
+    public float FireRate => Data.FireRate + ((Level - 1) * 0.1f);
 
     protected IEnemyProvider _enemyProvider;
 
-    public void Initialize(TowerData data, IEnemyProvider enemyProvider, int level = 1)
+    public void Initialize(TowerDataConfig config, IEnemyProvider enemyProvider, int level = 1)
     {
-        _data = data;
+        Data = config.Data;
         Level = level;
 
         if (_enemyProvider == null)
@@ -35,6 +28,6 @@ public class BaseTower : MonoBehaviour, ITower
 
     protected virtual List<BaseEnemy> FindClosestEnemies()
     {
-        return _enemyProvider.FindClosestWithCount(transform.position, Range, TargetCount);
+        return _enemyProvider.FindClosestWithCount(Transform.position, Range, Data.TargetCount);
     }
 }

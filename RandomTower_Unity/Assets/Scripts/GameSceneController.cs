@@ -2,18 +2,21 @@ using UnityEngine;
 
 public class GameSceneController : MonoBehaviour
 {
-    private TowerManager towerSpawner;
+    private TowerManager _towerSpawner;
+    private EnemyManager _enemyManager;
 
     private void Awake()
     {
-        towerSpawner = GetComponent<TowerManager>();
+        _enemyManager = GetComponent<EnemyManager>();
+        _towerSpawner = GetComponent<TowerManager>();
+        _towerSpawner.Initialize(_enemyManager);
     }
 
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            towerSpawner.SpawnTower(1);
+            _towerSpawner.SpawnTower(1);
         }
     }
 }

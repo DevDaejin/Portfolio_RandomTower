@@ -32,7 +32,7 @@ public class Grid
 
     public bool TryAddTower(ITower tower)
     {
-        if ((_towers.Count == 0 ||_towers[0].Grade != 4 ) 
+        if ((_towers.Count == 0 ||_towers[0].Data.IsSpecial) 
             && _towers.Count < _maxCount)
         {
             _towers.Add(tower);

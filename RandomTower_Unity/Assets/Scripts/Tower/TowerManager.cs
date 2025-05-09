@@ -4,7 +4,7 @@ using UnityEngine;
 public class TowerManager : MonoBehaviour
 {
     [SerializeField] private Transform _installationGrid;
-    [SerializeField] private TowerDatabase _towerDatabase;
+    [SerializeField] private TowerDatabaseSO _towerDatabase;
     [SerializeField] private TowerChanceTable _towerChanceTable;
     
     private IEnemyProvider _enemyProvider;
@@ -38,7 +38,7 @@ public class TowerManager : MonoBehaviour
     public void SpawnTower(int towerSpawnChancePassiveLevel)
     {
         int towerGrade = _towerChanceTable.GetRandomGrade(towerSpawnChancePassiveLevel);
-        TowerData data = _towerFactory.GetTowerRandomData(towerGrade);
+        TowerDataConfig data = _towerFactory.GetTowerRandomData(towerGrade);
 
         Grid grid = _gridController.GetTowerInstallableGrid(data);
 
