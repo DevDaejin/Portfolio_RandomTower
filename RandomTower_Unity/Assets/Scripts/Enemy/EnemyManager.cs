@@ -1,12 +1,48 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.Rendering.STP;
 
 public class EnemyManager : MonoBehaviour, IEnemyProvider
 {
-    private List<BaseEnemy> _enemies = new();
+    [SerializeField] private Transform _routeGroup;
+
+    private EnemyFactory _enemyFactory;
+    private readonly List<BaseEnemy> _enemies = new();
     private readonly List<BaseEnemy> _cachingList = new();
     private readonly List<BaseEnemy> _cachingSortedList = new();
+
+    private const float SpawnInterval = 0.5f;
+
+    private void Awake()
+    {
+        _enemyFactory = new EnemyFactory();
+    }
+
+    public void SpawnWave(StageConfig config)
+    {
+        StartCoroutine(SpawnWaveRoutine(config.WaveData.SpawnList));
+    }
+
+    private IEnumerator SpawnWaveRoutine(List<SpawnInfo> list)
+    {
+        foreach (SpawnInfo info in list)
+        {
+            for (int i = 0; i < info.Count; i++)
+            {
+                BaseEnemy enemy = _enemyFactory.CreateEnemy(info.Config, _routeGroup);
+                _enemies.Add(enemy);
+                yield return new WaitForSecondsRealtime(SpawnInterval);
+            }
+        }
+    }
+
+    public void ReturnEnemy(BaseEnemy enemy)
+    {
+        _enemies.Remove(enemy);
+        _enemyFactory.Return(enemy);
+    }
 
     public BaseEnemy FindClosest(Vector3 position, float range)
     {

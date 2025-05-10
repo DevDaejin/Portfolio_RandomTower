@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Grid
@@ -32,15 +33,18 @@ public class Grid
 
     public bool TryAddTower(ITower tower)
     {
-        if ((_towers.Count == 0 ||_towers[0].Data.IsSpecial) 
-            && _towers.Count < _maxCount)
+        ITower exist = 
+            _towers
+            .FirstOrDefault(createdTower => createdTower.Data.ID == tower.Data.ID);
+
+        if (_towers.Count >= _maxCount || (_towers.Count > 0 && _towers[0].Data.IsSpecial))
         {
-            _towers.Add(tower);
-            UpdateTowerPosition();
-            return true;
+            return false;
         }
 
-        return false;
+        _towers.Add(tower);
+        UpdateTowerPosition();
+        return true;
     }
 
     public int GetTowerCount()

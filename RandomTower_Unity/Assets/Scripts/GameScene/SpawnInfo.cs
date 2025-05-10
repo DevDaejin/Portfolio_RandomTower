@@ -3,6 +3,6 @@ using UnityEngine;
 [Serializable]
 public class SpawnInfo
 {
-    public EnemyDataConfig enemyData;
-    public int count;
+    public EnemyDataConfig Config;
+    public int Count;
 }

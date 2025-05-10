@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class TowerFactory
 {
-    private readonly TowerDatabaseSO _database;
+    private readonly TowerDatabase _database;
     private readonly  Transform _towerGroup;
 
     private readonly Dictionary<int, Pool<BaseTower>> _pools = new();
 
     private const string TowerGroupName = "TowerGroup";
-    public TowerFactory(TowerDatabaseSO database)
+    public TowerFactory(TowerDatabase database)
     {
         _database = database;
         _towerGroup = new GameObject(TowerGroupName).transform;
@@ -22,16 +22,15 @@ public class TowerFactory
         return list[Random.Range(0, list.Count)];
     }
 
-    public ITower CreateTowerByData(TowerDataConfig data, IEnemyProvider enemyProvider)
+    public ITower CreateTower(TowerDataConfig config, IEnemyProvider enemyProvider)
     {
-        Pool<BaseTower> pool = GetTowerPool(data);
+        Pool<BaseTower> pool = GetTowerPool(config);
 
         BaseTower tower = pool.Get();
 
-        tower.Initialize(data, enemyProvider);
+        tower.Initialize(config, enemyProvider);
 
-        //return tower;
-        return null;
+        return tower;
     }
 
     private Pool<BaseTower> GetTowerPool(TowerDataConfig config)

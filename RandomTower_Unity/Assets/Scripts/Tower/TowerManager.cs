@@ -4,7 +4,7 @@ using UnityEngine;
 public class TowerManager : MonoBehaviour
 {
     [SerializeField] private Transform _installationGrid;
-    [SerializeField] private TowerDatabaseSO _towerDatabase;
+    [SerializeField] private TowerDatabase _towerDatabase;
     [SerializeField] private TowerChanceTable _towerChanceTable;
     
     private IEnemyProvider _enemyProvider;
@@ -38,17 +38,17 @@ public class TowerManager : MonoBehaviour
     public void SpawnTower(int towerSpawnChancePassiveLevel)
     {
         int towerGrade = _towerChanceTable.GetRandomGrade(towerSpawnChancePassiveLevel);
-        TowerDataConfig data = _towerFactory.GetTowerRandomData(towerGrade);
+        TowerDataConfig config = _towerFactory.GetTowerRandomData(towerGrade);
 
-        Grid grid = _gridController.GetTowerInstallableGrid(data);
+        Grid grid = _gridController.GetTowerInstallableGrid(config);
 
         if(grid == null )
         {
-            Debug.Log($"{data.name}을 소환할 공간이 없습니다.");
+            Debug.Log($"{config.name}을 소환할 공간이 없습니다.");
             return;
         }
 
-        ITower tower = _towerFactory.CreateTowerByData(data, _enemyProvider);
+        ITower tower = _towerFactory.CreateTower(config, _enemyProvider);
 
         if (!grid.TryAddTower(tower))
         {

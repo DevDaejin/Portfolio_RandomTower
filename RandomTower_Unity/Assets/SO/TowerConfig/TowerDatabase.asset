@@ -15,3 +15,4 @@ MonoBehaviour:
   _towers:
   - {fileID: 11400000, guid: 6965e8d632e175a4aaa45d09ed31a70c, type: 2}
   - {fileID: 11400000, guid: d91a147e8469c7b4d9b515abff6e31af, type: 2}
+  - {fileID: 11400000, guid: 527eaa1f29132344dbfafeb66b31f577, type: 2}

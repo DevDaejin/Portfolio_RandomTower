@@ -4,5 +4,5 @@ using System.Collections.Generic;
 [Serializable]
 public class WaveData
 {
-    public List<SpawnInfo> spawnList;
+    public List<SpawnInfo> SpawnList;
 }

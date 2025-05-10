@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TowerDatabase", menuName = "Random TD/TowerDatabase")]
-public class TowerDatabaseSO : ScriptableObject
+public class TowerDatabase : ScriptableObject
 {
     public List<TowerDataConfig> _towers;
 

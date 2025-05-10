@@ -4,7 +4,10 @@ using UnityEngine;
 [Serializable]
 public class EnemyData
 {
-    public string EnemyName;
+    public int ID => id;
+    [SerializeField] private int id;
+
+    public string EnemyName => enemyName;
     [SerializeField] private string enemyName;
 
     public GameObject Prefab => prefab;

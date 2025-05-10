@@ -19,12 +19,12 @@ public class TowerChanceTable : ScriptableObject
     {
         float t = Mathf.InverseLerp(1, 5, level);
 
-        float g1 = Mathf.Lerp(_gradeWeight[0].MinWeight, _gradeWeight[0].MaxWeight, t);
-        float g2 = Mathf.Lerp(_gradeWeight[1].MinWeight, _gradeWeight[1].MaxWeight, t);
-        float g3 = Mathf.Lerp(_gradeWeight[2].MinWeight, _gradeWeight[2].MaxWeight, t);
+        float grade1 = Mathf.Lerp(_gradeWeight[0].MinWeight, _gradeWeight[0].MaxWeight, t);
+        float grade2 = Mathf.Lerp(_gradeWeight[1].MinWeight, _gradeWeight[1].MaxWeight, t);
+        float grade3 = Mathf.Lerp(_gradeWeight[2].MinWeight, _gradeWeight[2].MaxWeight, t);
 
-        float total = g1 + g2 + g3;
-        return new[] { g1 / total, g2 / total, g3 / total };
+        float total = grade1 + grade2 + grade3;
+        return new[] { grade1 / total, grade2 / total, grade3 / total };
     }
 
     public int GetRandomGrade(int level)

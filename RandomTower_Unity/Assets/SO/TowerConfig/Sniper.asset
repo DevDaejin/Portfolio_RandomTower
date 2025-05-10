@@ -12,3 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fd5000039b63434092159bc3de298b2, type: 3}
   m_Name: Sniper
   m_EditorClassIdentifier: 
+  _data:
+    grade: 1
+    id: 13
+    towerName: "\uC800\uACA9\uC218"
+    prefab: {fileID: 5521364266558028829, guid: 8e9fdd17b2798f944b9fcd677478b059, type: 3}
+    damage: 1
+    range: 1
+    fireRate: 1
+    targetCount: 1

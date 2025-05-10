@@ -9,12 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db25a44efef03224bb982a6422b9a4ad, type: 3}
-  m_Name: EnemyData
+  m_Script: {fileID: 11500000, guid: 59ebc2ec7b2f9b14d903f2d0b04e7e4e, type: 3}
+  m_Name: StageConfig
   m_EditorClassIdentifier: 
-  enemyName: 
-  prefab: {fileID: 0}
-  maxHP: 0
-  defence: 0
-  moveSpeed: 0
-  rewardGold: 0
+  _stageLevel: 1
+  _waveData:
+    SpawnList:
+    - Config: {fileID: 11400000, guid: 6b1eb705a677eb64b8e953ed5e952ca2, type: 2}
+      Count: 100

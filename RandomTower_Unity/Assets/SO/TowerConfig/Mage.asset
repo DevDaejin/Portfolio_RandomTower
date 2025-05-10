@@ -12,3 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fd5000039b63434092159bc3de298b2, type: 3}
   m_Name: Mage
   m_EditorClassIdentifier: 
+  _data:
+    grade: 1
+    id: 12
+    towerName: "\uB9C8\uBC95\uC0AC"
+    prefab: {fileID: 5521364266558028829, guid: 89e0929c08d16b84589ba64a01cc5f0e, type: 3}
+    damage: 1
+    range: 1
+    fireRate: 1
+    targetCount: 1
