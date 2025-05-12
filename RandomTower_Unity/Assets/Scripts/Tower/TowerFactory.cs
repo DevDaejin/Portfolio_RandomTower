@@ -6,9 +6,11 @@ public class TowerFactory
     private readonly TowerDatabase _database;
     private readonly  Transform _towerGroup;
 
-    private readonly Dictionary<int, Pool<BaseTower>> _pools = new();
+    private readonly Dictionary<int, Pool<BaseTower>> _towerPools = new();
+    private readonly Dictionary<int, Pool<Projectile>> _projectilePools = new();
 
     private const string TowerGroupName = "TowerGroup";
+
     public TowerFactory(TowerDatabase database)
     {
         _database = database;
@@ -23,36 +25,62 @@ public class TowerFactory
         return candidates[Random.Range(0, candidates.Length)];
     }
 
-    public ITower CreateTower(TowerData data, IEnemyProvider enemyProvider)
+    public ITower CreateTower(TowerData data, IEnemyProvider enemyProvider, int level = 1)
     {
-        Pool<BaseTower> pool = GetTowerPool(data);
+        Pool<BaseTower> towerPool = GetTowerPool(data);
+        Pool<Projectile> projectilePool = GetProjectilePool(data);
+        BaseTower tower = towerPool.Get();
 
-        BaseTower tower = pool.Get();
-
-        tower.Initialize(data, enemyProvider);
+        tower.Initialize(data, projectilePool, enemyProvider, level);
 
         return tower;
     }
 
-    private Pool<BaseTower> GetTowerPool(TowerData data)
+    private Pool<T> GetPool<T>(Dictionary<int, Pool<T>> dict, int id, GameObject prefab)
     {
-        if(_pools.TryGetValue(data.ID, out Pool<BaseTower> pool))
+        if(dict.TryGetValue(id, out var existing))
         {
-            return pool;
+            return (Pool<T>)existing;
         }
 
-        pool = new Pool<BaseTower>(data.TowerPrefab, _towerGroup);
-        _pools[data.ID] = pool;
+        Pool<T> pool = new Pool<T>(prefab, _towerGroup);
+        dict[id] = pool;
 
         return pool;
+    }
+
+    private Pool<BaseTower> GetTowerPool(TowerData data)
+    {
+        return GetPool<BaseTower>(_towerPools, data.ID, data.TowerPrefab);
+    }
+
+    private Pool<Projectile> GetProjectilePool(TowerData data)
+    {
+        return GetPool<Projectile>(_projectilePools, data.ID, data.ProjectilePrefab);
     }
 
     public void Return(ITower tower)
     {
         if(tower is BaseTower baseTower &&
-            _pools.TryGetValue(baseTower.Data.ID, out Pool<BaseTower> pool))
+            _towerPools.TryGetValue(baseTower.Data.ID, out Pool<BaseTower> pool))
         {
             pool.Return(baseTower);
+        }
+    }
+
+    public void ReturnAllTower()
+    {
+        foreach (var pool in _towerPools)
+        {
+            pool.Value.ReturnAll();
+        }
+    }
+
+    public void ReturnAllProjectile()
+    {
+        foreach(var pool in _towerPools)
+        {
+            pool.Value.ReturnAll();
         }
     }
 }

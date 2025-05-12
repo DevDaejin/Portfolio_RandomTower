@@ -11,7 +11,6 @@ public class TowerManager : MonoBehaviour
     private GridController _gridController;
     private TowerFactory _towerFactory;
 
-
     private void Awake()
     {
         Transform[] tree =

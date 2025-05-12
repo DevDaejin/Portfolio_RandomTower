@@ -19,6 +19,6 @@ MonoBehaviour:
     towerPrefab: {fileID: 5521364266558028829, guid: 89e0929c08d16b84589ba64a01cc5f0e, type: 3}
     projectilePrefab: {fileID: 8195383268220158610, guid: 458bfddd576d8804f8f35db999f38df1, type: 3}
     damage: 1
-    range: 1
+    range: 5
     fireRate: 1
     targetCount: 1

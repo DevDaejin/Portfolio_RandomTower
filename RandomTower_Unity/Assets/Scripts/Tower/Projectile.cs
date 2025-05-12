@@ -52,7 +52,7 @@ public class Projectile : MonoBehaviour
         if (Vector3.SqrMagnitude(transform.position - _target.transform.position) < threshold)
         {
             _target.TakeDamage(_damage);
-            _hitCallback.Invoke(this);
+            _hitCallback?.Invoke(this);
         }
     }
 }

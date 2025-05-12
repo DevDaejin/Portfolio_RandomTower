@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,13 +16,14 @@ public class BaseTower : MonoBehaviour, ITower
 
     protected IEnemyProvider _enemyProvider;
 
-    private float fireRateTime;
+    private float _fireRateTime;
+    private Pool<Projectile> _projectilePool;
 
-    public void Initialize(TowerData data, IEnemyProvider enemyProvider, int level = 1)
+    public void Initialize(TowerData data, Pool<Projectile> pool, IEnemyProvider enemyProvider, int level = 1)
     {
         Data = data;
         Level = level;
-
+        _projectilePool = pool;
         if (_enemyProvider == null)
         {
             _enemyProvider = enemyProvider;
@@ -36,10 +38,10 @@ public class BaseTower : MonoBehaviour, ITower
 
     protected virtual void Attack(List<BaseEnemy> targets)
     {
-        Projectile projectile = null;
         foreach (BaseEnemy target in targets)
         {
-            projectile.Initialize(Damage, 1, null);
+            Projectile projectile = _projectilePool.Get();
+            projectile.Initialize(Damage, 10, null);
             projectile.Set(transform.position, target);
         }
     }
@@ -47,10 +49,11 @@ public class BaseTower : MonoBehaviour, ITower
 
     protected virtual void Update()
     {
-        fireRateTime += Time.deltaTime;
-        if (FireRate < fireRateTime)
+        _fireRateTime += Time.deltaTime;
+        if (FireRate < _fireRateTime)
         {
-            fireRateTime = 0;
+            Debug.Log("Attack");
+            _fireRateTime = 0;
             Attack(FindClosestEnemies());
         }
     }

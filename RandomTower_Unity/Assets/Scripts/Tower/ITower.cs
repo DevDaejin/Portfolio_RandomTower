@@ -10,5 +10,5 @@ public interface ITower
     float Range { get; }
     float FireRate { get; }
 
-    public void Initialize(TowerData data, IEnemyProvider enemyProvider, int level = 1);
+    public void Initialize(TowerData data, Pool<Projectile> pool, IEnemyProvider enemyProvider, int level = 1);
 }
