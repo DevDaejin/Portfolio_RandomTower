@@ -16,32 +16,33 @@ public class TowerFactory
         _towerGroup.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
     }
 
-    public TowerDataConfig GetTowerRandomData(int grade)
+    public TowerData GetTowerRandomData(int grade)
     {
-        List<TowerDataConfig> list = _database.GetTowersByGrade(grade);
-        return list[Random.Range(0, list.Count)];
+        TowerData[] candidates = _database.GetTowersByGrade(grade);
+        if (candidates.Length == 0) return null;
+        return candidates[Random.Range(0, candidates.Length)];
     }
 
-    public ITower CreateTower(TowerDataConfig config, IEnemyProvider enemyProvider)
+    public ITower CreateTower(TowerData data, IEnemyProvider enemyProvider)
     {
-        Pool<BaseTower> pool = GetTowerPool(config);
+        Pool<BaseTower> pool = GetTowerPool(data);
 
         BaseTower tower = pool.Get();
 
-        tower.Initialize(config, enemyProvider);
+        tower.Initialize(data, enemyProvider);
 
         return tower;
     }
 
-    private Pool<BaseTower> GetTowerPool(TowerDataConfig config)
+    private Pool<BaseTower> GetTowerPool(TowerData data)
     {
-        if(_pools.TryGetValue(config.Data.ID, out Pool<BaseTower> pool))
+        if(_pools.TryGetValue(data.ID, out Pool<BaseTower> pool))
         {
             return pool;
         }
 
-        pool = new Pool<BaseTower>(config.Data.Prefab, _towerGroup);
-        _pools[config.Data.ID] = pool;
+        pool = new Pool<BaseTower>(data.TowerPrefab, _towerGroup);
+        _pools[data.ID] = pool;
 
         return pool;
     }

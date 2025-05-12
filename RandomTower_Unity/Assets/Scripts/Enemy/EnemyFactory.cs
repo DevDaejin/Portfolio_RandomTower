@@ -13,23 +13,23 @@ public class EnemyFactory
         _enemyGroup.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
     }
 
-    public BaseEnemy CreateEnemy(EnemyDataConfig config, Transform routeGroup)
+    public BaseEnemy CreateEnemy(EnemyData data, Transform routeGroup)
     {
-        Pool<BaseEnemy> pool = GetEnemyPool(config);
+        Pool<BaseEnemy> pool = GetEnemyPool(data);
         BaseEnemy enemy = pool.Get();
 
-        enemy.Initialize(config, routeGroup);
+        enemy.Initialize(data, routeGroup);
 
         return enemy;
     }
 
-    private Pool<BaseEnemy> GetEnemyPool(EnemyDataConfig config)
+    private Pool<BaseEnemy> GetEnemyPool(EnemyData data)
     {
-        int id = config.Data.ID;
+        int id = data.ID;
 
         if (_pools.TryGetValue(id, out var pool)) return pool;
 
-        pool = new Pool<BaseEnemy>(config.Data.Prefab, _enemyGroup);
+        pool = new Pool<BaseEnemy>(data.Prefab, _enemyGroup);
         _pools[id] = pool;
 
         return pool;

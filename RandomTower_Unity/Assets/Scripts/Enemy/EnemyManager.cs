@@ -31,7 +31,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         {
             for (int i = 0; i < info.Count; i++)
             {
-                BaseEnemy enemy = _enemyFactory.CreateEnemy(info.Config, _routeGroup);
+                BaseEnemy enemy = _enemyFactory.CreateEnemy(info.Config.Data, _routeGroup);
                 _enemies.Add(enemy);
                 yield return new WaitForSecondsRealtime(SpawnInterval);
             }

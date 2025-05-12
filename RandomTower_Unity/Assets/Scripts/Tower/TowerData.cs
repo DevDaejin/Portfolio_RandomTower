@@ -13,8 +13,11 @@ public class TowerData
     public string TowerName => towerName;
     [SerializeField] private string towerName;
 
-    public GameObject Prefab => prefab;
-    [SerializeField] private GameObject prefab;
+    public GameObject TowerPrefab => towerPrefab;
+    [SerializeField] private GameObject towerPrefab;
+
+    public GameObject ProjectilePrefab => projectilePrefab;
+    [SerializeField] private GameObject projectilePrefab;
 
     public float Damage => damage;
     [SerializeField] private float damage;

@@ -15,9 +15,11 @@ public class BaseTower : MonoBehaviour, ITower
 
     protected IEnemyProvider _enemyProvider;
 
-    public void Initialize(TowerDataConfig config, IEnemyProvider enemyProvider, int level = 1)
+    private float fireRateTime;
+
+    public void Initialize(TowerData data, IEnemyProvider enemyProvider, int level = 1)
     {
-        Data = config.Data;
+        Data = data;
         Level = level;
 
         if (_enemyProvider == null)
@@ -28,6 +30,28 @@ public class BaseTower : MonoBehaviour, ITower
 
     protected virtual List<BaseEnemy> FindClosestEnemies()
     {
-        return _enemyProvider.FindClosestWithCount(Transform.position, Range, Data.TargetCount);
+        Vector3 pos = transform.position;
+        return _enemyProvider.FindClosestWithCount(pos, Range, Data.TargetCount);
+    }
+
+    protected virtual void Attack(List<BaseEnemy> targets)
+    {
+        Projectile projectile = null;
+        foreach (BaseEnemy target in targets)
+        {
+            projectile.Initialize(Damage, 1, null);
+            projectile.Set(transform.position, target);
+        }
+    }
+
+
+    protected virtual void Update()
+    {
+        fireRateTime += Time.deltaTime;
+        if (FireRate < fireRateTime)
+        {
+            fireRateTime = 0;
+            Attack(FindClosestEnemies());
+        }
     }
 }

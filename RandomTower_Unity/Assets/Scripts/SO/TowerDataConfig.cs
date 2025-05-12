@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TowerData", menuName = "Random TD/TowerData")]

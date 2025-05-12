@@ -6,15 +6,15 @@ public class TowerManager : MonoBehaviour
     [SerializeField] private Transform _installationGrid;
     [SerializeField] private TowerDatabase _towerDatabase;
     [SerializeField] private TowerChanceTable _towerChanceTable;
-    
+
     private IEnemyProvider _enemyProvider;
     private GridController _gridController;
     private TowerFactory _towerFactory;
-    
+
 
     private void Awake()
     {
-        Transform[] tree = 
+        Transform[] tree =
             _installationGrid.GetComponentsInChildren<Transform>(true)
             .Where(branch => branch != _installationGrid)
             .ToArray();
@@ -38,17 +38,24 @@ public class TowerManager : MonoBehaviour
     public void SpawnTower(int towerSpawnChancePassiveLevel)
     {
         int towerGrade = _towerChanceTable.GetRandomGrade(towerSpawnChancePassiveLevel);
-        TowerDataConfig config = _towerFactory.GetTowerRandomData(towerGrade);
+        TowerData data = _towerFactory.GetTowerRandomData(towerGrade);
 
-        Grid grid = _gridController.GetTowerInstallableGrid(config);
+        Grid grid = _gridController.GetTowerInstallableGrid(data);
 
-        if(grid == null )
+        if (grid == null)
         {
-            Debug.Log($"{config.name}을 소환할 공간이 없습니다.");
-            return;
+            grid = _gridController.GetGridDifferentID(data);
+            
+            if (grid == null)
+            {
+                Debug.Log($"{data.TowerName}을 소환할 공간이 없습니다.");
+                return;
+            }
+
+            data = grid.GetTower().Data;
         }
 
-        ITower tower = _towerFactory.CreateTower(config, _enemyProvider);
+        ITower tower = _towerFactory.CreateTower(data, _enemyProvider);
 
         if (!grid.TryAddTower(tower))
         {

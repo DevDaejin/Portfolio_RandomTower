@@ -7,13 +7,13 @@ public class TowerDatabase : ScriptableObject
 {
     public List<TowerDataConfig> _towers;
 
-    public TowerDataConfig GetTowerByID(int id)
+    public TowerData GetTowerByID(int id)
     {
-        return _towers.FirstOrDefault(tower => tower.Data.ID == id);
+        return _towers.Select(tower => tower.Data).FirstOrDefault(data => data.ID == id);
     }
 
-    public List<TowerDataConfig> GetTowersByGrade(int grade)
+    public TowerData[] GetTowersByGrade(int grade)
     {
-        return _towers.Where(tower => tower.Data.Grade == grade).ToList();
+        return _towers.Select(tower => tower.Data).Where(data => data.Grade == grade).ToArray();
     }
 }

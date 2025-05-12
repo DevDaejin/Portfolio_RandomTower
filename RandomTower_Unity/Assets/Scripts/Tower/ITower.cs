@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public interface ITower
@@ -11,5 +10,5 @@ public interface ITower
     float Range { get; }
     float FireRate { get; }
 
-    public void Initialize(TowerDataConfig config, IEnemyProvider enemyProvider, int level = 1);
+    public void Initialize(TowerData data, IEnemyProvider enemyProvider, int level = 1);
 }

@@ -1,9 +1,6 @@
 using System.Linq;
-using Unity.Android.Gradle.Manifest;
-using UnityEditor.Localization.Plugins.XLIFF.V20;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.Rendering.STP;
 
 public class BaseEnemy : MonoBehaviour
 {
@@ -26,12 +23,12 @@ public class BaseEnemy : MonoBehaviour
         }
     }
 
-    public void Initialize(EnemyDataConfig config, Transform routeGroup)
+    public void Initialize(EnemyData data, Transform routeGroup)
     {
         if (!_isInitailized)
         {
             _isInitailized = true;
-            InitializeEnemyData(config);
+            InitializeEnemyData(data);
 
             _agent = GetComponent<NavMeshAgent>();
             InitializeRoutes(routeGroup);
@@ -49,9 +46,9 @@ public class BaseEnemy : MonoBehaviour
         _routes = routeGroup.GetComponentsInChildren<Transform>().Where(route => route != routeGroup).ToArray();
     }
 
-    private void InitializeEnemyData(EnemyDataConfig config)
+    private void InitializeEnemyData(EnemyData data)
     {
-        Data = config.Data;
+        Data = data;
         _currentHP = Data.MaxHP;
     }
 

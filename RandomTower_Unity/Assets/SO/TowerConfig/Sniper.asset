@@ -16,7 +16,8 @@ MonoBehaviour:
     grade: 1
     id: 13
     towerName: "\uC800\uACA9\uC218"
-    prefab: {fileID: 5521364266558028829, guid: 8e9fdd17b2798f944b9fcd677478b059, type: 3}
+    towerPrefab: {fileID: 5521364266558028829, guid: 8e9fdd17b2798f944b9fcd677478b059, type: 3}
+    projectilePrefab: {fileID: 8195383268220158610, guid: 458bfddd576d8804f8f35db999f38df1, type: 3}
     damage: 1
     range: 1
     fireRate: 1
