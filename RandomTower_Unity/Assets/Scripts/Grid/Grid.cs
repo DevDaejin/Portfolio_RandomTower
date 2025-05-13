@@ -1,12 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Grid
+public class Grid : MonoBehaviour, IPointerDownHandler, ISelectable
 {
-    private readonly Transform _transform;
-    private int _maxCount = 3;
+    private Transform _transform;
     private List<ITower> _towers;
+    private const int _maxCount = 3;
 
     private const float LeftSideX = -0.2f;
     private const float RightSideX = 0.2f;
@@ -25,9 +28,9 @@ public class Grid
         new Vector3(RightSideX, 0, -intervalZ * 0.5f),
     };
 
-    public Grid(Transform transform)
+    public void Initialize()
     {
-        _transform = transform;
+        _transform = GetComponent<Transform>();
         _towers = new();
     }
 
@@ -79,5 +82,31 @@ public class Grid
                 _towers[index].Transform.position = _transform.position + offsets[index];
             }
         }
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (_towers.Count > 0)
+        {
+            GridSelectionHandler.Select(this);
+
+            ITower tower = _towers[0];
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"Tower : {tower.Data.TowerName}");
+            sb.AppendLine($"Damage : {tower.Damage}");
+            sb.AppendLine($"Range : {tower.Range}");
+            sb.AppendLine($"FireRate : {tower.FireRate}");
+            Debug.Log(sb.ToString());
+        }
+    }
+
+    public void OnSelect()
+    {
+        _towers.ForEach(tower => tower.OnSelect());
+    }
+
+    public void OnDeselect()
+    {
+        _towers.ForEach(tower => tower.OnDeselect());
     }
 }

@@ -60,5 +60,7 @@ public class TowerManager : MonoBehaviour
         {
             _towerFactory.Return(tower);
         }
+
+        GridSelectionHandler.Update();
     }
 }

@@ -9,7 +9,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     [SerializeField] private Transform _routeGroup;
 
     private EnemyFactory _enemyFactory;
-    private readonly List<BaseEnemy> _enemies = new();
+    public List<BaseEnemy> _enemies = new();
     private readonly List<BaseEnemy> _cachingList = new();
     private readonly List<BaseEnemy> _cachingSortedList = new();
 
@@ -65,17 +65,14 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
 
     public List<BaseEnemy> FindAllInRange(Vector3 position, float range)
     {
-        Debug.Log("Range");
         float sqrRange = range * range;
 
         _cachingList.Clear();
 
         foreach(BaseEnemy enemy in _enemies)
         {
-            Debug.Log($"Enemy {enemy.GetInstanceID()}");
             if ((enemy.transform.position - position).sqrMagnitude <= sqrRange)
             {
-                Debug.Log($"Added Enemy {enemy.GetInstanceID()}");
                 _cachingList.Add(enemy);
             }
         }
@@ -85,7 +82,6 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
 
     public List<BaseEnemy> FindClosestWithCount(Vector3 position, float range, int count)
     {
-        Debug.Log("Find");
         FindAllInRange(position, range);
         _cachingSortedList.Clear();
 
@@ -93,7 +89,6 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
             .OrderBy(element => (element.transform.position - position).sqrMagnitude)
             .Take(count))
         {
-            Debug.Log($"Enemy {enemy.GetInstanceID()}");
             _cachingSortedList.Add(enemy);
         }
 

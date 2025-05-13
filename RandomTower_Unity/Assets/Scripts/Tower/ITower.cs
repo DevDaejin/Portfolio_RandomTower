@@ -10,5 +10,7 @@ public interface ITower
     float Range { get; }
     float FireRate { get; }
 
+    public void OnSelect();
+    public void OnDeselect();
     public void Initialize(TowerData data, Pool<Projectile> pool, IEnemyProvider enemyProvider, int level = 1);
 }

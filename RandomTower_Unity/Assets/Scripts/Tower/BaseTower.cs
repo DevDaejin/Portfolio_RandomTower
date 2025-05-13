@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,19 +13,29 @@ public class BaseTower : MonoBehaviour, ITower
     public float Range => Data.Range + ((Level - 1) * 0.1f);
     public float FireRate => Data.FireRate + ((Level - 1) * 0.1f);
 
+    private float _fireRateTime;
+
     protected IEnemyProvider _enemyProvider;
 
-    private float _fireRateTime;
     private Pool<Projectile> _projectilePool;
+    private TowerRangeViewer _rangeViewer;
+
 
     public void Initialize(TowerData data, Pool<Projectile> pool, IEnemyProvider enemyProvider, int level = 1)
     {
         Data = data;
         Level = level;
-        _projectilePool = pool;
+        if (_projectilePool == null)
+        {
+            _projectilePool = pool;
+        }
         if (_enemyProvider == null)
         {
             _enemyProvider = enemyProvider;
+        }
+        if(_rangeViewer == null)
+        {
+            _rangeViewer = GetComponentInChildren<TowerRangeViewer>();
         }
     }
 
@@ -41,20 +50,33 @@ public class BaseTower : MonoBehaviour, ITower
         foreach (BaseEnemy target in targets)
         {
             Projectile projectile = _projectilePool.Get();
-            projectile.Initialize(Damage, 10, null);
+            projectile.Initialize(Damage, 10, _projectilePool.Return);
             projectile.Set(transform.position, target);
         }
     }
 
-
     protected virtual void Update()
     {
+        var enemies = FindClosestEnemies();
+
+        if (enemies.Count == 0)
+            return;
+
         _fireRateTime += Time.deltaTime;
-        if (FireRate < _fireRateTime)
+        if (_fireRateTime >= 1f / FireRate)
         {
-            Debug.Log("Attack");
-            _fireRateTime = 0;
-            Attack(FindClosestEnemies());
+            _fireRateTime = 0f;
+            Attack(enemies);
         }
+    }
+
+    public void OnSelect()
+    {
+        _rangeViewer.Active(Range);
+    }
+
+    public void OnDeselect()
+    {
+        _rangeViewer.Deactive();
     }
 }

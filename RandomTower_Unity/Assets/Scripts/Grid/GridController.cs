@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GridController
@@ -12,7 +13,9 @@ public class GridController
     {
         for (int index = 0; index < grid.Length; index++)
         {
-            _grids.Add(new Grid(grid[index]));
+            Grid created = grid[index].AddComponent<Grid>();
+            created.Initialize();
+            _grids.Add(created);
         }
     }
 

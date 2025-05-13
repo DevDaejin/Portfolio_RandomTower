@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
@@ -14,6 +15,8 @@ public class BaseEnemy : MonoBehaviour
     private Vector3 _destination;
 
     protected float _currentHP;
+
+    public event Action<BaseEnemy, float> OnTakeDamage;
 
     private void Update()
     {
@@ -73,11 +76,21 @@ public class BaseEnemy : MonoBehaviour
 
     public virtual void TakeDamage(float amount)
     {
+        OnTakeDamage?.Invoke(this, amount);
 
+        if(_currentHP <= 0)
+        {
+            Die();
+        }
     }
 
     protected virtual void Die()
     {
 
+    }
+
+    public float GetHPRatio()
+    {
+        return Mathf.Clamp01(_currentHP / Data.MaxHP);
     }
 }
