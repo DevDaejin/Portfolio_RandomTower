@@ -11,7 +11,9 @@ public class DamageUI : MonoBehaviour
     private float _colorSpeed = 2;
     private float _elapsed;
     private Color _origin;
+
     public  Action<DamageUI> OnReturn;
+    
     private void Awake()
     {
         _rectTransform = GetComponent<RectTransform>();
@@ -42,11 +44,11 @@ public class DamageUI : MonoBehaviour
     private void AppearAnimation()
     {
         _elapsed += Time.deltaTime;
-        float time = Mathf.Clamp01(_elapsed / _duriation);
+        float timeRatio = Mathf.Clamp01(_elapsed / _duriation);
 
-        if (time != 1)
+        if (timeRatio != 1)
         {
-            _text.color = Color.Lerp(_text.color, _origin, time * _colorSpeed);
+            _text.color = Color.Lerp(_text.color, _origin, timeRatio * _colorSpeed);
         }
         else
         {

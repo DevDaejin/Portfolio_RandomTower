@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class TowerFactory
 {
@@ -7,7 +9,7 @@ public class TowerFactory
     private readonly  Transform _towerGroup;
 
     private readonly Dictionary<int, Pool<BaseTower>> _towerPools = new();
-    private readonly Dictionary<int, Pool<Projectile>> _projectilePools = new();
+    private readonly Dictionary<int, IProjectilePool> _projectilePools = new();
 
     private const string TowerGroupName = "TowerGroup";
 
@@ -28,35 +30,42 @@ public class TowerFactory
     public ITower CreateTower(TowerData data, IEnemyProvider enemyProvider, int level = 1)
     {
         Pool<BaseTower> towerPool = GetTowerPool(data);
-        Pool<Projectile> projectilePool = GetProjectilePool(data);
         BaseTower tower = towerPool.Get();
-
+        IProjectilePool projectilePool = GetProjectilePool(data);
         tower.Initialize(data, projectilePool, enemyProvider, level);
 
         return tower;
     }
 
-    private Pool<T> GetPool<T>(Dictionary<int, Pool<T>> dict, int id, GameObject prefab)
+    private Pool<BaseTower> GetTowerPool(TowerData data)
     {
-        if(dict.TryGetValue(id, out var existing))
+        if(!_towerPools.TryGetValue(data.ID, out Pool<BaseTower> pool))
         {
-            return (Pool<T>)existing;
+            pool = new Pool<BaseTower>(data.TowerPrefab, _towerGroup);
+            _towerPools.Add(data.ID, pool);
         }
-
-        Pool<T> pool = new Pool<T>(prefab, _towerGroup);
-        dict[id] = pool;
-
         return pool;
     }
 
-    private Pool<BaseTower> GetTowerPool(TowerData data)
+    private IProjectilePool GetProjectilePool(TowerData data)
     {
-        return GetPool<BaseTower>(_towerPools, data.ID, data.TowerPrefab);
-    }
+        IProjectilePool pool = null;
+        if (_projectilePools.TryGetValue(data.ID, out pool))
+        {
+            return pool;
+        }
 
-    private Pool<Projectile> GetProjectilePool(TowerData data)
-    {
-        return GetPool<Projectile>(_projectilePools, data.ID, data.ProjectilePrefab);
+        Projectile projectile = data.ProjectilePrefab.GetComponent<Projectile>();
+
+        if (projectile == null) return null;
+
+        Type type = projectile.GetType();
+        Type poolType = typeof(ProjectilePool<>).MakeGenericType(type);
+
+        pool = (IProjectilePool)Activator.CreateInstance(poolType, data.ProjectilePrefab, _towerGroup);
+        _projectilePools.Add(data.ID, pool);
+
+        return pool;
     }
 
     public void Return(ITower tower)

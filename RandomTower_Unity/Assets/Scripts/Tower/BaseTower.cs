@@ -7,36 +7,27 @@ public class BaseTower : MonoBehaviour, ITower
 
     public int Level { get; private set; }
 
-    public Transform Transform => transform;
-
     public float Damage => Data.Damage + ((Level - 1) * 0.1f);
     public float Range => Data.Range + ((Level - 1) * 0.1f);
     public float FireRate => Data.FireRate + ((Level - 1) * 0.1f);
+
+    public Transform Transform => transform;
 
     private float _fireRateTime;
 
     protected IEnemyProvider _enemyProvider;
 
-    private Pool<Projectile> _projectilePool;
+    private IProjectilePool _projectilePool;
     private TowerRangeViewer _rangeViewer;
 
 
-    public void Initialize(TowerData data, Pool<Projectile> pool, IEnemyProvider enemyProvider, int level = 1)
+    public void Initialize(TowerData data, IProjectilePool pool, IEnemyProvider enemyProvider, int level = 1)
     {
         Data = data;
         Level = level;
-        if (_projectilePool == null)
-        {
-            _projectilePool = pool;
-        }
-        if (_enemyProvider == null)
-        {
-            _enemyProvider = enemyProvider;
-        }
-        if(_rangeViewer == null)
-        {
-            _rangeViewer = GetComponentInChildren<TowerRangeViewer>();
-        }
+        _projectilePool ??= pool;
+        _enemyProvider ??= enemyProvider;
+        _rangeViewer ??= GetComponentInChildren<TowerRangeViewer>();
     }
 
     protected virtual List<BaseEnemy> FindClosestEnemies()
@@ -49,9 +40,7 @@ public class BaseTower : MonoBehaviour, ITower
     {
         foreach (BaseEnemy target in targets)
         {
-            Projectile projectile = _projectilePool.Get();
-            projectile.Initialize(Damage, 10, _projectilePool.Return);
-            projectile.Set(transform.position, target);
+            Projectile projectile = _projectilePool.Get(target, transform.position, Damage, Data.ProjectileSpeed);
         }
     }
 

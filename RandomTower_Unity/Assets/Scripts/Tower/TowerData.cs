@@ -19,6 +19,9 @@ public class TowerData
     public GameObject ProjectilePrefab => projectilePrefab;
     [SerializeField] private GameObject projectilePrefab;
 
+    public float ProjectileSpeed => projectileSpeed;
+    [SerializeField] private float projectileSpeed;
+
     public float Damage => damage;
     [SerializeField] private float damage;
 

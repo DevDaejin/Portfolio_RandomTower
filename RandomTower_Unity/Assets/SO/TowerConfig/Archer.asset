@@ -18,6 +18,7 @@ MonoBehaviour:
     towerName: "\uAD81\uC218"
     towerPrefab: {fileID: 1246738735132430580, guid: cdc1b0a4f747a4441817b90c211033fb, type: 3}
     projectilePrefab: {fileID: 8195383268220158610, guid: 458bfddd576d8804f8f35db999f38df1, type: 3}
+    projectileSpeed: 0
     damage: 1
     range: 5
     fireRate: 1
