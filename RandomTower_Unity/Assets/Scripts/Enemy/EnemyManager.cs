@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,23 +22,23 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         _enemyFactory = new EnemyFactory();
     }
 
-    public void SpawnWave(StageConfig config)
+    public void SpawnWave(StageConfig config, int waveIndex)
     {
-        StartCoroutine(SpawnWaveRoutine(config.WaveData.SpawnList));
+        List<SpawnInfo> wave = config.WaveData.SpawnList;
+        if (waveIndex >= wave.Count) return;
+
+        StartCoroutine(SpawnWaveRoutine(wave[waveIndex]));
     }
 
-    private IEnumerator SpawnWaveRoutine(List<SpawnInfo> list)
+    private IEnumerator SpawnWaveRoutine(SpawnInfo info)
     {
-        foreach (SpawnInfo info in list)
+        for (int i = 0; i < info.Count; i++)
         {
-            for (int i = 0; i < info.Count; i++)
-            {
-                BaseEnemy enemy = _enemyFactory.CreateEnemy(info.Config.Data, _routeGroup);
-                enemy.OnDie += ReturnEnemy;
-                _enemyUIManager?.Registry(enemy);
-                _enemies.Add(enemy);
-                yield return new WaitForSecondsRealtime(SpawnInterval);
-            }
+            BaseEnemy enemy = _enemyFactory.CreateEnemy(info.Config.Data, _routeGroup);
+            enemy.OnDie += ReturnEnemy;
+            _enemyUIManager?.Registry(enemy);
+            _enemies.Add(enemy);
+            yield return new WaitForSecondsRealtime(SpawnInterval);
         }
     }
 
@@ -76,7 +77,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
 
         _cachingList.Clear();
 
-        foreach(BaseEnemy enemy in _enemies)
+        foreach (BaseEnemy enemy in _enemies)
         {
             if ((enemy.transform.position - position).sqrMagnitude <= sqrRange)
             {
@@ -92,7 +93,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         FindAllInRange(position, range);
         _cachingSortedList.Clear();
 
-        foreach(BaseEnemy enemy in _cachingList
+        foreach (BaseEnemy enemy in _cachingList
             .OrderBy(element => (element.transform.position - position).sqrMagnitude)
             .Take(count))
         {
@@ -100,5 +101,10 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         }
 
         return _cachingSortedList;
+    }
+
+    public int GetCurrentEnemyCount()
+    {
+        return _enemies.Count;
     }
 }
