@@ -7,10 +7,11 @@ public class DamageUI : MonoBehaviour
     [SerializeField] private TMP_Text _text;
     private RectTransform _rectTransform;
     private bool _isAnimation;
-    private float _duriation = 0.5f;
+    private float _duriation = 1f;
     private float _colorSpeed = 2;
     private float _elapsed;
     private Color _origin;
+    public  Action<DamageUI> OnReturn;
     private void Awake()
     {
         _rectTransform = GetComponent<RectTransform>();
@@ -23,7 +24,7 @@ public class DamageUI : MonoBehaviour
         AppearAnimation();
     }
 
-    public void Show(float damage, Vector3 position, Action<DamageUI> returnCallback)
+    public void Show(float damage, Vector3 position)
     {
         Initialize();
 
@@ -50,6 +51,7 @@ public class DamageUI : MonoBehaviour
         else
         {
             _isAnimation = false;
+            OnReturn?.Invoke(this);
         }
     }
 }

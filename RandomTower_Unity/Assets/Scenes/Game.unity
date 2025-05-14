@@ -1165,6 +1165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _routeGroup: {fileID: 1251800037}
+  _enemyUIManager: {fileID: 1195791143}
   _enemies: []
 --- !u!114 &1195791143
 MonoBehaviour:
@@ -1179,7 +1180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canvas: {fileID: 164772221}
-  _enemyUIPrefab: {fileID: 2747180930477656307, guid: da3607589d28c7c44b4d50d1673edae6, type: 3}
+  _enemyUIPrefab: {fileID: 6416691861095763587, guid: 8383087927e92d7408bae0a8b913aa1a, type: 3}
   _damageUIPrefab: {fileID: 6752932195000079862, guid: 8ca9d5abd83b25249b1e304663b3735e, type: 3}
 --- !u!1 &1235937570
 GameObject:

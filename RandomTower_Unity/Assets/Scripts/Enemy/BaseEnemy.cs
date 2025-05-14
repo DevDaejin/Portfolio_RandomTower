@@ -16,6 +16,7 @@ public class BaseEnemy : MonoBehaviour
 
     protected float _currentHP;
 
+    public event Action<BaseEnemy> OnDie;
     public event Action<BaseEnemy, float> OnTakeDamage;
 
     private void Update()
@@ -86,7 +87,7 @@ public class BaseEnemy : MonoBehaviour
 
     protected virtual void Die()
     {
-
+        OnDie?.Invoke(this);
     }
 
     public float GetHPRatio()

@@ -7,6 +7,7 @@ using static UnityEngine.Rendering.STP;
 public class EnemyManager : MonoBehaviour, IEnemyProvider
 {
     [SerializeField] private Transform _routeGroup;
+    [SerializeField] private EnemyUIManager _enemyUIManager;
 
     private EnemyFactory _enemyFactory;
     public List<BaseEnemy> _enemies = new();
@@ -32,6 +33,8 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
             for (int i = 0; i < info.Count; i++)
             {
                 BaseEnemy enemy = _enemyFactory.CreateEnemy(info.Config.Data, _routeGroup);
+                enemy.OnDie += ReturnEnemy;
+                _enemyUIManager?.Registry(enemy);
                 _enemies.Add(enemy);
                 yield return new WaitForSecondsRealtime(SpawnInterval);
             }
@@ -40,6 +43,10 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
 
     public void ReturnEnemy(BaseEnemy enemy)
     {
+        if (!_enemies.Contains(enemy)) return;
+
+        enemy.OnDie -= ReturnEnemy;
+        _enemyUIManager?.Unregister(enemy);
         _enemies.Remove(enemy);
         _enemyFactory.Return(enemy);
     }

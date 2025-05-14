@@ -11,6 +11,7 @@ public class GameSceneController : MonoBehaviour
     {
         _enemyManager = GetComponent<EnemyManager>();
         _towerSpawner = GetComponent<TowerManager>();
+
         _towerSpawner.Initialize(_enemyManager);
     }
 

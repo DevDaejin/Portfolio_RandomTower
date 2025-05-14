@@ -14,7 +14,7 @@ public class EnemyUIManager : MonoBehaviour
     private Camera _cam;
 
     private readonly Dictionary<BaseEnemy, EnemyUI> _uiDict = new();
-    private const float HeightOffset = 2f;
+    private const float HeightOffset = 0.5f;
 
     private void Awake()
     {
@@ -26,10 +26,10 @@ public class EnemyUIManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        foreach(KeyValuePair<BaseEnemy, EnemyUI> pair in _uiDict)
+        foreach (KeyValuePair<BaseEnemy, EnemyUI> pair in _uiDict)
         {
             BaseEnemy enemy = pair.Key;
-            if (!enemy.gameObject.activeInHierarchy) continue;;
+            if (!enemy.gameObject.activeInHierarchy) continue; ;
             pair.Value.transform.position = GetScreenPosition(enemy);
         }
     }
@@ -38,7 +38,7 @@ public class EnemyUIManager : MonoBehaviour
     {
         EnemyUI ui = _enemyUIPool.Get();
         ui.Initialize();
-        
+
         if (!_uiDict.ContainsKey(enemy))
         {
             _uiDict.Add(enemy, ui);
@@ -64,13 +64,14 @@ public class EnemyUIManager : MonoBehaviour
 
     private void OnEnemyDamaged(BaseEnemy enemy, float amount)
     {
-        if(_uiDict.TryGetValue(enemy, out EnemyUI ui))
+        if (_uiDict.TryGetValue(enemy, out EnemyUI ui))
         {
             ui.UpdateHP(enemy.GetHPRatio());
         }
 
         DamageUI damageUI = _damageUIPool.Get();
-        damageUI.Show(amount, GetScreenPosition(enemy), ReturnDamageUI);
+        damageUI.OnReturn = ReturnDamageUI;
+        damageUI.Show(amount, GetScreenPosition(enemy));
     }
 
     private void ReturnDamageUI(DamageUI damageUI)
