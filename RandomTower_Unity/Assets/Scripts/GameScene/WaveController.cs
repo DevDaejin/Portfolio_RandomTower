@@ -6,15 +6,16 @@ public class WaveController
     public enum WaveState { Idle, InProgress, Waiting, Failed, Cleared }
     public WaveState CurrentState { get; private set; } = WaveState.Idle;
     public int CurrentWaveIndex { get; private set; }
-    public float CurrentWaveTime { get; private set; }
 
+    private Timer _timer;
     private int _maxWave;
     private int _maxEnemies;
-    private float _waveDuration;
     private Func<int> _getAliveEnemyCount;
 
     public event Action<float> OnTimeChanged;
     public event Action<int, int> OnWaveChanged;
+    public event Action<int, int> OnEnemyCountChanged;
+
     public event Action OnWaveStarted;
     public event Action OnWaveEnded;
     public event Action OnStageFailed;
@@ -24,25 +25,35 @@ public class WaveController
     {
         _maxWave = maxWave;
         _maxEnemies = maxEnemies;
-        _waveDuration = waveDuration;
         _getAliveEnemyCount = getAliveEnemyCount;
+
+        _timer = new Timer(waveDuration);
+        _timer.OnTick += time => OnTimeChanged?.Invoke(time);
+        _timer.OnTimeUp += OnTimeUp;
     }
 
     public void Initialize()
     {
         OnWaveChanged.Invoke(CurrentWaveIndex + 1, _maxWave);
-        OnTimeChanged.Invoke(_waveDuration);
+        OnTimeChanged.Invoke(_timer.TimeLeft);
     }
 
     //TODO: 추후 삭제 테스트용
-    public void TestCode() => CurrentWaveTime = 1;
+    public void TestCode()
+    {
+        _timer = new Timer(1, true);
+        _timer.OnTick += time => OnTimeChanged?.Invoke(time);
+        _timer.OnTimeUp += OnTimeUp;
+    }
 
     public void StartWave()
     {
         if (CurrentState != WaveState.Idle) return;
 
-        CurrentWaveTime = _waveDuration;
         CurrentState = WaveState.InProgress;
+
+        _timer.Start();
+
         OnWaveStarted?.Invoke();
         OnWaveChanged?.Invoke(CurrentWaveIndex + 1, _maxWave);
     }
@@ -51,31 +62,34 @@ public class WaveController
     {
         if (CurrentState != WaveState.InProgress) return;
 
-        CurrentWaveTime = Mathf.Max(0f, CurrentWaveTime - Time.deltaTime);
-        OnTimeChanged?.Invoke(CurrentWaveTime);
+        _timer.Tick();
 
         int alive = _getAliveEnemyCount.Invoke();
+        OnEnemyCountChanged.Invoke(alive, _maxEnemies);
+    }
 
-        if ((CurrentWaveTime <= 0 && alive > 0 && _maxWave == CurrentWaveIndex) || alive > _maxEnemies)
+    private void OnTimeUp()
+    {
+        int alive = _getAliveEnemyCount.Invoke();
+        OnEnemyCountChanged.Invoke(alive, _maxEnemies);
+
+        if ((alive > 0 && _maxWave == CurrentWaveIndex) || alive > _maxEnemies)
         {
             CurrentState = WaveState.Failed;
             OnStageFailed?.Invoke();
             return;
         }
 
-        if ( CurrentWaveTime == 0)
+        CurrentWaveIndex++;
+
+        if (CurrentWaveIndex >= _maxWave)
         {
-            CurrentWaveIndex++;
-
-            if (CurrentWaveIndex >= _maxWave)
-            {
-                CurrentState = WaveState.Cleared;
-                OnStageCleared?.Invoke();
-                return;
-            }
-
-            CurrentState = WaveState.Idle;
-            OnWaveEnded?.Invoke();
+            CurrentState = WaveState.Cleared;
+            OnStageCleared?.Invoke();
+            return;
         }
+
+        CurrentState = WaveState.Idle;
+        OnWaveEnded?.Invoke();
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 
 public class InGame : MonoBehaviour
@@ -36,6 +37,7 @@ public class InGame : MonoBehaviour
     {
         _waveController.OnTimeChanged += _ui.SetTimer;
         _waveController.OnWaveChanged += _ui.SetWave;
+        _waveController.OnEnemyCountChanged += _ui.SetEnemyCount;
         _waveController.OnStageFailed += StageFailed;
         _waveController.OnStageCleared += StageSuccess;
         _waveController.OnWaveEnded += TryStartWave;
@@ -70,6 +72,7 @@ public class InGame : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Alpha3))
         {
             _waveController.TestCode();
+            _waveController.StartWave();
         }
         #endregion
     }
