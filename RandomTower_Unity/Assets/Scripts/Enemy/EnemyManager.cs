@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEngine.Rendering.STP;
 
 public class EnemyManager : MonoBehaviour, IEnemyProvider
 {
@@ -11,7 +9,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     [SerializeField] private EnemyUIManager _enemyUIManager;
 
     private EnemyFactory _enemyFactory;
-    public List<BaseEnemy> _enemies = new();
+    private List<BaseEnemy> _enemies = new();
     private readonly List<BaseEnemy> _cachingList = new();
     private readonly List<BaseEnemy> _cachingSortedList = new();
 
@@ -47,6 +45,8 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         if (!_enemies.Contains(enemy)) return;
 
         enemy.OnDie -= ReturnEnemy;
+        enemy.OnDie = null;
+
         _enemyUIManager?.Unregister(enemy);
         _enemies.Remove(enemy);
         _enemyFactory.Return(enemy);

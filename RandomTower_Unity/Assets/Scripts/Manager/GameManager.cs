@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -40,12 +41,12 @@ public class GameManager : MonoBehaviour
 
     public void Initialize()
     {
-        UIManager.Initialize();
+        //UIManager.Initialize();
     }
 
     private void Start()
     {
-        LoadScene(MainScene);
+        //LoadScene(MainScene);
     }
 
     public void LoadScene(string name) => SceneLoader.LoadSceneAsync(name);

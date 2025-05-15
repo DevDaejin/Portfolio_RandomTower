@@ -9,7 +9,7 @@ public class Grid : MonoBehaviour, IPointerDownHandler, ISelectable
 {
     private Transform _transform;
     private List<ITower> _towers;
-    private const int _maxCount = 3;
+    private const int MaxCount = 3;
 
     private const float LeftSideX = -0.2f;
     private const float RightSideX = 0.2f;
@@ -40,7 +40,7 @@ public class Grid : MonoBehaviour, IPointerDownHandler, ISelectable
             _towers
             .FirstOrDefault(createdTower => createdTower.Data.ID == tower.Data.ID);
 
-        if (_towers.Count >= _maxCount || (_towers.Count > 0 && _towers[0].Data.IsSpecial))
+        if (_towers.Count >= MaxCount || (_towers.Count > 0 && _towers[0].Data.IsSpecial))
         {
             return false;
         }
