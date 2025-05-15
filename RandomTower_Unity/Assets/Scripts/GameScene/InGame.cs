@@ -14,7 +14,7 @@ public class InGame : MonoBehaviour
     private int _currentStage = 0;
 
     private const int MaxEnemies = 80;
-    private const float WaveTime = 40;
+    private const float WaveDuration = 40;
 
     private void Awake()
     {
@@ -28,8 +28,8 @@ public class InGame : MonoBehaviour
         _waveController = new WaveController(
             _stageConfigs[_currentStage].WaveData.SpawnList.Count,
             MaxEnemies,
-            WaveTime,
-            ()=>_enemyManager.GetCurrentEnemyCount());
+            WaveDuration,
+            GetEnemyCount);
     }
 
     private void Start()
@@ -40,6 +40,9 @@ public class InGame : MonoBehaviour
         _waveController.OnStageCleared += StageSuccess;
         _waveController.OnWaveEnded += TryStartWave;
         _waveController.OnWaveStarted += OnWaveStarted;
+
+        _waveController.Initialize();
+        GetEnemyCount();
     }
 
     private void Update()
@@ -81,6 +84,13 @@ public class InGame : MonoBehaviour
         _waveController.OnStageCleared -= StageSuccess;
         _waveController.OnWaveEnded -= TryStartWave;
         _waveController.OnWaveStarted -= OnWaveStarted;
+    }
+
+    private int GetEnemyCount()
+    {
+        int count = _enemyManager.GetCurrentEnemyCount();
+        _ui.SetEnemyCount(count, MaxEnemies);
+        return count;
     }
 
     private void OnWaveStarted()

@@ -28,6 +28,12 @@ public class WaveController
         _getAliveEnemyCount = getAliveEnemyCount;
     }
 
+    public void Initialize()
+    {
+        OnWaveChanged.Invoke(CurrentWaveIndex + 1, _maxWave);
+        OnTimeChanged.Invoke(_waveDuration);
+    }
+
     //TODO: 추후 삭제 테스트용
     public void TestCode() => CurrentWaveTime = 1;
 
@@ -50,7 +56,7 @@ public class WaveController
 
         int alive = _getAliveEnemyCount.Invoke();
 
-        if ((CurrentWaveTime <= 0 && alive > 0) || alive > _maxEnemies)
+        if ((CurrentWaveTime <= 0 && alive > 0 && _maxWave == CurrentWaveIndex) || alive > _maxEnemies)
         {
             CurrentState = WaveState.Failed;
             OnStageFailed?.Invoke();
