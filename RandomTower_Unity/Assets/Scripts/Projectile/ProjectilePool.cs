@@ -8,7 +8,7 @@ public class ProjectilePool<T> : IProjectilePool where T : Projectile
     public ProjectilePool(GameObject prefab, Transform parent)
     {
         _pool = new Pool<T>(prefab, parent);
-        _onReturn = proejectile => _pool.Return((T)proejectile);
+        _onReturn = projectile => _pool.Return((T)projectile);
     }
 
     public Projectile Get(BaseEnemy target, Vector3 origin, float damage, float speed)
@@ -16,5 +16,10 @@ public class ProjectilePool<T> : IProjectilePool where T : Projectile
         var projectile = _pool.Get();
         projectile.Initialize(target, origin, damage, speed, _onReturn);
         return projectile;
+    }
+
+    public void ReturnAll()
+    {
+        _pool.ReturnAll();
     }
 }

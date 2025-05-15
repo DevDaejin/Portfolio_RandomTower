@@ -7,7 +7,7 @@ public class DamageUI : MonoBehaviour
     [SerializeField] private TMP_Text _text;
     private RectTransform _rectTransform;
     private bool _isAnimation;
-    private float _duriation = 1f;
+    private float _duration = 1f;
     private float _colorSpeed = 2;
     private float _elapsed;
     private Color _origin;
@@ -44,7 +44,7 @@ public class DamageUI : MonoBehaviour
     private void AppearAnimation()
     {
         _elapsed += Time.deltaTime;
-        float timeRatio = Mathf.Clamp01(_elapsed / _duriation);
+        float timeRatio = Mathf.Clamp01(_elapsed / _duration);
 
         if (timeRatio != 1)
         {

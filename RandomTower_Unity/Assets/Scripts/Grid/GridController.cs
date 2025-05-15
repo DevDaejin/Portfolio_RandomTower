@@ -21,31 +21,40 @@ public class GridController
 
     public Grid GetTowerInstallableGrid(TowerData data)
     {
-        Grid availabaleGrid = null;
+        Grid availableGrid = null;
 
         if (!data.IsSpecial)
         {
-            availabaleGrid = GetSameTowerInstalledGrid(data);
+            availableGrid = GetSameTowerInstalledGrid(data);
         }
 
-        if (availabaleGrid == null)
+        if (availableGrid == null)
         {
-            availabaleGrid = GetNullTowerGrid();
+            availableGrid = GetNullTowerGrid();
         }
 
-        return availabaleGrid;
+        return availableGrid;
     }
 
     public Grid GetGridDifferentID(TowerData data)
     {
-        Grid[] candidates = _grids.Where(grid =>
-            grid.GetTower() != null &&
-            grid.GetTower().Data.Grade == data.Grade &&
-            grid.GetTower().Data.ID != data.ID &&
-            grid.GetTowerCount() < MaxTowerCount).ToArray();
+        List<Grid> candidates = new();
 
-        if (candidates.Length == 0) return null;
-        return candidates[Random.Range(0, candidates.Length)];
+        foreach (Grid grid in _grids)
+        {
+            ITower tower = grid.GetTower();
+            if (tower == null) continue;
+
+            if (tower.Data.Grade == data.Grade &&
+                tower.Data.ID != data.ID &&
+                grid.GetTowerCount() < MaxTowerCount)
+            {
+                candidates.Add(grid);
+            }
+        }
+
+        if (candidates.Count == 0) return null;
+        return candidates[Random.Range(0, candidates.Count)];
     }
 
     private Grid GetSameTowerInstalledGrid(TowerData data)
@@ -54,7 +63,23 @@ public class GridController
 
         if (installableGrids == null || installableGrids.Length == 0) return null;
 
-        installableGrids = installableGrids.Where(grid => grid.GetTowerCount() < MaxTowerCount).ToArray();
+        int count = 0;
+        for (int i = 0; i < installableGrids.Length; i++)
+        {
+            if (installableGrids[i].GetTowerCount() < MaxTowerCount)
+                count++;
+        }
+
+        Grid[] filtered = new Grid[count];
+        int index = 0;
+
+        for (int i = 0; i < installableGrids.Length; i++)
+        {
+            if (installableGrids[i].GetTowerCount() < MaxTowerCount)
+                filtered[index++] = installableGrids[i];
+        }
+
+        installableGrids = filtered;
 
         if (installableGrids.Length == 0) return null;
 
@@ -64,13 +89,43 @@ public class GridController
 
     private Grid[] GetSameTowerGrids(TowerData data)
     {
-        Grid[] sameTowerGrids = _grids.Where(grid => grid.GetTower() != null && grid.GetTower().Data.ID == data.ID).ToArray();
+        int count = 0;
+        for (int i = 0; i < _grids.Count; i++)
+        {
+            var tower = _grids[i].GetTower();
+            if (tower != null && tower.Data.ID == data.ID)
+                count++;
+        }
+
+        Grid[] sameTowerGrids = new Grid[count];
+        int index = 0;
+
+        for (int i = 0; i < _grids.Count; i++)
+        {
+            var tower = _grids[i].GetTower();
+            if (tower != null && tower.Data.ID == data.ID)
+                sameTowerGrids[index++] = _grids[i];
+        }
         return sameTowerGrids;
     }
 
     private Grid GetNullTowerGrid()
     {
-        Grid[] nullGrids = _grids.Where(grid => grid.GetTowerCount() == 0).ToArray();
+        int count = 0;
+        for (int i = 0; i < _grids.Count; i++)
+        {
+            if (_grids[i].GetTowerCount() == 0)
+                count++;
+        }
+
+        Grid[] nullGrids = new Grid[count];
+        int index = 0;
+
+        for (int i = 0; i < _grids.Count; i++)
+        {
+            if (_grids[i].GetTowerCount() == 0)
+                nullGrids[index++] = _grids[i];
+        }
 
         if (nullGrids.Length == 0) return null;
 

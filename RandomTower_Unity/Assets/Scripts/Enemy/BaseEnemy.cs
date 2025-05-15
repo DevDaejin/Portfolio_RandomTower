@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
@@ -47,7 +48,15 @@ public class BaseEnemy : MonoBehaviour
     {
         if (_routes != null) return;
 
-        _routes = routeGroup.GetComponentsInChildren<Transform>().Where(route => route != routeGroup).ToArray();
+        List<Transform> routeList = new();
+
+        foreach (Transform route in routeGroup.GetComponentsInChildren<Transform>())
+        {
+            if (route != routeGroup)
+                routeList.Add(route);
+        }
+
+        _routes = routeList.ToArray();
     }
 
     private void InitializeEnemyData(EnemyData data)
@@ -77,6 +86,7 @@ public class BaseEnemy : MonoBehaviour
 
     public virtual void TakeDamage(float amount)
     {
+        _currentHP -= amount;
         OnTakeDamage?.Invoke(this, amount);
 
         if(_currentHP <= 0)

@@ -34,7 +34,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         {
             BaseEnemy enemy = _enemyFactory.CreateEnemy(info.Config.Data, _routeGroup);
             enemy.OnDie += ReturnEnemy;
-            _enemyUIManager?.Registry(enemy);
+            _enemyUIManager?.Register(enemy);
             _enemies.Add(enemy);
             yield return new WaitForSecondsRealtime(SpawnInterval);
         }

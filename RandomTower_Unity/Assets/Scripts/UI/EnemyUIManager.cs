@@ -29,12 +29,12 @@ public class EnemyUIManager : MonoBehaviour
         foreach (KeyValuePair<BaseEnemy, EnemyUI> pair in _uiDict)
         {
             BaseEnemy enemy = pair.Key;
-            if (!enemy.gameObject.activeInHierarchy) continue; ;
+            if (!enemy.gameObject.activeInHierarchy) continue;
             pair.Value.transform.position = GetScreenPosition(enemy);
         }
     }
 
-    public void Registry(BaseEnemy enemy)
+    public void Register(BaseEnemy enemy)
     {
         EnemyUI ui = _enemyUIPool.Get();
         ui.Initialize();

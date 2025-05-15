@@ -6,10 +6,10 @@ public class Pool<T>
     private readonly GameObject _prefab;
     private readonly Transform _parent;
 
-    private readonly List<T> _actived = new();
+    private readonly List<T> _active = new();
     private readonly Queue<T> _pooled = new();
 
-    public IReadOnlyList<T> Actived => _actived;
+    public IReadOnlyList<T> Actived => _active;
 
     public Pool(GameObject prefab, Transform parent = null)
     {
@@ -40,24 +40,24 @@ public class Pool<T>
         }
 
         Activate(item);
-        _actived.Add(item);
+        _active.Add(item);
 
         return item;
     }
 
     public void ReturnAll()
     {
-        foreach (var item in _actived)
+        foreach (var item in _active)
         {
             Deactivate(item);
             _pooled.Enqueue(item);
         }
-        _actived.Clear();
+        _active.Clear();
     }
 
     public void Return(T item)
     {
-        if (_actived.Remove(item))
+        if (_active.Remove(item))
         {
             Deactivate(item);
             _pooled.Enqueue(item);

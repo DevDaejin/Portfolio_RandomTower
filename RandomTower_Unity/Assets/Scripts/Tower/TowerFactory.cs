@@ -87,7 +87,7 @@ public class TowerFactory
 
     public void ReturnAllProjectile()
     {
-        foreach(var pool in _towerPools)
+        foreach(var pool in _projectilePools)
         {
             pool.Value.ReturnAll();
         }
