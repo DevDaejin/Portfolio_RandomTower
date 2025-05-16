@@ -9,11 +9,39 @@ public class TowerDatabase : ScriptableObject
 
     public TowerData GetTowerByID(int id)
     {
-        return _towers.Select(tower => tower.Data).FirstOrDefault(data => data.ID == id);
+        for (int i = 0; i < _towers.Count; i++)
+        {
+            TowerData data = _towers[i].Data;
+            if (data.ID == id)
+            {
+                return data;
+            }
+        }
+        return null;
     }
 
     public TowerData[] GetTowersByGrade(int grade)
     {
-        return _towers.Select(tower => tower.Data).Where(data => data.Grade == grade).ToArray();
+        int count = 0;
+        for (int i = 0; i < _towers.Count; i++)
+        {
+            if (_towers[i].Data.Grade == grade)
+            {
+                count++;
+            }
+        }
+
+        TowerData[] result = new TowerData[count];
+        int index = 0;
+
+        for (int i = 0; i < _towers.Count; i++)
+        {
+            if (_towers[i].Data.Grade == grade)
+            {
+                result[index++] = _towers[i].Data;
+            }
+        }
+
+        return result;
     }
 }

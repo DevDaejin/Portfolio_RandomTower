@@ -13,11 +13,7 @@ public class TowerManager : MonoBehaviour
 
     private void Awake()
     {
-        Transform[] tree =
-            _installationGrid.GetComponentsInChildren<Transform>(true)
-            .Where(branch => branch != _installationGrid)
-            .ToArray();
-
+        Transform[] tree = GetChildrenTransformArray(_installationGrid);
         _gridController = new GridController(tree);
         _towerFactory = new TowerFactory(_towerDatabase);
     }
@@ -62,5 +58,26 @@ public class TowerManager : MonoBehaviour
         }
 
         GridSelectionHandler.Update();
+    }
+
+    public Transform[] GetChildrenTransformArray(Transform root)
+    {
+        Transform[] all = root.GetComponentsInChildren<Transform>(true);
+
+        int count = 0;
+        for (int i = 0; i < all.Length; i++)
+        {
+            if (all[i] != root) count++;
+        }
+
+        Transform[] result = new Transform[count];
+        int index = 0;
+        for (int i = 0; i < all.Length; i++)
+        {
+            if (all[i] != root)
+                result[index++] = all[i];
+        }
+
+        return result;
     }
 }
