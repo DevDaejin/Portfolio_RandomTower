@@ -22,7 +22,6 @@ public class InGame : MonoBehaviour
         _enemyManager = GetComponent<EnemyManager>();
         _towerSpawner = GetComponent<TowerManager>();
         _towerSpawner.Initialize(_enemyManager);
-
         GameManager.Instance.UIManager.Initialize(typeof(InGameUI));
         _ui = GameManager.Instance.UIManager.InGame;
 
@@ -42,8 +41,10 @@ public class InGame : MonoBehaviour
         _waveController.OnStageCleared += StageSuccess;
         _waveController.OnWaveEnded += TryStartWave;
         _waveController.OnWaveStarted += OnWaveStarted;
-
         _waveController.Initialize();
+
+        _ui.SetSpawnButton(SpawnTower);
+
         GetEnemyCount();
     }
 
@@ -79,6 +80,8 @@ public class InGame : MonoBehaviour
 
     private void OnDestroy()
     {
+        _ui.ReleaseSpawnButton(SpawnTower);
+
         if (_waveController == null) return;
 
         _waveController.OnTimeChanged -= _ui.SetTimer;

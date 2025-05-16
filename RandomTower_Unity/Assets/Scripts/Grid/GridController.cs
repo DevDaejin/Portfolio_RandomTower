@@ -6,8 +6,7 @@ using UnityEngine;
 public class GridController
 {
     private const int MaxTowerCount = 3;
-    private List<Grid> _grids = new();
-
+    private readonly List<Grid> _grids = new();
 
     public GridController(Transform[] grid)
     {
