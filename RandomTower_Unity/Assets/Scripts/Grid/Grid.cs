@@ -102,17 +102,11 @@ public class Grid : MonoBehaviour, IPointerDownHandler, ISelectable
 
     public void OnSelect()
     {
-        foreach (ITower tower in _towers)
-        {
-            tower.OnSelect();
-        }
+        _towers[0].Selectable.OnSelect();
     }
 
     public void OnDeselect()
     {
-        foreach(ITower tower in _towers)
-        {
-            tower.OnDeselect();
-        }
+        _towers[0].Selectable.OnDeselect();
     }
 }

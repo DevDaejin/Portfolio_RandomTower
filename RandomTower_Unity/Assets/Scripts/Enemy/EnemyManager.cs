@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     private readonly List<BaseEnemy> _cachingSortedList = new();
 
     private const float SpawnInterval = 0.5f;
+
+    public Action<int> OnReward;
 
     private void Awake()
     {
@@ -33,7 +36,8 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         for (int i = 0; i < info.Count; i++)
         {
             BaseEnemy enemy = _enemyFactory.CreateEnemy(info.Config.Data, _routeGroup);
-            enemy.OnDie += ReturnEnemy;
+            enemy.OnDie = ReturnEnemy;
+            enemy.OnReward = OnReward;
             _enemyUIManager?.Register(enemy);
             _enemies.Add(enemy);
             yield return new WaitForSecondsRealtime(SpawnInterval);
@@ -44,8 +48,8 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     {
         if (!_enemies.Contains(enemy)) return;
 
-        enemy.OnDie -= ReturnEnemy;
         enemy.OnDie = null;
+        enemy.OnReward = null;
 
         _enemyUIManager?.Unregister(enemy);
         _enemies.Remove(enemy);

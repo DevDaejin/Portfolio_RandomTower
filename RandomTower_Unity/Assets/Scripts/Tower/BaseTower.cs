@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseTower : MonoBehaviour, ITower
+public class BaseTower : MonoBehaviour, ITower, ISelectable
 {
+    public Transform Transform => transform;    
+
     public TowerData Data { get; private set; }
 
     public int Level { get; private set; }
@@ -11,19 +13,20 @@ public class BaseTower : MonoBehaviour, ITower
     public float Range => Data.Range + ((Level - 1) * 0.1f);
     public float FireRate => Data.FireRate + ((Level - 1) * 0.1f);
 
-    public Transform Transform => transform;
+    public ISelectable Selectable => this;
 
     private float _fireRateTime;
+    private Vector3 _gridPosition;
 
-    protected IEnemyProvider _enemyProvider;
-
-    private IProjectilePool _projectilePool;
     private TowerRangeViewer _rangeViewer;
+    protected IEnemyProvider _enemyProvider;
+    private IProjectilePool _projectilePool;
 
 
-    public void Initialize(TowerData data, IProjectilePool pool, IEnemyProvider enemyProvider, int level = 1)
+    public void Initialize(TowerData data, Vector3 gridPosition, IProjectilePool pool, IEnemyProvider enemyProvider, int level = 1)
     {
         Data = data;
+        _gridPosition = gridPosition;
         Level = level;
         _projectilePool ??= pool;
         _enemyProvider ??= enemyProvider;
@@ -61,7 +64,7 @@ public class BaseTower : MonoBehaviour, ITower
 
     public void OnSelect()
     {
-        _rangeViewer.Active(Range);
+        _rangeViewer.Active(Range, _gridPosition);
     }
 
     public void OnDeselect()

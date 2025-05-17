@@ -7,21 +7,32 @@ public static class GridSelectionHandler
 
     public static void Select(ISelectable newOne)
     {
-        if (_current == newOne)
+        if (_current == newOne) return;
+        
+        _current?.OnDeselect();
+        _current = newOne;
+        _current.OnSelect();
+    }
+
+    public static void Reselect()
+    {
+        _current?.OnSelect();
+    }
+
+    public static void TryDeselectOnEmptyClick(Vector3 screenPosition)
+    {
+        if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
+
+        Ray ray = Camera.main.ScreenPointToRay(screenPosition);
+        if (!Physics.Raycast(ray, out RaycastHit hit))
         {
             Deselect();
         }
         else
         {
-            _current?.OnDeselect();
-            _current = newOne;
-            _current.OnSelect();
+            if (!hit.collider.TryGetComponent<ISelectable>(out _))
+                Deselect();
         }
-    }
-
-    public static void Update()
-    {
-        _current?.OnSelect();
     }
 
     public static void Deselect()

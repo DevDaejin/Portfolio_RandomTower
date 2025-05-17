@@ -17,11 +17,11 @@ public class TowerRangeViewer : MonoBehaviour
         }
     }
 
-    public void Active(float radius)
+    public void Active(float radius, Vector3 centerPosition)
     {
         Show(true);
 
-        transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        transform.SetPositionAndRotation(centerPosition, Quaternion.identity);
 
         SetLine(radius);
         SetPlane(radius);

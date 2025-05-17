@@ -17,6 +17,7 @@ public class BaseEnemy : MonoBehaviour
 
     protected float _currentHP;
 
+    public Action<int> OnReward;
     public Action<BaseEnemy> OnDie;
     public event Action<BaseEnemy, float> OnTakeDamage;
 
@@ -33,11 +34,11 @@ public class BaseEnemy : MonoBehaviour
         if (!_isInitailized)
         {
             _isInitailized = true;
-            InitializeEnemyData(data);
-
             _agent = GetComponent<NavMeshAgent>();
             InitializeRoutes(routeGroup);
         }
+        
+        InitializeEnemyData(data);
 
         _targetIndex = 0;
         transform.position = _routes[_targetIndex].position;
@@ -97,6 +98,7 @@ public class BaseEnemy : MonoBehaviour
 
     protected virtual void Die()
     {
+        OnReward?.Invoke(Data.RewardGold);
         OnDie?.Invoke(this);
     }
 

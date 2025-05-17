@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -11,6 +12,10 @@ public class TowerManager : MonoBehaviour
     private GridController _gridController;
     private TowerFactory _towerFactory;
 
+    private int _installableCount;
+
+    public Action<int, int> OnTowerUpdated;
+
     private void Awake()
     {
         Transform[] tree = GetChildrenTransformArray(_installationGrid);
@@ -19,9 +24,10 @@ public class TowerManager : MonoBehaviour
     }
 
     //TODO : 타워 강화 로직 파라미터로 전달 받기
-    public void Initialize(IEnemyProvider enemyProvider)
+    public void Initialize(IEnemyProvider enemyProvider, int installableCount)
     {
         _enemyProvider = enemyProvider;
+        _installableCount = installableCount;
         ApplyTowerLevel();
     }
 
@@ -50,14 +56,15 @@ public class TowerManager : MonoBehaviour
             data = grid.GetTower().Data;
         }
 
-        ITower tower = _towerFactory.CreateTower(data, _enemyProvider);
+        ITower tower = _towerFactory.CreateTower(data, grid.transform.position, _enemyProvider);
 
         if (!grid.TryAddTower(tower))
         {
             _towerFactory.Return(tower);
         }
 
-        GridSelectionHandler.Update();
+        GridSelectionHandler.Reselect();
+        OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
     }
 
     public Transform[] GetChildrenTransformArray(Transform root)

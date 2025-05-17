@@ -8,8 +8,8 @@ public interface ITower
     float Damage { get; }
     float Range { get; }
     float FireRate { get; }
+    
+    ISelectable Selectable { get; }
 
-    public void OnSelect();
-    public void OnDeselect();
-    public void Initialize(TowerData data, IProjectilePool pool, IEnemyProvider enemyProvider, int level = 1);
+    void Initialize(TowerData data, Vector3 gridPosition, IProjectilePool pool, IEnemyProvider enemyProvider, int level = 1);
 }

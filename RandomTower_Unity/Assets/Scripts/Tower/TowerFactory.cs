@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -27,12 +28,12 @@ public class TowerFactory
         return candidates[Random.Range(0, candidates.Length)];
     }
 
-    public ITower CreateTower(TowerData data, IEnemyProvider enemyProvider, int level = 1)
+    public ITower CreateTower(TowerData data, Vector3 gridPosition, IEnemyProvider enemyProvider, int level = 1)
     {
         Pool<BaseTower> towerPool = GetTowerPool(data);
         BaseTower tower = towerPool.Get();
         IProjectilePool projectilePool = GetProjectilePool(data);
-        tower.Initialize(data, projectilePool, enemyProvider, level);
+        tower.Initialize(data, gridPosition, projectilePool, enemyProvider, level);
 
         return tower;
     }
@@ -66,6 +67,19 @@ public class TowerFactory
         _projectilePools.Add(data.ID, pool);
 
         return pool;
+    }
+
+    public int GetTowerCount()
+    {
+        int count = 0;
+        int[] keys = _towerPools.Keys.ToArray();
+
+        for (int index = 0; index < keys.Length; index++)
+        {
+            count += _towerPools[keys[index]].Actived.Count;
+        }
+
+        return count;
     }
 
     public void Return(ITower tower)

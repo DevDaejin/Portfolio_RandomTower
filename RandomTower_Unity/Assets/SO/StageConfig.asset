@@ -16,8 +16,8 @@ MonoBehaviour:
   _waveData:
     SpawnList:
     - Config: {fileID: 11400000, guid: 6b1eb705a677eb64b8e953ed5e952ca2, type: 2}
-      Count: 5
+      Count: 10
     - Config: {fileID: 11400000, guid: 6b1eb705a677eb64b8e953ed5e952ca2, type: 2}
-      Count: 5
+      Count: 10
     - Config: {fileID: 11400000, guid: 6b1eb705a677eb64b8e953ed5e952ca2, type: 2}
-      Count: 5
+      Count: 10
