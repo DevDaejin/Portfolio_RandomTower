@@ -17,11 +17,23 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private TMP_Text _goldText;
     [SerializeField] private TMP_Text _towerCountText;
 
+    [Header("Result")]
+    [SerializeField] private GameObject _resultPanel;
+    [SerializeField] private TMP_Text _resultTitleText;
+    [SerializeField] private Button _retryButton;
+    [SerializeField] private Button _lobbyButton;
+
     Dictionary<StringBuilderKey, StringBuilder> stringBuilderDict = new();
 
     private enum StringBuilderKey
     {
-        Time, Wave, Enemy, Gold, TowerCount
+        Time, Wave, Enemy, Gold, TowerCount,
+        Success
+    }
+
+    public void Initialize()
+    {
+        _resultPanel.SetActive(false);
     }
 
     private StringBuilder GetStringBuilder(StringBuilderKey key)
@@ -73,15 +85,42 @@ public class InGameUI : MonoBehaviour
         _towerCountText.text = stringBuilder.ToString();
     }
 
+    public void SetResult(bool isSuceess)
+    {
+        _resultPanel.SetActive(true);
+
+        StringBuilder stringBuilder = GetStringBuilder(StringBuilderKey.Success);
+        if (isSuceess)
+        {
+            stringBuilder.Append("<color=#F6CA3D>Success</color>");
+        }
+        else
+        {
+            stringBuilder.Append("<color=#FF0000>Failed</color>");
+        }
+        _resultTitleText.text = stringBuilder.ToString();
+    }
 
 
     public void SetSpawnButton(UnityAction callback)
     {
-        _spawnButton.onClick.AddListener(callback);
+        _spawnButton?.onClick.AddListener(callback);
     }
 
     public void ReleaseSpawnButton(UnityAction callback)
     {
-        _spawnButton.onClick.RemoveListener(callback);
+        _spawnButton?.onClick.RemoveListener(callback);
+    }
+
+    public void SetResultButtons(UnityAction onRetry, UnityAction onLobby)
+    {
+        _retryButton?.onClick.AddListener(onRetry);
+        _lobbyButton?.onClick.AddListener(onLobby);
+    }
+
+    public void ReleaseResultButtons(UnityAction onRetry, UnityAction onLobby)
+    {
+        _retryButton?.onClick.AddListener(onRetry);
+        _lobbyButton?.onClick.AddListener(onLobby);
     }
 }

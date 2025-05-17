@@ -16,7 +16,7 @@ MonoBehaviour:
     id: 1
     enemyName: test
     prefab: {fileID: 2747180930477656307, guid: da3607589d28c7c44b4d50d1673edae6, type: 3}
-    maxHP: 10
+    maxHP: 1
     defence: 0
     moveSpeed: 10
     rewardGold: 10

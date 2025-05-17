@@ -18,8 +18,7 @@ public class WaveController
 
     public event Action OnWaveStarted;
     public event Action OnWaveEnded;
-    public event Action OnStageFailed;
-    public event Action OnStageCleared;
+    public event Action<bool> OnStageResult;
 
     public WaveController(int maxWave, int maxEnemies, float waveDuration, Func<int> getAliveEnemyCount)
     {
@@ -39,12 +38,14 @@ public class WaveController
     }
 
     //TODO: 추후 삭제 테스트용
+#if UNITY_EDITOR
     public void TestCode()
     {
         _timer = new Timer(1, true);
         _timer.OnTick += time => OnTimeChanged?.Invoke(time);
         _timer.OnTimeUp += OnTimeUp;
     }
+#endif
 
     public void StartWave()
     {
@@ -65,31 +66,39 @@ public class WaveController
         _timer.Tick();
 
         int alive = _getAliveEnemyCount.Invoke();
-        OnEnemyCountChanged.Invoke(alive, _maxEnemies);
+        OnEnemyCountChanged?.Invoke(alive, _maxEnemies);
+
+        if (alive > _maxEnemies)
+        {
+            CurrentState = WaveState.Failed;
+            OnStageResult?.Invoke(false);
+            return;
+        }
+
+        if (CurrentWaveIndex + 1 == _maxWave && alive == 0)
+        {
+            CurrentState = WaveState.Cleared;
+            OnStageResult?.Invoke(true);
+            return;
+        }
     }
 
     private void OnTimeUp()
     {
         int alive = _getAliveEnemyCount.Invoke();
-        OnEnemyCountChanged.Invoke(alive, _maxEnemies);
+        OnEnemyCountChanged?.Invoke(alive, _maxEnemies);
 
-        if ((alive > 0 && _maxWave == CurrentWaveIndex) || alive > _maxEnemies)
+        if (_maxWave == CurrentWaveIndex && alive > 0)
         {
             CurrentState = WaveState.Failed;
-            OnStageFailed?.Invoke();
+            OnStageResult?.Invoke(false);
             return;
         }
 
         CurrentWaveIndex++;
-
-        if (CurrentWaveIndex >= _maxWave)
-        {
-            CurrentState = WaveState.Cleared;
-            OnStageCleared?.Invoke();
-            return;
-        }
-
         CurrentState = WaveState.Idle;
         OnWaveEnded?.Invoke();
     }
+
+
 }

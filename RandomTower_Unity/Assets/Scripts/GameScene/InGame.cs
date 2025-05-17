@@ -14,7 +14,7 @@ public class InGame : MonoBehaviour
     private int _currentStage = 0;
 
     private const int MaxTowers = 20;
-    private const int MaxEnemies = 80;
+    private const int MaxEnemies = 10;
     private const float WaveDuration = 40;
 
     private void Awake()
@@ -25,6 +25,7 @@ public class InGame : MonoBehaviour
 
         GameManager.Instance.UIManager.Initialize(typeof(InGameUI));
         _ui = GameManager.Instance.UIManager.InGame;
+        _ui.Initialize();
 
         _resourceManager = new ResourceManager();
 
@@ -43,13 +44,13 @@ public class InGame : MonoBehaviour
         _waveController.OnTimeChanged += _ui.SetTimer;
         _waveController.OnWaveChanged += _ui.SetWave;
         _waveController.OnEnemyCountChanged += _ui.SetEnemyCount;
-        _waveController.OnStageFailed += StageFailed;
-        _waveController.OnStageCleared += StageSuccess;
+        _waveController.OnStageResult += Result;
         _waveController.OnWaveEnded += TryStartWave;
         _waveController.OnWaveStarted += OnWaveStarted;
         _waveController.Initialize();
 
         _ui.SetSpawnButton(SpawnTower);
+        _ui.SetResultButtons(null, null);
 
         GetEnemyCount();
     }
@@ -81,7 +82,8 @@ public class InGame : MonoBehaviour
 
         _waveController.Update();
 
-        #region Test Code
+        //TODO: 추후 삭제 테스트용
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             SpawnTower();
@@ -97,7 +99,7 @@ public class InGame : MonoBehaviour
             _waveController.TestCode();
             _waveController.StartWave();
         }
-        #endregion
+#endif
     }
 
     private void OnDestroy()
@@ -109,8 +111,7 @@ public class InGame : MonoBehaviour
 
         _waveController.OnTimeChanged -= _ui.SetTimer;
         _waveController.OnWaveChanged -= _ui.SetWave;
-        _waveController.OnStageFailed -= StageFailed;
-        _waveController.OnStageCleared -= StageSuccess;
+        _waveController.OnStageResult -= Result;
         _waveController.OnWaveEnded -= TryStartWave;
         _waveController.OnWaveStarted -= OnWaveStarted;
     }
@@ -147,13 +148,26 @@ public class InGame : MonoBehaviour
         _towerManager.SpawnTower(1);
     }
 
+    private void Result(bool isSuccess)
+    {
+        if (isSuccess)
+        {
+            StageSuccess();
+        }
+        else
+        {
+            StageFailed();
+        }
+    }
+
+
     private void StageFailed()
     {
-        Debug.Log("Failed");
+        _ui.SetResult(false);
     }
 
     private void StageSuccess()
     {
-        Debug.Log("Success");
+        _ui.SetResult(true);
     }
 }
