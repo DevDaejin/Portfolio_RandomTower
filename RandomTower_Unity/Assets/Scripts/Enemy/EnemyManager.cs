@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour, IEnemyProvider
@@ -13,10 +14,11 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     private List<BaseEnemy> _enemies = new();
     private readonly List<BaseEnemy> _cachingList = new();
     private readonly List<BaseEnemy> _cachingSortedList = new();
-
-    private const float SpawnInterval = 0.5f;
+    private Dictionary<int, Coroutine> _spawnCoroutine = new();
 
     public Action<int> OnReward;
+
+    private const float SpawnInterval = 0.5f;
 
     private void Awake()
     {
@@ -28,10 +30,10 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         List<SpawnInfo> wave = config.WaveData.SpawnList;
         if (waveIndex >= wave.Count) return;
 
-        StartCoroutine(SpawnWaveRoutine(wave[waveIndex]));
+        _spawnCoroutine.Add(waveIndex, StartCoroutine(SpawnWaveRoutine(waveIndex, wave[waveIndex])));
     }
 
-    private IEnumerator SpawnWaveRoutine(SpawnInfo info)
+    private IEnumerator SpawnWaveRoutine(int id, SpawnInfo info)
     {
         for (int i = 0; i < info.Count; i++)
         {
@@ -42,6 +44,8 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
             _enemies.Add(enemy);
             yield return new WaitForSecondsRealtime(SpawnInterval);
         }
+
+        _spawnCoroutine.Remove(id);
     }
 
     public void ReturnEnemy(BaseEnemy enemy)
@@ -97,12 +101,20 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         FindAllInRange(position, range);
         _cachingSortedList.Clear();
 
-        foreach (BaseEnemy enemy in _cachingList
-            .OrderBy(element => (element.transform.position - position).sqrMagnitude)
-            .Take(count))
+        foreach (var enemy in _cachingList)
         {
             _cachingSortedList.Add(enemy);
         }
+
+        _cachingSortedList.Sort((a, b) =>
+        {
+            float distA = (a.transform.position - position).sqrMagnitude;
+            float distB = (b.transform.position - position).sqrMagnitude;
+            return distA.CompareTo(distB);
+        });
+
+        if (_cachingSortedList.Count > count)
+            _cachingSortedList.RemoveRange(count, _cachingSortedList.Count - count);
 
         return _cachingSortedList;
     }
@@ -110,5 +122,38 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     public int GetCurrentEnemyCount()
     {
         return _enemies.Count;
+    }
+
+    public bool IsSpawningState()
+    {
+        bool isSpawning = false;
+
+        foreach (KeyValuePair<int, Coroutine> kv in _spawnCoroutine)
+        {
+            if(kv.Value != null)
+            {
+                isSpawning = true;
+            }
+        }
+
+        return isSpawning;
+    }
+
+    public void ReturnAll()
+    {
+        foreach (KeyValuePair<int, Coroutine> kvp in _spawnCoroutine)
+        {
+            StopCoroutine(kvp.Value);
+        }
+        _spawnCoroutine.Clear();
+
+        for (int i = 0; i < _enemies.Count; i++)
+        {
+            ReturnEnemy(_enemies[0]);
+        }
+        _enemies.Clear();
+
+        _enemyFactory.ReturnAll();
+        _enemyUIManager.ReturnAll();
     }
 }

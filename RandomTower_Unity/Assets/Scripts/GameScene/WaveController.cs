@@ -10,6 +10,7 @@ public class WaveController
     private Timer _timer;
     private int _maxWave;
     private int _maxEnemies;
+    private Func<bool> _getCoroutinePlayState;
     private Func<int> _getAliveEnemyCount;
 
     public event Action<float> OnTimeChanged;
@@ -20,10 +21,11 @@ public class WaveController
     public event Action OnWaveEnded;
     public event Action<bool> OnStageResult;
 
-    public WaveController(int maxWave, int maxEnemies, float waveDuration, Func<int> getAliveEnemyCount)
+    public WaveController(int maxWave, int maxEnemies, float waveDuration, Func<bool> getCoroutinePlayState, Func<int> getAliveEnemyCount)
     {
         _maxWave = maxWave;
         _maxEnemies = maxEnemies;
+        _getCoroutinePlayState = getCoroutinePlayState;
         _getAliveEnemyCount = getAliveEnemyCount;
 
         _timer = new Timer(waveDuration);
@@ -33,17 +35,18 @@ public class WaveController
 
     public void Initialize()
     {
-        OnWaveChanged.Invoke(CurrentWaveIndex + 1, _maxWave);
+        CurrentWaveIndex = 0;
+        OnWaveChanged.Invoke(CurrentWaveIndex, _maxWave);
         OnTimeChanged.Invoke(_timer.TimeLeft);
+        CurrentState = WaveState.Idle;
+        _timer.Stop();
     }
 
     //TODO: 추후 삭제 테스트용
 #if UNITY_EDITOR
     public void TestCode()
     {
-        _timer = new Timer(1, true);
-        _timer.OnTick += time => OnTimeChanged?.Invoke(time);
-        _timer.OnTimeUp += OnTimeUp;
+        _timer.TimeLeft = 1;
     }
 #endif
 
@@ -75,7 +78,8 @@ public class WaveController
             return;
         }
 
-        if (CurrentWaveIndex + 1 == _maxWave && alive == 0)
+        bool isSpawningState = _getCoroutinePlayState.Invoke();
+        if (_maxWave == CurrentWaveIndex + 1 && alive == 0 && !isSpawningState)
         {
             CurrentState = WaveState.Cleared;
             OnStageResult?.Invoke(true);
@@ -88,17 +92,20 @@ public class WaveController
         int alive = _getAliveEnemyCount.Invoke();
         OnEnemyCountChanged?.Invoke(alive, _maxEnemies);
 
-        if (_maxWave == CurrentWaveIndex && alive > 0)
+        if (_maxWave == CurrentWaveIndex + 1 && alive > 0)
         {
             CurrentState = WaveState.Failed;
             OnStageResult?.Invoke(false);
             return;
         }
 
-        CurrentWaveIndex++;
+        if (_maxWave > CurrentWaveIndex)
+        {
+            CurrentWaveIndex++;
+        }
+
         CurrentState = WaveState.Idle;
         OnWaveEnded?.Invoke();
     }
-
-
 }
+

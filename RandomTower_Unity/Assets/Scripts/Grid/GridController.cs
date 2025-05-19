@@ -131,4 +131,12 @@ public class GridController
         int rand = Random.Range(0, nullGrids.Length);
         return nullGrids[rand];
     }
+
+    public void RemoveAllTower()
+    {
+        foreach (Grid grid in _grids)
+        {
+            grid.RemoveTowerAll();
+        }
+    }
 }

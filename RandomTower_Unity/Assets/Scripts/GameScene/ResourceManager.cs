@@ -5,6 +5,11 @@ public class ResourceManager
 {
     public int Gold { get; private set; }
 
+    public void Initialize()
+    {
+        Gold = 0;
+    }
+
     public void EarnGold(int amount)
     {
         Gold += amount;

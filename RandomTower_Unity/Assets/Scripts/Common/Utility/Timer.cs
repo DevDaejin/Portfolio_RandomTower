@@ -4,7 +4,11 @@ using UnityEngine;
 public class Timer
 {
     private float _duration;
+#if UNITY_EDITOR
+    public float TimeLeft { get; set; }
+#else
     public float TimeLeft { get; private set; }
+#endif
     public bool IsRunning { get; private set; }
 
     public event Action<float> OnTick;
@@ -16,6 +20,17 @@ public class Timer
         TimeLeft = duration;
 
         if(isStart)
+        {
+            Start();
+        }
+    }
+
+    public Timer(float duration, float leftTime, bool isStart = true)
+    {
+        _duration = duration;
+        TimeLeft = leftTime;
+
+        if (isStart)
         {
             Start();
         }

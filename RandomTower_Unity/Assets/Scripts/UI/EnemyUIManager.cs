@@ -84,4 +84,10 @@ public class EnemyUIManager : MonoBehaviour
         Vector3 world = enemy.transform.position + Vector3.up * HeightOffset;
         return _cam.WorldToScreenPoint(world);
     }
+
+    public void ReturnAll()
+    {
+        _enemyUIPool.ReturnAll();
+        _damageUIPool.ReturnAll();
+    }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InGame : MonoBehaviour
 {
@@ -10,34 +11,33 @@ public class InGame : MonoBehaviour
     private WaveController _waveController;
     private ResourceManager _resourceManager;
     private InGameUI _ui;
-   
+
     private int _currentStage = 0;
 
-    private const int MaxTowers = 20;
-    private const int MaxEnemies = 10;
+    private int maxWave = 0;
+    private const int MaxTower = 20;
+    private const int MaxEnemy = 20;
     private const float WaveDuration = 40;
 
     private void Awake()
     {
         _enemyManager = GetComponent<EnemyManager>();
         _towerManager = GetComponent<TowerManager>();
-        _towerManager.Initialize(_enemyManager, MaxTowers);
+        _towerManager.Initialize(_enemyManager, MaxTower);
 
         GameManager.Instance.UIManager.Initialize(typeof(InGameUI));
         _ui = GameManager.Instance.UIManager.InGame;
-        _ui.Initialize();
 
         _resourceManager = new ResourceManager();
 
-        _waveController = new WaveController(
-            _stageConfigs[_currentStage].WaveData.SpawnList.Count,
-            MaxEnemies,
-            WaveDuration,
-            GetEnemyCount);
+        maxWave = _stageConfigs[_currentStage].WaveData.SpawnList.Count;
+        _waveController = new WaveController(maxWave, MaxEnemy, WaveDuration, GetSpawningState, GetEnemyCount);
     }
 
     private void Start()
     {
+        _ui.Initialize(maxWave, MaxEnemy, MaxTower, WaveDuration, 0);
+
         _towerManager.OnTowerUpdated += _ui.SetTowerCount;
         _enemyManager.OnReward += OnReward;
 
@@ -50,7 +50,7 @@ public class InGame : MonoBehaviour
         _waveController.Initialize();
 
         _ui.SetSpawnButton(SpawnTower);
-        _ui.SetResultButtons(null, null);
+        _ui.SetResultButtons(Retry, GoToLobby);
 
         GetEnemyCount();
     }
@@ -62,7 +62,7 @@ public class InGame : MonoBehaviour
             GridSelectionHandler.TryDeselectOnEmptyClick(Input.mousePosition);
         }
 
-        if(Input.touchCount > 0)
+        if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
 
@@ -94,7 +94,7 @@ public class InGame : MonoBehaviour
             TryStartWave();
         }
 
-        if(Input.GetKeyDown(KeyCode.Alpha3))
+        if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             _waveController.TestCode();
             _waveController.StartWave();
@@ -121,8 +121,13 @@ public class InGame : MonoBehaviour
     private int GetEnemyCount()
     {
         int count = _enemyManager.GetCurrentEnemyCount();
-        _ui.SetEnemyCount(count, MaxEnemies);
+        _ui.SetEnemyCount(count, MaxEnemy);
         return count;
+    }
+
+    private bool GetSpawningState()
+    {
+        return _enemyManager.IsSpawningState();
     }
 
     private void OnWaveStarted()
@@ -159,8 +164,6 @@ public class InGame : MonoBehaviour
             StageFailed();
         }
     }
-
-
     private void StageFailed()
     {
         _ui.SetResult(false);
@@ -169,5 +172,19 @@ public class InGame : MonoBehaviour
     private void StageSuccess()
     {
         _ui.SetResult(true);
+    }
+
+    private void GoToLobby()
+    {
+        GameManager.Instance.LoadScene("Main");
+    }
+
+    private void Retry()
+    {
+        _enemyManager.ReturnAll();
+        _towerManager.ReturnAll();
+        _resourceManager.Initialize();
+        _waveController.Initialize();
+        _ui.Initialize(maxWave, MaxEnemy, MaxTower, WaveDuration, 0);
     }
 }

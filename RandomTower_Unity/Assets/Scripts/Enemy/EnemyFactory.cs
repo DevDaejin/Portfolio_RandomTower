@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyFactory
@@ -40,6 +41,16 @@ public class EnemyFactory
         if(_pools.TryGetValue(enemy.Data.ID, out Pool<BaseEnemy> pool))
         {
             pool.Return(enemy);
+        }
+    }
+
+    public void ReturnAll()
+    {
+        int[] keys = _pools.Keys.ToArray();
+
+        for (int i = 0; i < keys.Length; i++)
+        {
+            _pools[keys[i]].ReturnAll();
         }
     }
 }

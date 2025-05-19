@@ -27,13 +27,17 @@ public class InGameUI : MonoBehaviour
 
     private enum StringBuilderKey
     {
-        Time, Wave, Enemy, Gold, TowerCount,
-        Success
+        Time, Wave, Enemy, Gold, TowerCount, Success
     }
 
-    public void Initialize()
+    public void Initialize(int maxWave, int maxEnemy, int maxTower, float time, int gold)
     {
         _resultPanel.SetActive(false);
+        SetWave(0, maxWave);
+        SetEnemyCount(0, maxEnemy);
+        SetTimer(time);
+        SetGoldCount(gold);
+        SetTowerCount(0, maxTower);
     }
 
     private StringBuilder GetStringBuilder(StringBuilderKey key)
@@ -120,7 +124,7 @@ public class InGameUI : MonoBehaviour
 
     public void ReleaseResultButtons(UnityAction onRetry, UnityAction onLobby)
     {
-        _retryButton?.onClick.AddListener(onRetry);
-        _lobbyButton?.onClick.AddListener(onLobby);
+        _retryButton?.onClick.RemoveListener(onRetry);
+        _lobbyButton?.onClick.RemoveListener(onLobby);
     }
 }

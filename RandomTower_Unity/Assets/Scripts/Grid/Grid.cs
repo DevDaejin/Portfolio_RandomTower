@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,11 @@ public class Grid : MonoBehaviour, IPointerDownHandler, ISelectable
         return (_towers.Count > 0) ? _towers[0] : null;
     }
 
+    public void RemoveTowerAll()
+    {
+        _towers.Clear();
+    }
+
     private void UpdateTowerPosition()
     {
         if (_towers.Count == 1)
@@ -84,20 +90,23 @@ public class Grid : MonoBehaviour, IPointerDownHandler, ISelectable
         }
     }
 
+
+
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (_towers.Count > 0)
-        {
-            GridSelectionHandler.Select(this);
+        if (_towers.Count == 0) return;
 
-            ITower tower = _towers[0];
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Tower : {tower.Data.TowerName}");
-            sb.AppendLine($"Damage : {tower.Damage}");
-            sb.AppendLine($"Range : {tower.Range}");
-            sb.AppendLine($"FireRate : {tower.FireRate}");
-            Debug.Log(sb.ToString());
-        }
+        GridSelectionHandler.Select(this);
+
+#if UNITY_EDITOR
+        ITower tower = _towers[0];
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine($"Tower : {tower.Data.TowerName}");
+        sb.AppendLine($"Damage : {tower.Damage}");
+        sb.AppendLine($"Range : {tower.Range}");
+        sb.AppendLine($"FireRate : {tower.FireRate}");
+        Debug.Log(sb.ToString());
+#endif
     }
 
     public void OnSelect()

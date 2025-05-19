@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using UnityEngine;
 
 public class TowerManager : MonoBehaviour
@@ -86,5 +85,12 @@ public class TowerManager : MonoBehaviour
         }
 
         return result;
+    }
+
+    public void ReturnAll()
+    {
+        _gridController.RemoveAllTower();
+        _towerFactory.ReturnAllTower();
+        _towerFactory.ReturnAllProjectile();
     }
 }
