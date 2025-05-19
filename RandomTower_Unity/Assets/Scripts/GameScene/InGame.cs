@@ -45,10 +45,12 @@ public class InGame : MonoBehaviour
         _waveController.OnWaveChanged += _ui.SetWave;
         _waveController.OnEnemyCountChanged += _ui.SetEnemyCount;
         _waveController.OnStageResult += Result;
-        _waveController.OnWaveEnded += TryStartWave;
+        _waveController.OnWaveEnded += TryStartOrNextWave;
         _waveController.OnWaveStarted += OnWaveStarted;
+
         _waveController.Initialize();
 
+        _ui.SetWaveButton(TryStartOrNextWave);
         _ui.SetSpawnButton(SpawnTower);
         _ui.SetResultButtons(Retry, GoToLobby);
 
@@ -81,25 +83,6 @@ public class InGame : MonoBehaviour
         }
 
         _waveController.Update();
-
-        //TODO: 추후 삭제 테스트용
-#if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            SpawnTower();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            TryStartWave();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            _waveController.TestCode();
-            _waveController.StartWave();
-        }
-#endif
     }
 
     private void OnDestroy()
@@ -112,7 +95,7 @@ public class InGame : MonoBehaviour
         _waveController.OnTimeChanged -= _ui.SetTimer;
         _waveController.OnWaveChanged -= _ui.SetWave;
         _waveController.OnStageResult -= Result;
-        _waveController.OnWaveEnded -= TryStartWave;
+        _waveController.OnWaveEnded -= TryStartOrNextWave;
         _waveController.OnWaveStarted -= OnWaveStarted;
     }
 
@@ -135,9 +118,9 @@ public class InGame : MonoBehaviour
         _enemyManager.SpawnWave(_stageConfigs[_currentStage], _waveController.CurrentWaveIndex);
     }
 
-    private void TryStartWave()
+    private void TryStartOrNextWave()
     {
-        _waveController?.StartWave();
+        _waveController?.TryStartOrNextWave();
     }
 
     private void OnReward(int gold)
@@ -176,7 +159,7 @@ public class InGame : MonoBehaviour
 
     private void GoToLobby()
     {
-        GameManager.Instance.LoadScene("Main");
+        GameManager.Instance.LoadScene("Lobby");
     }
 
     private void Retry()

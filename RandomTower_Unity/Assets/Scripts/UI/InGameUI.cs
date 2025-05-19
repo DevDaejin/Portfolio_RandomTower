@@ -11,11 +11,13 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private TMP_Text _timerText;
     [SerializeField] private TMP_Text _waveText;
     [SerializeField] private TMP_Text _enemyCountText;
-
-    [Header("Bottom UI")]
-    [SerializeField] private Button _spawnButton;
     [SerializeField] private TMP_Text _goldText;
     [SerializeField] private TMP_Text _towerCountText;
+
+    [Header("Bottom UI")]
+    [SerializeField] private Button _waveButton;
+    [SerializeField] private Button _spawnButton;
+    [SerializeField] private Button _upgradeButton;
 
     [Header("Result")]
     [SerializeField] private GameObject _resultPanel;
@@ -23,7 +25,7 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private Button _retryButton;
     [SerializeField] private Button _lobbyButton;
 
-    Dictionary<StringBuilderKey, StringBuilder> stringBuilderDict = new();
+    private Dictionary<StringBuilderKey, StringBuilder> stringBuilderDict = new();
 
     private enum StringBuilderKey
     {
@@ -42,7 +44,7 @@ public class InGameUI : MonoBehaviour
 
     private StringBuilder GetStringBuilder(StringBuilderKey key)
     {
-        if(!stringBuilderDict.ContainsKey(key))
+        if (!stringBuilderDict.ContainsKey(key))
         {
             stringBuilderDict.Add(key, new StringBuilder());
         }
@@ -56,12 +58,14 @@ public class InGameUI : MonoBehaviour
     public void SetWave(int current, int max)
     {
         StringBuilder stringBuilder = GetStringBuilder(StringBuilderKey.Wave);
-        stringBuilder.Append("Wave\n").Append(current).Append(" / ").Append(max);
+        stringBuilder.Append(current).Append(" / ").Append(max);
         _waveText.text = stringBuilder.ToString();
     }
 
     public void SetTimer(float time)
     {
+
+
         int second = Mathf.CeilToInt(time);
         StringBuilder stringBuilder = GetStringBuilder(StringBuilderKey.Time);
         stringBuilder.Append("Time\n").Append($"{second:00}");
@@ -71,11 +75,11 @@ public class InGameUI : MonoBehaviour
     public void SetEnemyCount(int current, int max)
     {
         StringBuilder stringBuilder = GetStringBuilder(StringBuilderKey.Enemy);
-        stringBuilder.Append("Enemy\n").Append(current).Append(" / ").Append(max);
+        stringBuilder.Append(current).Append(" / ").Append(max);
         _enemyCountText.text = stringBuilder.ToString();
     }
 
-    public void SetGoldCount (int current)
+    public void SetGoldCount(int current)
     {
         StringBuilder stringBuilder = GetStringBuilder(StringBuilderKey.Gold);
         stringBuilder.Append(current.ToString("N0"));
@@ -105,15 +109,24 @@ public class InGameUI : MonoBehaviour
         _resultTitleText.text = stringBuilder.ToString();
     }
 
+    public void SetWaveButton(UnityAction callback)
+    {
+        SetButton(_waveButton, callback);
+    }
+
+    public void ReleaseWaveButton(UnityAction callback)
+    {
+        ReleaseButton(_waveButton, callback);
+    }
 
     public void SetSpawnButton(UnityAction callback)
     {
-        _spawnButton?.onClick.AddListener(callback);
+        SetButton(_spawnButton, callback);
     }
 
     public void ReleaseSpawnButton(UnityAction callback)
     {
-        _spawnButton?.onClick.RemoveListener(callback);
+        ReleaseButton(_spawnButton, callback);
     }
 
     public void SetResultButtons(UnityAction onRetry, UnityAction onLobby)
@@ -126,5 +139,15 @@ public class InGameUI : MonoBehaviour
     {
         _retryButton?.onClick.RemoveListener(onRetry);
         _lobbyButton?.onClick.RemoveListener(onLobby);
+    }
+
+    private void SetButton(Button button, UnityAction callback)
+    {
+        button.onClick.AddListener(callback);
+    }
+
+    private void ReleaseButton(Button button, UnityAction callback)
+    {
+        button.onClick.RemoveListener(callback);
     }
 }

@@ -50,14 +50,25 @@ public class WaveController
     }
 #endif
 
-    public void StartWave()
+    public void TryStartOrNextWave()
+    {
+        if(CurrentWaveIndex == 0)
+        {
+            StartWave();
+        }
+        else
+        {
+            NextWave();
+        }
+    }
+
+    private void StartWave()
     {
         if (CurrentState != WaveState.Idle) return;
 
         CurrentState = WaveState.InProgress;
 
         _timer.Start();
-
         OnWaveStarted?.Invoke();
         OnWaveChanged?.Invoke(CurrentWaveIndex + 1, _maxWave);
     }
@@ -99,6 +110,11 @@ public class WaveController
             return;
         }
 
+        NextWave();
+    }
+
+    private void NextWave()
+    {
         if (_maxWave > CurrentWaveIndex)
         {
             CurrentWaveIndex++;
