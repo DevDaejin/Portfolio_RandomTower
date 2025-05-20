@@ -3791,10 +3791,42 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4954024354293315693, guid: 9ceca4a83533bab4388b4c6ce390c6b5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2247355436920420158}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6253115837753912392, guid: 9ceca4a83533bab4388b4c6ce390c6b5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -4698481508907868139}
   m_SourcePrefab: {fileID: 100100000, guid: 9ceca4a83533bab4388b4c6ce390c6b5, type: 3}
 --- !u!224 &7394219920477969287 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4954024354293315693, guid: 9ceca4a83533bab4388b4c6ce390c6b5, type: 3}
   m_PrefabInstance: {fileID: 2476330191744246762}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8402088017552822178 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6253115837753912392, guid: 9ceca4a83533bab4388b4c6ce390c6b5, type: 3}
+  m_PrefabInstance: {fileID: 2476330191744246762}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-4698481508907868139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8402088017552822178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 414c6f21fe5916e46906d197b4deb260, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _timerText: {fileID: 5643372047611846476}
+  _waveText: {fileID: 4991977763209741507}
+  _enemyCountText: {fileID: 4727128097222332331}
+  _goldText: {fileID: 8026222138145494468}
+  _towerCountText: {fileID: 7802911509786216872}
+  _waveButton: {fileID: 4644681087867561810}
+  _spawnButton: {fileID: 3132524787148734180}
+  _upgradeButton: {fileID: 5156334277864948569}
+  _resultPanel: {fileID: 3454628288698919330}
+  _resultTitleText: {fileID: 7954785196608972077}
+  _retryButton: {fileID: 7570968210835950767}
+  _lobbyButton: {fileID: 762790816358086834}
