@@ -45,12 +45,12 @@ public class InGame : MonoBehaviour
         _waveController.OnWaveChanged += _ui.SetWave;
         _waveController.OnEnemyCountChanged += _ui.SetEnemyCount;
         _waveController.OnStageResult += Result;
-        _waveController.OnWaveEnded += TryStartOrNextWave;
+        _waveController.OnWaveEnded += OnWave;
         _waveController.OnWaveStarted += OnWaveStarted;
 
         _waveController.Initialize();
 
-        _ui.SetWaveButton(TryStartOrNextWave);
+        _ui.SetWaveButton(OnWave);
         _ui.SetSpawnButton(SpawnTower);
         _ui.SetResultButtons(Retry, GoToLobby);
 
@@ -74,6 +74,7 @@ public class InGame : MonoBehaviour
             }
         }
 
+        _ui.ActiveWaveButton(GetEnemyCount() == 0 && !GetSpawningState());
 
         if (_waveController == null ||
             _waveController.CurrentState == WaveController.WaveState.Failed ||
@@ -95,7 +96,7 @@ public class InGame : MonoBehaviour
         _waveController.OnTimeChanged -= _ui.SetTimer;
         _waveController.OnWaveChanged -= _ui.SetWave;
         _waveController.OnStageResult -= Result;
-        _waveController.OnWaveEnded -= TryStartOrNextWave;
+        _waveController.OnWaveEnded -= OnWave;
         _waveController.OnWaveStarted -= OnWaveStarted;
     }
 
@@ -118,9 +119,23 @@ public class InGame : MonoBehaviour
         _enemyManager.SpawnWave(_stageConfigs[_currentStage], _waveController.CurrentWaveIndex);
     }
 
-    private void TryStartOrNextWave()
+    private void OnWave()
     {
-        _waveController?.TryStartOrNextWave();
+        WaveController.WaveState state = _waveController.CurrentState;
+        int alive = _enemyManager.GetCurrentEnemyCount();
+        bool isSpawning = _enemyManager.IsSpawningState();
+        bool isFinal = _waveController.CurrentWaveIndex == maxWave;
+
+        if (isFinal) return;
+
+        if (state == WaveController.WaveState.Idle)
+        {
+            _waveController.StartWave();
+        }
+        else if(state == WaveController.WaveState.InProgress && !isSpawning && alive == 0)
+        {
+            _waveController.ForceTimeUp();
+        }
     }
 
     private void OnReward(int gold)

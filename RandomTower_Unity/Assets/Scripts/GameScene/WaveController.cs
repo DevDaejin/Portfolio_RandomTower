@@ -36,10 +36,11 @@ public class WaveController
     public void Initialize()
     {
         CurrentWaveIndex = 0;
-        OnWaveChanged.Invoke(CurrentWaveIndex, _maxWave);
-        OnTimeChanged.Invoke(_timer.TimeLeft);
         CurrentState = WaveState.Idle;
         _timer.Stop();
+
+        OnWaveChanged.Invoke(CurrentWaveIndex, _maxWave);
+        OnTimeChanged.Invoke(_timer.TimeLeft);
     }
 
     //TODO: 추후 삭제 테스트용
@@ -50,27 +51,37 @@ public class WaveController
     }
 #endif
 
-    public void TryStartOrNextWave()
-    {
-        if(CurrentWaveIndex == 0)
-        {
-            StartWave();
-        }
-        else
-        {
-            NextWave();
-        }
-    }
-
-    private void StartWave()
+    public void StartWave()
     {
         if (CurrentState != WaveState.Idle) return;
 
         CurrentState = WaveState.InProgress;
-
         _timer.Start();
+
         OnWaveStarted?.Invoke();
         OnWaveChanged?.Invoke(CurrentWaveIndex + 1, _maxWave);
+    }
+
+    public void ForceTimeUp()
+    {
+        if (CurrentState != WaveState.InProgress) return;
+
+        _timer.Stop();
+        OnTimeUp();
+    }
+
+    public void EndWave()
+    {
+        CurrentWaveIndex++;
+
+        if (CurrentWaveIndex >= _maxWave)
+        {
+            ClearStage();
+            return;
+        }
+
+        CurrentState = WaveState.Idle;
+        OnWaveEnded?.Invoke();
     }
 
     public void Update()
@@ -84,17 +95,13 @@ public class WaveController
 
         if (alive > _maxEnemies)
         {
-            CurrentState = WaveState.Failed;
-            OnStageResult?.Invoke(false);
+            FailStage();
             return;
         }
 
-        bool isSpawningState = _getCoroutinePlayState.Invoke();
-        if (_maxWave == CurrentWaveIndex + 1 && alive == 0 && !isSpawningState)
+        if (IsFinalWave() && alive == 0 && !_getCoroutinePlayState.Invoke())
         {
-            CurrentState = WaveState.Cleared;
-            OnStageResult?.Invoke(true);
-            return;
+            ClearStage();
         }
     }
 
@@ -103,25 +110,32 @@ public class WaveController
         int alive = _getAliveEnemyCount.Invoke();
         OnEnemyCountChanged?.Invoke(alive, _maxEnemies);
 
-        if (_maxWave == CurrentWaveIndex + 1 && alive > 0)
+        if (IsFinalWave() && alive > 0)
         {
-            CurrentState = WaveState.Failed;
-            OnStageResult?.Invoke(false);
-            return;
+            FailStage();
         }
-
-        NextWave();
+        else
+        {
+            EndWave();
+        }
     }
 
-    private void NextWave()
+    private void ClearStage()
     {
-        if (_maxWave > CurrentWaveIndex)
-        {
-            CurrentWaveIndex++;
-        }
+        _timer.Stop();
+        CurrentState = WaveState.Cleared;
+        OnStageResult?.Invoke(true);
+    }
 
-        CurrentState = WaveState.Idle;
-        OnWaveEnded?.Invoke();
+    private void FailStage()
+    {
+        CurrentState = WaveState.Failed;
+        OnStageResult?.Invoke(false);
+    }
+
+    private bool IsFinalWave()
+    {
+        return _maxWave == CurrentWaveIndex + 1;
     }
 }
 

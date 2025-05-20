@@ -64,8 +64,6 @@ public class InGameUI : MonoBehaviour
 
     public void SetTimer(float time)
     {
-
-
         int second = Mathf.CeilToInt(time);
         StringBuilder stringBuilder = GetStringBuilder(StringBuilderKey.Time);
         stringBuilder.Append("Time\n").Append($"{second:00}");
@@ -107,6 +105,11 @@ public class InGameUI : MonoBehaviour
             stringBuilder.Append("<color=#FF0000>Failed</color>");
         }
         _resultTitleText.text = stringBuilder.ToString();
+    }
+
+    public void ActiveWaveButton(bool isAct)
+    {
+        _waveButton.interactable = isAct;
     }
 
     public void SetWaveButton(UnityAction callback)
