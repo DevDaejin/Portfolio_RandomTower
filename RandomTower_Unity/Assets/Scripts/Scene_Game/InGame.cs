@@ -25,7 +25,7 @@ public class InGame : MonoBehaviour
         _towerManager = GetComponent<TowerManager>();
         _towerManager.Initialize(_enemyManager, MaxTower);
 
-        GameManager.Instance.UIManager.Initialize(typeof(InGameUI));
+        GameManager.Instance.UIManager.Initialize(UIManager.UIType.InGame);
         _ui = GameManager.Instance.UIManager.InGame;
 
         _resourceManager = new ResourceManager();

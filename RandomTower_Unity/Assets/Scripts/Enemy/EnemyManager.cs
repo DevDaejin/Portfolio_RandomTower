@@ -141,9 +141,9 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
 
     public void ReturnAll()
     {
-        foreach (KeyValuePair<int, Coroutine> kvp in _spawnCoroutine)
+        foreach (KeyValuePair<int, Coroutine> pair in _spawnCoroutine)
         {
-            StopCoroutine(kvp.Value);
+            StopCoroutine(pair.Value);
         }
         _spawnCoroutine.Clear();
 
