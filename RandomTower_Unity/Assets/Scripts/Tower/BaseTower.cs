@@ -15,7 +15,7 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
 
     public ISelectable Selectable => this;
 
-    private float _fireRateTime;
+    private float _fireElapsed;
     private Vector3 _gridPosition;
 
     private TowerRangeViewer _rangeViewer;
@@ -41,23 +41,24 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
 
     protected virtual void Attack(List<BaseEnemy> targets)
     {
+        if (targets.Count == 0) return;
+
         foreach (BaseEnemy target in targets)
         {
             Projectile projectile = _projectilePool.Get(target, transform.position, Damage, Data.ProjectileSpeed);
+            _fireElapsed = 0f;
         }
     }
 
     protected virtual void Update()
     {
+        _fireElapsed += Time.deltaTime;
+
         var enemies = FindClosestEnemies();
+        if (enemies.Count == 0) return;
 
-        if (enemies.Count == 0)
-            return;
-
-        _fireRateTime += Time.deltaTime;
-        if (_fireRateTime >= 1f / FireRate)
+        if (_fireElapsed >= 1f / FireRate)
         {
-            _fireRateTime = 0f;
             Attack(enemies);
         }
     }
