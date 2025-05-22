@@ -1,38 +1,44 @@
 using Newtonsoft.Json;
 using System;
+using System.IO;
 using UnityEngine;
 
-public abstract class Syncable<T> : ISyncable where T : Syncable<T>, new()
+public abstract class Syncable<T> : ISyncable
 {
-    private bool _isDirty = false;
+    protected readonly T Target;
+    private Action<ISyncable> _onDirtyCallback;
 
-    public string ToJson()
+    public bool IsDirty => _isDirty;
+    private bool _isDirty;
+
+    public int ID => _id;
+    private readonly int _id;
+
+    protected Syncable(T target, int id)
     {
-        return JsonConvert.SerializeObject(this);
-    }
-    public static T FromJson(string json)
-    {
-        return JsonConvert.DeserializeObject<T>(json);
+        Target = target;
+        _id = id;
     }
     public void SetDirty()
     {
         _isDirty = true;
     }
-    public bool IsDirty()
+
+    public void SetOnDirtyCallback(Action<ISyncable> callback)
     {
-        return _isDirty;
+        _onDirtyCallback = callback;
     }
-    public void ClearDirty()
+
+    protected void ForceDirty()
     {
-        _isDirty = false;
+        _isDirty = true;
+        _onDirtyCallback?.Invoke(this);
     }
-    public void TrySync(Action<string> sendAction)
+
+    public virtual void Initialize()
     {
-        if(_isDirty)
-        {
-            string json = ToJson();
-            sendAction?.Invoke(json);
-            ClearDirty();
-        }
+        NetworkManager.Instance.SyncController.Register(this);
     }
+    public abstract void Deserialize(BinaryReader reader);
+    public abstract void Serialize(BinaryWriter writer);
 }

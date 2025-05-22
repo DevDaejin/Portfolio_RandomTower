@@ -10,3 +10,4 @@ public class Lobby : MonoBehaviour
         _ui = GameManager.Instance.UIManager.Lobby;
     }
 }
+ 

@@ -1,10 +1,12 @@
 using System;
+using System.IO;
 
 public interface ISyncable
 {
-    void TrySync(Action<string> sendAction);
+    void Initialize();
+    void Serialize(BinaryWriter writer);
+    void Deserialize(BinaryReader reader);
     void SetDirty();
-    bool IsDirty();
-    void ClearDirty();
-    string ToJson();
+    bool IsDirty { get; }
+    int ID { get; }
 }
