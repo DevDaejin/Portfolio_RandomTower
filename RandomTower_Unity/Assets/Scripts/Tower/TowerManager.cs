@@ -8,7 +8,7 @@ public class TowerManager : MonoBehaviour
     [SerializeField] private TowerChanceTable _towerChanceTable;
 
     private IEnemyProvider _enemyProvider;
-    private GridController _gridController;
+    private TowerGridController _gridController;
     private TowerFactory _towerFactory;
 
     private int _installableCount;
@@ -18,7 +18,7 @@ public class TowerManager : MonoBehaviour
     private void Awake()
     {
         Transform[] tree = GetChildrenTransformArray(_installationGrid);
-        _gridController = new GridController(tree);
+        _gridController = new TowerGridController(tree);
         _towerFactory = new TowerFactory(_towerDatabase);
     }
 
@@ -40,7 +40,7 @@ public class TowerManager : MonoBehaviour
         int towerGrade = _towerChanceTable.GetRandomGrade(towerSpawnChancePassiveLevel);
         TowerData data = _towerFactory.GetTowerRandomData(towerGrade);
 
-        Grid grid = _gridController.GetTowerInstallableGrid(data);
+        TowerGrid grid = _gridController.GetTowerInstallableGrid(data);
 
         if (grid == null)
         {
@@ -62,7 +62,7 @@ public class TowerManager : MonoBehaviour
             _towerFactory.Return(tower);
         }
 
-        GridSelectionHandler.Reselect();
+        TowerGridSelectionHandler.Reselect();
         OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
     }
 

@@ -61,7 +61,7 @@ public class InGame : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            GridSelectionHandler.TryDeselectOnEmptyClick(Input.mousePosition);
+            TowerGridSelectionHandler.TryDeselectOnEmptyClick(Input.mousePosition);
         }
 
         if (Input.touchCount > 0)
@@ -70,7 +70,7 @@ public class InGame : MonoBehaviour
 
             if (touch.phase == TouchPhase.Began)
             {
-                GridSelectionHandler.TryDeselectOnEmptyClick(touch.position);
+                TowerGridSelectionHandler.TryDeselectOnEmptyClick(touch.position);
             }
         }
 
