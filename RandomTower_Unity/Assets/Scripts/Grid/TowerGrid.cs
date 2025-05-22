@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Grid : MonoBehaviour, IPointerDownHandler, ISelectable
+public class TowerGrid : MonoBehaviour, IPointerDownHandler, ISelectable
 {
     private Transform _transform;
     private List<ITower> _towers;
@@ -96,7 +96,7 @@ public class Grid : MonoBehaviour, IPointerDownHandler, ISelectable
     {
         if (_towers.Count == 0) return;
 
-        GridSelectionHandler.Select(this);
+        TowerGridSelectionHandler.Select(this);
 
 #if UNITY_EDITOR
         ITower tower = _towers[0];

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public static class GridSelectionHandler
+public static class TowerGridSelectionHandler
 {
     private static ISelectable _current;
 
