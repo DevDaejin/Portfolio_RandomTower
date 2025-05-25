@@ -9,4 +9,9 @@ public class GameEntry : MonoBehaviour
         Instantiate(GameManagerPrefab).GetComponent<GameManager>();
         GameManager.Instance.Initialize();
     }
+
+    private void Start()
+    {
+        GameManager.Instance.LoadScene(GameManager.Scenes.Main);
+    }
 }

@@ -6,8 +6,8 @@ public class Lobby : MonoBehaviour
 
     void Awake()
     {
-        GameManager.Instance.UIManager.Initialize(UIManager.UIType.Lobby);
-        _ui = GameManager.Instance.UIManager.Lobby;
+        GameManager.Instance.UI.Initialize(UIManager.UIType.Lobby);
+        _ui = GameManager.Instance.UI.Lobby;
     }
 }
  

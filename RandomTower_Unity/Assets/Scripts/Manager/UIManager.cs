@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    public enum UIType {Main, InGame, Lobby}
+    public enum UIType {None, Main, InGame, Lobby}
 
     public MainUI Main => _mainUI;
     [SerializeField] private MainUI _mainUI;
@@ -22,6 +22,8 @@ public class UIManager : MonoBehaviour
         _uis.Add(UIType.Main, Main.gameObject);
         _uis.Add(UIType.Lobby, Lobby.gameObject);
         _uis.Add(UIType.InGame, InGame.gameObject);
+
+        Initialize(UIType.None);
     }
 
     public void Initialize(UIType type)

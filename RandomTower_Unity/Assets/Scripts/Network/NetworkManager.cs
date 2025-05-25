@@ -1,54 +1,48 @@
 using UnityEngine;
-using NativeWebSocket;
 
 public class NetworkManager : MonoBehaviour
 {
-    public static NetworkManager Instance { get; private set; }
+    //[SerializeField] private string _roomID;
+    private string _roomName = "room id";
+    private string _address = "127.0.0.1";
+    private string _port = "8765";
 
-    private WebSocket _socket;
-    //private IDGenerator _id;
-    //private SyncController _sync;
-    //public SyncController SyncController => _sync;
+    private NetworkClient _client;
 
-    public SyncRegistry SyncRegistry { get; private set; }
-
-    private void Awake()
+    public async void Connect(string ip, string port)
     {
-        if (Instance != null)
+        _address = ip;
+        _port = port;
+        _client = new($"{_address}:{_port}");
+        await _client.Connect();
+    }
+
+    private void Update()
+    {
+        _client?.DispatchMessages();
+
+        if (Input.GetKeyDown(KeyCode.F1))
         {
-            Destroy(gameObject);
-            return;
+            _client.CreateRoom(_roomName);
         }
-        else
+
+        if (Input.GetKeyDown(KeyCode.F2))
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //_client.JoinRoom(_roomID);
         }
-
-        SyncRegistry = new SyncRegistry();
+        if (Input.GetKeyDown(KeyCode.F3))
+        { 
+            _client.RequestRoomList();
+        }
+        if (Input.GetKeyDown(KeyCode.F4))
+        {
+            _client.LeaveRoom();
+        }
     }
 
-    private async void Start()
-    {
-        _socket = new WebSocket("ws://localhost:8765");
-        await _socket.Connect();
-        //_sync = new SyncController(_socket, _id);
-    }
-
-    public async void Send(byte[] data)
-    {
-        if (_socket == null || _socket.State != WebSocketState.Open) return;
-        
-        await _socket.Send(data);
-    }
-
-    public void OnReceive(byte[] data)
-    {
-        SyncRegistry.Receive(data);
-    }
 
     private async void OnApplicationQuit()
     {
-        await _socket.Close();
+        await _client.Disconnect();
     }
 }

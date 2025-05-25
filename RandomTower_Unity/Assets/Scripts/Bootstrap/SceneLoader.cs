@@ -23,6 +23,7 @@ public class SceneLoader : MonoBehaviour
 
     private IEnumerator LoadSceneRoutine(string name)
     {
+        Debug.Log(name);
         AsyncOperation operation = SceneManager.LoadSceneAsync(name);
         operation.allowSceneActivation = false;
 

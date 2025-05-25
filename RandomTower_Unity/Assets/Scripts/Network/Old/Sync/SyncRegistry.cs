@@ -8,7 +8,18 @@ public class SyncRegistry
     
     public void Register(ISyncView view)
     {
-        if (view == null || _views.ContainsKey(view.SyncID)) return;
+        if (view == null)
+        {
+            Debug.Log("SyncView is null.");
+            return;
+        }
+
+        if (_views.ContainsKey(view.SyncID))
+        {
+            Debug.Log($"{view.SyncID} already registred");
+            return;
+        }
+
         _views.Add(view.SyncID, view);
     }
 
@@ -19,6 +30,11 @@ public class SyncRegistry
 
         int id = reader.ReadInt32();
         ISyncView view = Get(id);
+        if (view == null)
+        {
+            Debug.Log("SyncView is null.");
+            return;
+        }
         view?.DeserializeAll(reader);
     }
 

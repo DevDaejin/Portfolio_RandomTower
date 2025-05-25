@@ -25,8 +25,8 @@ public class InGame : MonoBehaviour
         _towerManager = GetComponent<TowerManager>();
         _towerManager.Initialize(_enemyManager, MaxTower);
 
-        GameManager.Instance.UIManager.Initialize(UIManager.UIType.InGame);
-        _ui = GameManager.Instance.UIManager.InGame;
+        GameManager.Instance.UI.Initialize(UIManager.UIType.InGame);
+        _ui = GameManager.Instance.UI.InGame;
 
         _resourceManager = new ResourceManager();
 
@@ -174,7 +174,7 @@ public class InGame : MonoBehaviour
 
     private void GoToLobby()
     {
-        GameManager.Instance.LoadScene("Lobby");
+        GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
     }
 
     private void Retry()

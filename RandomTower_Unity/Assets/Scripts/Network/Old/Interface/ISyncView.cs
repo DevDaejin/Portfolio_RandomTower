@@ -8,4 +8,5 @@ public interface ISyncView
     void Register(ISyncable syncable);
     void SerializeDirty(BinaryWriter writer);
     void DeserializeAll(BinaryReader reader);
+    void SetOwnership(bool mine);
 }
