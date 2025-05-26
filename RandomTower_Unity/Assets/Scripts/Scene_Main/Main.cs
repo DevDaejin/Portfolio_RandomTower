@@ -13,6 +13,18 @@ public class Main : MonoBehaviour
         _ui.Main.OnMultiConfirm += GameManager.Instance.Network.Connect;
         _ui.Main.OnConnectingCancel += GameManager.Instance.Network.CancelConnect;
 
-        GameManager.Instance.Network.OnConnected += ()=> GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
+        GameManager.Instance.Network.OnConnected += LoadNextScene;
+
+        GameManager.Instance.Network.Disconnect();
+    }
+
+    private void LoadNextScene()
+    {
+        GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.Instance.Network.OnConnected -= LoadNextScene;
     }
 }

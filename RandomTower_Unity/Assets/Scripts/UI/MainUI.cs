@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
@@ -6,8 +7,6 @@ using UnityEngine.UI;
 
 public class MainUI : MonoBehaviour
 {
-    [SerializeField] private GlobalUI _global;
-
     [Header("Menu")]
     [SerializeField] private Button _singleButton;
     [SerializeField] private Button _multiButton;
@@ -27,19 +26,21 @@ public class MainUI : MonoBehaviour
 
     public event Action<string> OnIpInput;
     public event Action<string> OnPortInput;
-    public event Action<string ,string> OnMultiConfirm;
+    public event Action<string, string> OnMultiConfirm;
 
     [Header("Connecting")]
     [SerializeField] private GameObject _connectingPanel;
     [SerializeField] private Button _connectingCancelButton;
     [SerializeField] private TMP_Text _connectingTxt;
+    private readonly StringBuilder _connectBuilder = new(); 
     public event Action OnConnectingCancel;
-    
+
     private float _dotElpased = 0;
     private float _dotDuration = 0.5f;
     private int _dotIndex = 0;
     private const int _dotMax = 4;
     private const string ConnectiText = "Connecting";
+    private const string IPFeedback = "IP 형식이 올바르지 않습니다.";
 
     private void Start()
     {
@@ -50,7 +51,7 @@ public class MainUI : MonoBehaviour
             _uriPanel.SetActive(true);
             _connectingPanel.SetActive(false);
         });
-        
+
         _ipInputField.onEndEdit.AddListener(EndEditIP);
         _portInputField.onEndEdit.AddListener(EndEditPort);
 
@@ -59,11 +60,13 @@ public class MainUI : MonoBehaviour
 
         _connectingCancelButton.onClick.AddListener(ConnectingCancel);
 
-        _global.SetQuitConfrimButton(QuitButton.Invoke);
-        _global.SetQuitCancelButton(() => _global.gameObject.SetActive(false));
 
-        _optionButton.onClick.AddListener(() => _global.Set(GlobalUI.GlobalUIOption.Option));
-        _exitButton.onClick.AddListener(() => _global.Set(GlobalUI.GlobalUIOption.Quit));
+        GlobalUI global = GameManager.Instance.UI.Global;
+        global.SetQuitConfrimButton(QuitButton.Invoke);
+        global.SetQuitCancelButton(() => global.gameObject.SetActive(false));
+
+        _optionButton.onClick.AddListener(() => global.Set(GlobalUI.GlobalUIOption.Option));
+        _exitButton.onClick.AddListener(() => global.Set(GlobalUI.GlobalUIOption.Quit));
     }
 
     private void Update()
@@ -76,28 +79,31 @@ public class MainUI : MonoBehaviour
 
             _dotElpased = 0;
 
-            _connectingTxt.text = ConnectiText + new string('.', _dotIndex % _dotMax);
+            _connectBuilder.Clear();
+            _connectBuilder.Append(ConnectiText).Append('.', _dotIndex);
+            _connectingTxt.text = _connectBuilder.ToString();
+
             _dotIndex++;
-            if(_dotIndex >= _dotMax) _dotIndex = 0;
+            if (_dotIndex >= _dotMax) _dotIndex = 0;
         }
     }
 
     private void EndEditIP(string ip)
     {
-        if(IsValidIP(ip))
+        if (IsValidIP(ip))
         {
             ipFeedbackTxt.text = string.Empty;
             OnIpInput?.Invoke(ip);
         }
         else
         {
-            ipFeedbackTxt.text = "IP 형식이 올바르지 않습니다.";
+            ipFeedbackTxt.text = IPFeedback;
         }
     }
 
     private void EndEditPort(string port)
     {
-        if(string.IsNullOrEmpty(port)) return;
+        if (string.IsNullOrEmpty(port)) return;
 
         OnPortInput?.Invoke(port);
     }
@@ -110,7 +116,7 @@ public class MainUI : MonoBehaviour
     private void MultiConfirm()
     {
         string ip = string.Empty;
-        string port = string.Empty; 
+        string port = string.Empty;
 
         if (ipFeedbackTxt.text != string.Empty ||
             string.IsNullOrEmpty(_ipInputField.text) ||

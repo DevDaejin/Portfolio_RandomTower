@@ -19,38 +19,32 @@ public class NetworkManager : MonoBehaviour
     private NetworkClient _client;
     private SyncObjectManager _syncObjectManager;
 
+    public bool IsMulti { get; private set; } = false;
+    public bool IsInRoom => _client.IsInRoom;
+
     public event Action OnConnected;
     public event Action<List<Room>> OnRoomListUpdated;
 
     public string ClientID => _client.ClientID;
 
+    private void Awake()
+    {
+        _syncObjectManager ??= new SyncObjectManager();
+    }
+
     private void Start()
     {
-        OnConnected += ()=> _syncObjectManager ??= new SyncObjectManager();
+        OnConnected += () => IsMulti = true;
     }
 
-    private async void Update()
+    private void Update()
     {
         _client?.DispatchMessages();
-
-        if (Input.GetKeyDown(KeyCode.F1))
-            await _client.CreateRoom("Test");
-
-        if (Input.GetKeyDown(KeyCode.F2))
-            await _client.JoinRoom(_roomID);
-
-        if (Input.GetKeyDown(KeyCode.F3))
-            await _client.RequestRoomList();
-
-        if (Input.GetKeyDown(KeyCode.F4))
-            await _client.LeaveRoom();
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            SpawnNetworkObject("TestCube");
     }
-
-    private async void OnApplicationQuit()
+    
+    private async void OnDestroy()
     {
+        await _client.LeaveRoom();
         await _client?.Disconnect();
     }
 
@@ -88,25 +82,21 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
-    public void CancelConnect()
-    {
-        _client?.CancelConnect();
-    }
+    public void Disconnect() => _client?.Disconnect();
 
-    public void Register(SyncObject syncObject)
-    {
-        _syncObjectManager.Register(syncObject);
-    }
+    public void CancelConnect() => _client?.CancelConnect();
 
-    public void SendRaw(string json)
-    {
-        _client.SendRaw(json);
-    }
+    public void Register(SyncObject syncObject) => _syncObjectManager.Register(syncObject);
 
-    public void SpawnNetworkObject(string prefabName)
+    public async Task RequestRoomList() => await _client.RequestRoomList();
+
+    public async Task JoinRoom(string roomID) => await _client.JoinRoom(roomID);
+
+    public async Task CreateRoom(string roomName) => await _client.CreateRoom(roomName);
+
+    public async void SpawnNetworkObject(string prefabName)
     {
         string objectID = Guid.NewGuid().ToString();
-
 
         SpawnObjectPacket packet = new()
         {
@@ -116,14 +106,13 @@ public class NetworkManager : MonoBehaviour
             SceneID = GameManager.Instance.SceneLoader.CurrentScene
         };
 
-        SendRaw(JsonConvert.SerializeObject(packet));
-
+        await _client.Send(packet);
         SpawnFromPacket(packet, true);
     }
 
     public void SpawnFromPacket(SpawnObjectPacket packet, bool isOwner = false)
     {
-        Debug.Log(packet);
+        //Debug.Log(packet);
 
         Addressables.LoadAssetAsync<GameObject>(packet.PrefabName).Completed += handle =>
         {
@@ -133,7 +122,12 @@ public class NetworkManager : MonoBehaviour
                 SyncObject syncObject = gameObject.GetComponent<SyncObject>();
                 if (syncObject != null)
                 {
-                    syncObject.Initialize(packet.ObjectID, isOwner ? _client.ClientID : "remote", packet.RoomID, packet.SceneID);
+                    syncObject.Initialize(
+                        packet.ObjectID, 
+                        isOwner ? _client.ClientID : "remote", 
+                        packet.RoomID, 
+                        packet.SceneID,
+                        GameManager.Instance.Network.ClientID);
                     _syncObjectManager.Register(syncObject);
                 }
                 else
@@ -163,7 +157,7 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
-    private void OnRoomListReceived(string json)
+    public void OnRoomListReceived(string json)
     {
         var packet = JsonConvert.DeserializeObject<RoomListPacket>(json);
         Debug.Log($"[RoomList] {packet.Rooms.Count} rooms received");
@@ -198,7 +192,9 @@ public class NetworkManager : MonoBehaviour
         }
 
         await _client.LeaveRoom();
-        Debug.Log($"[RoomJoined] Leave room");
+
+        Debug.Log($"[NetworkManager] Left room");
+
         GameManager.Instance.LoadScene(GameManager.Scenes.Main);
     }
 }

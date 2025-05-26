@@ -54,31 +54,24 @@ public class NetworkClient
 
         _socket.OnMessage += (bytes) =>
         {
-            string json = Encoding.UTF8.GetString(bytes);
-            var basePacket = JsonConvert.DeserializeObject<BasePacket>(json);
-            HandlePacket(basePacket.Type, json);
+            try
+            {
+                string json = Encoding.UTF8.GetString(bytes);
+                var basePacket = JsonConvert.DeserializeObject<BasePacket>(json);
+                HandlePacket(basePacket.Type, json);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[OnMessage] JSON Parsing Error: {e.Message}");
+            }
         };
 
         await _socket.Connect();
     }
 
-    public void CancelConnect()
-    {
-        _socket.CancelConnection();
-    }
-
-    public async Task Disconnect()
-    {
-        if (_socket != null)
-        {
-            await _socket.Close();
-        }
-    }
-
-    public void DispatchMessages()
-    {
-        _socket?.DispatchMessageQueue();
-    }
+    public void CancelConnect() => _socket.CancelConnection();
+    public void DispatchMessages() => _socket?.DispatchMessageQueue();
+    public async Task Disconnect() => await _socket?.Close();
 
     public async Task Send<T>(T packet) where T : INetworkMessage
     {
@@ -88,28 +81,31 @@ public class NetworkClient
             return;
         }
 
-        string json = JsonConvert.SerializeObject(packet);
-        await _socket.SendText(json);
-    }
-
-    public async void SendRaw(string json)
-    {
-        if (_socket == null || _socket.State != WebSocketState.Open)
+        try
         {
-            Debug.LogWarning("[SendRaw] WebSocket not connected.");
-            return;
+            string json = JsonConvert.SerializeObject(packet);
+            await _socket.SendText(json);
         }
-
-        await _socket.SendText(json);
+        catch (Exception e)
+        {
+            Debug.LogError($"[Send] Failed to send packet: {e.Message}");
+        }
     }
 
     private void HandlePacket(string type, string json)
     {
         Debug.Log(json);
 
-        if(_packetHandlers.TryGetValue(type, out Action<string> hanlder))
+        if (_packetHandlers.TryGetValue(type, out var handler))
         {
-            hanlder(json);
+            try
+            {
+                handler(json);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[HandlePacket] Handler exception: {e.Message}");
+            }
         }
         else
         {
@@ -143,7 +139,7 @@ public class NetworkClient
 
     public async Task RequestRoomList()
     {
-        var packet = new RoomListPacket();
+        var packet = new ListRoomsRequest();
         await Send(packet);
     }
 
@@ -155,9 +151,12 @@ public class NetworkClient
             return;
         }
 
-        var packet = new LeaveRoomPacket { RoomID = RoomID };
-        await Send(packet);
+        var packet = new LeaveRoomPacket
+        {
+            RoomID = RoomID
+        };
 
-        RoomID = null;
+        await Send(packet);
+        RoomID = string.Empty;
     }
 }

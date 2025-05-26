@@ -46,8 +46,6 @@ public class ListRoomsPacket : INetworkMessage
     public string Type => "list_rooms";
 }
 
-// ---------- 수신용 ----------
-
 public class RoomCreatedPacket : INetworkMessage
 {
     [JsonProperty("type")]
@@ -70,6 +68,12 @@ public class RoomJoinedPacket : INetworkMessage
 
     [JsonProperty("name")]
     public string Name;
+}
+
+public class ListRoomsRequest : INetworkMessage
+{
+    [JsonProperty("type")]
+    public string Type => "list_rooms";
 }
 
 public class RoomInfoPacket : INetworkMessage
@@ -96,6 +100,15 @@ public class RoomListPacket : INetworkMessage
     public List<Room> Rooms;
 }
 
+public class LeaveRoomPacket : INetworkMessage
+{
+    [JsonProperty("type")]
+    public string Type => "leave_room";
+
+    [JsonProperty("room_id")]
+    public string RoomID;
+}
+
 public class Room
 {
     [JsonProperty("id")]
@@ -107,8 +120,6 @@ public class Room
     [JsonProperty("client_count")]
     public int ClientCount;
 }
-
-// ---------- 동기화 관련 ----------
 
 public class SyncObjectHeader
 {
@@ -138,13 +149,4 @@ public class SpawnObjectPacket : INetworkMessage
 
     [JsonProperty("scene_id")]
     public string SceneID;
-}
-
-public class LeaveRoomPacket : INetworkMessage
-{
-    [JsonProperty("type")]
-    public string Type => "leave_room";
-
-    [JsonProperty("room_id")]
-    public string RoomID;
 }

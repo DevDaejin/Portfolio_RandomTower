@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,13 +14,13 @@ public class SyncObjectManager
 
     public bool TryGet(string id, out SyncObject syncObject) => _syncObjects.TryGetValue(id, out syncObject);
 
-    public IEnumerable<SyncObject> GetSyncTargets(string roomID, string sceneID)
+    public IEnumerable<SyncObject> Get(Func<SyncObject, bool> predicate)
     {
         List<SyncObject> results = new();
 
         foreach (var obj in _syncObjects.Values)
         {
-            if (obj.RoomID == roomID && obj.SceneID == sceneID)
+            if (predicate(obj))
             {
                 results.Add(obj);
             }
