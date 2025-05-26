@@ -1,66 +1,150 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
+
+public interface INetworkMessage
+{
+    string Type { get; }
+}
 
 public class BasePacket
 {
-    public string type;
+    [JsonProperty("type")]
+    public string Type;
 }
 
 public class CreateRoomPacket : INetworkMessage
 {
-    public string type => "create_room";
-    public string name;
+    [JsonProperty("type")]
+    public string Type => "create_room";
+
+    [JsonProperty("name")]
+    public string Name;
 }
 
 public class JoinRoomPacket : INetworkMessage
 {
-    public string type => "join_room";
-    public string room_id;
+    [JsonProperty("type")]
+    public string Type => "join_room";
+
+    [JsonProperty("room_id")]
+    public string RoomID;
 }
 
 public class GetRoomInfoPacket : INetworkMessage
 {
-    public string type => "get_room_info";
-    public string room_id;
+    [JsonProperty("type")]
+    public string Type => "get_room_info";
+
+    [JsonProperty("room_id")]
+    public string RoomID;
 }
 
 public class ListRoomsPacket : INetworkMessage
 {
-    public string type => "list_rooms";
+    [JsonProperty("type")]
+    public string Type => "list_rooms";
 }
 
-// --- 수신용 ---
+// ---------- 수신용 ----------
+
 public class RoomCreatedPacket : INetworkMessage
 {
-    public string type { get; set; }
-    public string room_id;
-    public string name;
+    [JsonProperty("type")]
+    public string Type { get; set; }
+
+    [JsonProperty("room_id")]
+    public string RoomID;
+
+    [JsonProperty("name")]
+    public string Name;
 }
 
 public class RoomJoinedPacket : INetworkMessage
 {
-    public string type { get; set; }
-    public string room_id;
-    public string name;
+    [JsonProperty("type")]
+    public string Type { get; set; }
+
+    [JsonProperty("room_id")]
+    public string RoomID;
+
+    [JsonProperty("name")]
+    public string Name;
 }
 
 public class RoomInfoPacket : INetworkMessage
 {
-    public string type { get; set; }
-    public string room_id;
-    public string name;
-    public int client_count;
+    [JsonProperty("type")]
+    public string Type { get; set; }
+
+    [JsonProperty("room_id")]
+    public string RoomID;
+
+    [JsonProperty("name")]
+    public string Name;
+
+    [JsonProperty("client_count")]
+    public int ClientCount;
 }
 
 public class RoomListPacket : INetworkMessage
 {
-    public string type { get; set; }
-    public List<RoomSummary> rooms;
+    [JsonProperty("type")]
+    public string Type { get; set; }
+
+    [JsonProperty("rooms")]
+    public List<Room> Rooms;
 }
 
-public class RoomSummary
+public class Room
 {
-    public string id;
-    public string name;
-    public int client_count;
+    [JsonProperty("id")]
+    public string ID;
+
+    [JsonProperty("name")]
+    public string Name;
+
+    [JsonProperty("client_count")]
+    public int ClientCount;
+}
+
+// ---------- 동기화 관련 ----------
+
+public class SyncObjectHeader
+{
+    [JsonProperty("object_id")]
+    public string ObjectID;
+
+    [JsonProperty("room_id")]
+    public string RoomId;
+
+    [JsonProperty("scene_id")]
+    public string SceneId;
+}
+
+public class SpawnObjectPacket : INetworkMessage
+{
+    [JsonProperty("type")]
+    public string Type => "spawn";
+
+    [JsonProperty("prefab_name")]
+    public string PrefabName;
+
+    [JsonProperty("object_id")]
+    public string ObjectID;
+
+    [JsonProperty("room_id")]
+    public string RoomID;
+
+    [JsonProperty("scene_id")]
+    public string SceneID;
+}
+
+public class LeaveRoomPacket : INetworkMessage
+{
+    [JsonProperty("type")]
+    public string Type => "leave_room";
+
+    [JsonProperty("room_id")]
+    public string RoomID;
 }

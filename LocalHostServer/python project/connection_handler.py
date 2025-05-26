@@ -22,6 +22,12 @@ async def handle_connection(websocket):
 
             elif msg_type == "get_room_info":
                 await room_manager.get_room_info(websocket, data)
+                
+            elif msg_type == "sync":
+                await room_manager.sync_object(websocket, data)
+
+            elif msg_type == "spawn":
+                await room_manager.sync_object(websocket, data)
 
         except Exception as e:
             print(f"[Error] {e}")

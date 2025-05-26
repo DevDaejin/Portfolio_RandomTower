@@ -6,11 +6,15 @@ public class SceneLoader : MonoBehaviour
 {
     public LoadingUI LoadingUI => _loadingUI ??= GetComponentInChildren<LoadingUI>(true);
     [SerializeField] private LoadingUI _loadingUI;
+
     private float _loadDelay;
+
+    public string CurrentScene { get; private set; } = string.Empty;
 
     public void LoadSceneAsync(string name)
     {
-        Scene scene = SceneManager.GetSceneByName(name);
+        CurrentScene = name;
+        Scene scene = SceneManager.GetSceneByName(CurrentScene);
         if (scene == null)
         {
             Debug.Log("Scene name is not valid");
@@ -18,13 +22,13 @@ public class SceneLoader : MonoBehaviour
         }
 
         LoadingUI.Show();
-        StartCoroutine(LoadSceneRoutine(name));
+        StartCoroutine(LoadSceneRoutine());
     }
 
-    private IEnumerator LoadSceneRoutine(string name)
+    private IEnumerator LoadSceneRoutine()
     {
-        Debug.Log(name);
-        AsyncOperation operation = SceneManager.LoadSceneAsync(name);
+        Debug.Log(CurrentScene);
+        AsyncOperation operation = SceneManager.LoadSceneAsync(CurrentScene);
         operation.allowSceneActivation = false;
 
         while(!operation.isDone)

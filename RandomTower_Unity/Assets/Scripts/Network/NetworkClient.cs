@@ -1,24 +1,34 @@
 
-using UnityEngine;
 using NativeWebSocket;
-using System;
-using System.Threading.Tasks;
-using System.Text;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
 
 public class NetworkClient
 {
+    
     private WebSocket _socket;
     private readonly string _url;
 
-    private string _currentRoomId = null;
-    public bool IsInRoom => !string.IsNullOrEmpty(_currentRoomId);
+    public string RoomID { get; set; }
+    public string ClientID { get; set; }
+    public bool IsInRoom => !string.IsNullOrEmpty(RoomID);
 
-    private event Action<INetworkMessage> _onMessageReceived;
+    public event Action OnConnected;
+    private readonly Dictionary<string, Action<string>> _packetHandlers = new();
+
 
     public NetworkClient(string url)
     {
         _url = url;
+    }
+
+    public void RegisterHandler(string type, Action<string> handler)
+    {
+        _packetHandlers[type] = handler;
     }
 
     public async Task Connect()
@@ -27,6 +37,7 @@ public class NetworkClient
 
         _socket.OnOpen += () =>
         {
+            OnConnected.Invoke();
             Debug.Log("[WebSocket] Connected to server");
         };
 
@@ -44,54 +55,11 @@ public class NetworkClient
         {
             string json = Encoding.UTF8.GetString(bytes);
             var basePacket = JsonConvert.DeserializeObject<BasePacket>(json);
-            HandlePacket(basePacket.type, json);
+            HandlePacket(basePacket.Type, json);
         };
 
         await _socket.Connect();
     }
-
-    public async void CreateRoom(string roomName)
-    {
-        if (IsInRoom)
-        {
-            Debug.LogWarning("[Client] Already in a room. Cannot create a new one.");
-            return;
-        }
-
-        var packet = new CreateRoomPacket { name = roomName };
-        await Send(packet);
-    }
-
-    public async void JoinRoom(string roomID)
-    {
-        if (IsInRoom)
-        {
-            Debug.LogWarning("[Client] Already in a room. Cannot join another.");
-            return;
-        }
-
-        var packet = new JoinRoomPacket { room_id = roomID };
-        await Send(packet);
-    }
-
-    public async void RequestRoomList()
-    {
-        var packet = new ListRoomsPacket();
-        await Send(packet);
-    }
-
-    public void LeaveRoom()
-    {
-        if (!IsInRoom)
-        {
-            Debug.LogWarning("[Client] Not in a room.");
-            return;
-        }
-
-        Debug.Log($"[Client] Leaving room: {_currentRoomId}");
-        _currentRoomId = null;
-    }
-
     public async Task Disconnect()
     {
         if (_socket != null)
@@ -117,41 +85,72 @@ public class NetworkClient
         await _socket.SendText(json);
     }
 
+    public async void SendRaw(string json)
+    {
+        if (_socket == null || _socket.State != WebSocketState.Open)
+        {
+            Debug.LogWarning("[SendRaw] WebSocket not connected.");
+            return;
+        }
+
+        await _socket.SendText(json);
+    }
+
     private void HandlePacket(string type, string json)
     {
-        INetworkMessage packet = type switch
+        Debug.Log(json);
+
+        if(_packetHandlers.TryGetValue(type, out Action<string> hanlder))
         {
-            "room_list" => JsonConvert.DeserializeObject<RoomListPacket>(json),
-            "room_created" => JsonConvert.DeserializeObject<RoomCreatedPacket>(json),
-            "room_joined" => JsonConvert.DeserializeObject<RoomJoinedPacket>(json),
-            "room_info" => JsonConvert.DeserializeObject<RoomInfoPacket>(json),
-            _ => null
-        };
-
-        if (packet != null)
-        {
-            Debug.Log($"[Recv] {type}: {json}");
-
-            if (packet is RoomCreatedPacket created)
-                _currentRoomId = created.room_id;
-
-            else if (packet is RoomJoinedPacket joined)
-                _currentRoomId = joined.room_id;
-
-            else if (packet is RoomListPacket list)
-            {
-                Debug.Log($"[RoomList] 총 {list.rooms.Count}개");
-
-                foreach (var room in list.rooms)
-                {
-                    Debug.Log($"[Room] ID: {room.id}, Name: {room.name}, Clients: {room.client_count}");
-                }
-            }
-            _onMessageReceived?.Invoke(packet);
+            hanlder(json);
         }
         else
         {
-            Debug.LogWarning($"[Recv] Unknown packet type: {type}");
+            Debug.LogWarning($"[NetworkClient] Unknown packet type: {type}");
         }
+    }
+
+    public async Task CreateRoom(string name)
+    {
+        if (IsInRoom)
+        {
+            Debug.LogWarning("[CreateRoom] Already in a room.");
+            return;
+        }
+
+        var packet = new CreateRoomPacket { Name = name };
+        await Send(packet);
+    }
+
+    public async Task JoinRoom(string roomId)
+    {
+        if (IsInRoom)
+        {
+            Debug.LogWarning("[JoinRoom] Already in a room.");
+            return;
+        }
+
+        var packet = new JoinRoomPacket { RoomID = roomId };
+        await Send(packet);
+    }
+
+    public async Task RequestRoomList()
+    {
+        var packet = new RoomListPacket();
+        await Send(packet);
+    }
+
+    public async Task LeaveRoom()
+    {
+        if (!IsInRoom)
+        {
+            Debug.LogWarning("[LeaveRoom] Not in a room.");
+            return;
+        }
+
+        var packet = new LeaveRoomPacket { RoomID = RoomID };
+        await Send(packet);
+
+        RoomID = null;
     }
 }

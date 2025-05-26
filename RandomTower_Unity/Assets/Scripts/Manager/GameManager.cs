@@ -1,5 +1,3 @@
-using System;
-using UnityEditor.SearchService;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -52,13 +50,18 @@ public class GameManager : MonoBehaviour
     public void Initialize()
     {
         UI.Initialize(UIManager.UIType.None);
-
         UI.Main.OnMutliConfirm += OnMutliConfirm;
     }
 
     private void OnMutliConfirm(string ip, string port)
     {
         Network.Connect(ip, port);
+    }
+
+    //TODO: Delete it, ater testing
+    public void TestConnect()
+    {
+        Network.Connect("127.0.0.1", "8765");
     }
 
     public void LoadScene(Scenes scene)

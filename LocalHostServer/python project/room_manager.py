@@ -64,3 +64,13 @@ class RoomManager:
             }))
         else:
             await ws.send(json.dumps({"type": "error", "message": "room not found"}))
+
+    async def sync_object(self, ws, data):
+        room_id = data.get("room_id")
+        room = self.rooms.get(room_id)
+        if not room:
+            return
+
+        for client in room.clients:
+            if client != ws:  # 보내는 자신은 제외
+                await client.send(json.dumps(data))
