@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -8,17 +9,26 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class NetworkManager : MonoBehaviour
 {
+    //TODO: for the test;
     [SerializeField] private string _roomID;
     private string _roomName = "room id";
+
     private string _address = "127.0.0.1";
     private string _port = "8765";
 
     private NetworkClient _client;
     private SyncObjectManager _syncObjectManager;
 
+    public event Action OnConnected;
     public event Action<List<Room>> OnRoomListUpdated;
 
     public string ClientID => _client.ClientID;
+
+    private void Start()
+    {
+        OnConnected += ()=> _syncObjectManager ??= new SyncObjectManager();
+    }
+
     private async void Update()
     {
         _client?.DispatchMessages();
@@ -62,12 +72,25 @@ public class NetworkManager : MonoBehaviour
         });
         _client.RegisterHandler("sync", OnReceiveSync);
 
-        await _client.Connect();
+        try
+        {
+            await _client.Connect();
+        }
+        catch (OperationCanceledException)
+        {
+            Debug.LogWarning("[NetworkManager] Connection cancelled.");
+            return;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[NetworkManager] Connection failed: {ex.Message}");
+            return;
+        }
     }
 
-    private void OnConnected()
+    public void CancelConnect()
     {
-        _syncObjectManager ??= new SyncObjectManager();
+        _client?.CancelConnect();
     }
 
     public void Register(SyncObject syncObject)

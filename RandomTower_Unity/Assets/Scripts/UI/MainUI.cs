@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class MainUI : MonoBehaviour
 {
     [SerializeField] private GlobalUI _global;
-    [SerializeField] private GameObject _multiPanel;
 
     [Header("Menu")]
     [SerializeField] private Button _singleButton;
@@ -20,40 +19,67 @@ public class MainUI : MonoBehaviour
     [SerializeField] private TMP_InputField _ipInputField;
     [SerializeField] private TMP_Text ipFeedbackTxt;
     [SerializeField] private TMP_InputField _portInputField;
-    [SerializeField] private Button _multiConfirmButton;
-    [SerializeField] private Button _multiCancelButton;
+    [SerializeField] private Button _uriConfirmButton;
+    [SerializeField] private Button _uriCancelButton;
+
+    public Action SinglePlayButton;
+    public Action QuitButton;
 
     public event Action<string> OnIpInput;
     public event Action<string> OnPortInput;
-    public event Action<string ,string> OnMutliConfirm;
+    public event Action<string ,string> OnMultiConfirm;
 
-    [Header("Lobby")]
-    [SerializeField] private GameObject _lobbyPanel;
-    [SerializeField] private GameObject _roomButton;
-    [SerializeField] private Button _lobbyCancelButton;
+    [Header("Connecting")]
+    [SerializeField] private GameObject _connectingPanel;
+    [SerializeField] private Button _connectingCancelButton;
+    [SerializeField] private TMP_Text _connectingTxt;
+    public event Action OnConnectingCancel;
+    
+    private float _dotElpased = 0;
+    private float _dotDuration = 0.5f;
+    private int _dotIndex = 0;
+    private const int _dotMax = 4;
+    private const string ConnectiText = "Connecting";
 
     private void Start()
     {
-        _singleButton.onClick.AddListener(GoToLobby);
+        _singleButton.onClick.AddListener(SinglePlayButton.Invoke);
 
         _multiButton.onClick.AddListener(() =>
         {
-            _multiPanel.SetActive(true);
             _uriPanel.SetActive(true);
-            _lobbyPanel.SetActive(false);
+            _connectingPanel.SetActive(false);
         });
         
         _ipInputField.onEndEdit.AddListener(EndEditIP);
         _portInputField.onEndEdit.AddListener(EndEditPort);
 
-        _multiConfirmButton.onClick.AddListener(MultiConfirm);
-        _multiCancelButton.onClick.AddListener(MultiCancel);
+        _uriConfirmButton.onClick.AddListener(MultiConfirm);
+        _uriCancelButton.onClick.AddListener(MultiCancel);
 
-        _global.SetQuitConfrimButton(Application.Quit);
+        _connectingCancelButton.onClick.AddListener(ConnectingCancel);
+
+        _global.SetQuitConfrimButton(QuitButton.Invoke);
         _global.SetQuitCancelButton(() => _global.gameObject.SetActive(false));
 
         _optionButton.onClick.AddListener(() => _global.Set(GlobalUI.GlobalUIOption.Option));
         _exitButton.onClick.AddListener(() => _global.Set(GlobalUI.GlobalUIOption.Quit));
+    }
+
+    private void Update()
+    {
+        if (_connectingPanel.activeInHierarchy)
+        {
+            _dotElpased += Time.deltaTime;
+
+            if (_dotElpased < _dotDuration) return;
+
+            _dotElpased = 0;
+
+            _connectingTxt.text = ConnectiText + new string('.', _dotIndex % _dotMax);
+            _dotIndex++;
+            if(_dotIndex >= _dotMax) _dotIndex = 0;
+        }
     }
 
     private void EndEditIP(string ip)
@@ -94,8 +120,8 @@ public class MainUI : MonoBehaviour
         }
 
         _uriPanel.SetActive(false);
-        _lobbyPanel.SetActive(true);
-        OnMutliConfirm?.Invoke(_ipInputField.text, _portInputField.text);
+        _connectingPanel.SetActive(true);
+        OnMultiConfirm?.Invoke(_ipInputField.text, _portInputField.text);
     }
 
     private void MultiCancel()
@@ -103,11 +129,13 @@ public class MainUI : MonoBehaviour
         _ipInputField.text = string.Empty;
         _portInputField.text = string.Empty;
         ipFeedbackTxt.text = string.Empty;
-        _multiPanel.SetActive(false);
+        _uriPanel.SetActive(false);
     }
 
-    private void GoToLobby()
+    private void ConnectingCancel()
     {
-        GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
+        OnConnectingCancel?.Invoke();
+        _connectingPanel.SetActive(false);
+        _uriPanel.SetActive(true);
     }
 }

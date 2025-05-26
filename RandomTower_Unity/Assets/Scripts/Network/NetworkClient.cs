@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -60,6 +61,12 @@ public class NetworkClient
 
         await _socket.Connect();
     }
+
+    public void CancelConnect()
+    {
+        _socket.CancelConnection();
+    }
+
     public async Task Disconnect()
     {
         if (_socket != null)

@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
     public void Initialize()
     {
         UI.Initialize(UIManager.UIType.None);
-        UI.Main.OnMutliConfirm += OnMutliConfirm;
+        UI.Main.OnMultiConfirm += OnMutliConfirm;
     }
 
     private void OnMutliConfirm(string ip, string port)
