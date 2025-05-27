@@ -44,7 +44,7 @@ public class NetworkManager : MonoBehaviour
     
     private async void OnDestroy()
     {
-        await _client.LeaveRoom();
+        await _client?.LeaveRoom();
         await _client?.Disconnect();
     }
 
@@ -94,9 +94,10 @@ public class NetworkManager : MonoBehaviour
 
     public async Task CreateRoom(string roomName) => await _client.CreateRoom(roomName);
 
-    public async void SpawnNetworkObject(string prefabName)
+    public async Task SpawnNetworkObject(string prefabName)
     {
         string objectID = Guid.NewGuid().ToString();
+        Debug.Log($"[SnedSpawningNetworkObject] Sending prefab: {prefabName}, id: {objectID}");
 
         SpawnObjectPacket packet = new()
         {
@@ -107,18 +108,20 @@ public class NetworkManager : MonoBehaviour
         };
 
         await _client.Send(packet);
-        SpawnFromPacket(packet, true);
+        //SpawnFromPacket(packet, true);
     }
 
     public void SpawnFromPacket(SpawnObjectPacket packet, bool isOwner = false)
     {
-        //Debug.Log(packet);
+        Debug.Log($"[SpawnFromPacket] Start - isOwner: {isOwner}, prefab: {packet.PrefabName}");
 
         Addressables.LoadAssetAsync<GameObject>(packet.PrefabName).Completed += handle =>
         {
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 GameObject gameObject = Instantiate(handle.Result);
+                Debug.Log($"[SpawnFromPacket] Instantiated prefab: {packet.PrefabName}");
+
                 SyncObject syncObject = gameObject.GetComponent<SyncObject>();
                 if (syncObject != null)
                 {

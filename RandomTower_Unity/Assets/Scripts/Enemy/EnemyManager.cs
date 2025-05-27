@@ -16,6 +16,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     private readonly List<BaseEnemy> _cachingSortedList = new();
     private Dictionary<int, Coroutine> _spawnCoroutine = new();
 
+    public Action<string> OnEnemySpawned;
     public Action<int> OnReward;
 
     private const float SpawnInterval = 0.5f;
@@ -23,6 +24,11 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     private void Awake()
     {
         _enemyFactory = new EnemyFactory();
+    }
+
+    private void Start()
+    {
+        _enemyFactory.OnEnenmySpawnd = OnEnemySpawned;
     }
 
     public void SpawnWave(StageConfig config, int waveIndex)

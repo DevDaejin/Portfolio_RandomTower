@@ -40,6 +40,7 @@ public class InGame : MonoBehaviour
 
         _towerManager.OnTowerUpdated += _ui.SetTowerCount;
         _enemyManager.OnReward += OnReward;
+        _enemyManager.OnEnemySpawned += EnemySpawnCallback;
 
         _waveController.OnTimeChanged += _ui.SetTimer;
         _waveController.OnWaveChanged += _ui.SetWave;
@@ -100,7 +101,11 @@ public class InGame : MonoBehaviour
         _waveController.OnWaveStarted -= OnWaveStarted;
     }
 
-
+    private async void EnemySpawnCallback(string enemyName)
+    {
+        Debug.Log($"[EnemySpawnCallback] called with: {"TestEnemy"}");
+        await GameManager.Instance.Network.SpawnNetworkObject("TestEnemy");
+    }
 
     private int GetEnemyCount()
     {

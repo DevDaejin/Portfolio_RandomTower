@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,6 +8,7 @@ public class EnemyFactory
     private readonly Transform _enemyGroup;
     private readonly Dictionary<int, Pool<BaseEnemy>> _pools = new();
     private const string EnemyGroupName = "EnemyGroup";
+    public Action<string> OnEnenmySpawnd;
 
     public EnemyFactory()
     {
@@ -20,6 +22,7 @@ public class EnemyFactory
         BaseEnemy enemy = pool.Get();
 
         enemy.Initialize(data, routeGroup);
+        OnEnenmySpawnd?.Invoke(data.EnemyName);
 
         return enemy;
     }
