@@ -21,6 +21,11 @@ public class NetworkManager : MonoBehaviour
         _syncObjectManager = new SyncObjectManager();
     }
 
+    private void Update()
+    {
+        _client.DispatchMessages();
+    }
+
     public async void Connect(string ip, string port)
     {
         
