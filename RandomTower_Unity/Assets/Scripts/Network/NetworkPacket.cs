@@ -1,19 +1,32 @@
 using System.Collections.Generic;
-using UnityEngine;
 using Newtonsoft.Json;
 
-public interface INetworkMessage
+public class SyncPacket
 {
-    string Type { get; }
-}
+    [JsonProperty("type")]
+    public string Type => "sync";
 
+    [JsonProperty("objectId")]
+    public string ObjectID;
+
+    [JsonProperty("syncType")]
+    public string SyncType;
+
+    [JsonProperty("payload")]
+    public string Payload;
+}
 public class BasePacket
 {
     [JsonProperty("type")]
     public string Type;
 }
 
-public class CreateRoomPacket : INetworkMessage
+public interface INetworkMessage
+{
+    string Type { get; }
+}
+
+public class SendCreateRoomPacket : INetworkMessage
 {
     [JsonProperty("type")]
     public string Type => "create_room";
@@ -22,7 +35,7 @@ public class CreateRoomPacket : INetworkMessage
     public string Name;
 }
 
-public class JoinRoomPacket : INetworkMessage
+public class SendJoinRoomPacket : INetworkMessage
 {
     [JsonProperty("type")]
     public string Type => "join_room";
@@ -31,76 +44,7 @@ public class JoinRoomPacket : INetworkMessage
     public string RoomID;
 }
 
-public class GetRoomInfoPacket : INetworkMessage
-{
-    [JsonProperty("type")]
-    public string Type => "get_room_info";
-
-    [JsonProperty("room_id")]
-    public string RoomID;
-}
-
-public class ListRoomsPacket : INetworkMessage
-{
-    [JsonProperty("type")]
-    public string Type => "list_rooms";
-}
-
-public class RoomCreatedPacket : INetworkMessage
-{
-    [JsonProperty("type")]
-    public string Type { get; set; }
-
-    [JsonProperty("room_id")]
-    public string RoomID;
-
-    [JsonProperty("name")]
-    public string Name;
-}
-
-public class RoomJoinedPacket : INetworkMessage
-{
-    [JsonProperty("type")]
-    public string Type { get; set; }
-
-    [JsonProperty("room_id")]
-    public string RoomID;
-
-    [JsonProperty("name")]
-    public string Name;
-}
-
-public class ListRoomsRequest : INetworkMessage
-{
-    [JsonProperty("type")]
-    public string Type => "list_rooms";
-}
-
-public class RoomInfoPacket : INetworkMessage
-{
-    [JsonProperty("type")]
-    public string Type { get; set; }
-
-    [JsonProperty("room_id")]
-    public string RoomID;
-
-    [JsonProperty("name")]
-    public string Name;
-
-    [JsonProperty("client_count")]
-    public int ClientCount;
-}
-
-public class RoomListPacket : INetworkMessage
-{
-    [JsonProperty("type")]
-    public string Type { get; set; }
-
-    [JsonProperty("rooms")]
-    public List<Room> Rooms;
-}
-
-public class LeaveRoomPacket : INetworkMessage
+public class SendLeaveRoomPacket : INetworkMessage
 {
     [JsonProperty("type")]
     public string Type => "leave_room";
@@ -109,30 +53,11 @@ public class LeaveRoomPacket : INetworkMessage
     public string RoomID;
 }
 
-public class Room
+public class SendListRoomsRequest : INetworkMessage
 {
-    [JsonProperty("id")]
-    public string ID;
-
-    [JsonProperty("name")]
-    public string Name;
-
-    [JsonProperty("client_count")]
-    public int ClientCount;
+    [JsonProperty("type")]
+    public string Type => "room_list";
 }
-
-public class SyncObjectHeader
-{
-    [JsonProperty("object_id")]
-    public string ObjectID;
-
-    [JsonProperty("room_id")]
-    public string RoomId;
-
-    [JsonProperty("scene_id")]
-    public string SceneId;
-}
-
 public class SpawnObjectPacket : INetworkMessage
 {
     [JsonProperty("type")]
@@ -149,4 +74,73 @@ public class SpawnObjectPacket : INetworkMessage
 
     [JsonProperty("scene_id")]
     public string SceneID;
+
+    [JsonProperty("owner_id")]
+    public string OwnerID;
+}
+
+public class ReceiveRoomCreatedPacket
+{
+    [JsonProperty("type")]
+    public string Type { get; set; }
+
+    [JsonProperty("room_id")]
+    public string RoomID;
+
+    [JsonProperty("name")]
+    public string Name;
+}
+
+public class ReceiveRoomJoinedPacket
+{
+    [JsonProperty("type")]
+    public string Type { get; set; }
+
+    [JsonProperty("room_id")]
+    public string RoomID;
+
+    [JsonProperty("name")]
+    public string Name;
+
+    [JsonProperty("client_id")]
+    public string ClientID;
+}
+
+public class ReceiveRoomLeftPacket
+{
+    [JsonProperty("type")]
+    public string Type { get; set; }
+
+    [JsonProperty("room_id")]
+    public string RoomID;
+}
+
+public class ReceiveRoomListPacket
+{
+    [JsonProperty("type")]
+    public string Type { get; set; }
+
+    [JsonProperty("rooms")]
+    public List<Room> Rooms;
+}
+
+public class Room
+{
+    [JsonProperty("room_id")]
+    public string RoomID;
+
+    [JsonProperty("name")]
+    public string Name;
+
+    [JsonProperty("client_count")]
+    public int ClientCount;
+}
+
+public class ReceiveErrorPacket
+{
+    [JsonProperty("type")]
+    public string Type { get; set; }
+
+    [JsonProperty("message")]
+    public string Message;
 }

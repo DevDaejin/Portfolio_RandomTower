@@ -8,6 +8,10 @@ public class Lobby : MonoBehaviour
     private LobbyUI _ui;
     private NetworkManager _network;
     private List<Room> _roomList = null;
+
+    private float _time = 0;
+    private const float RoomlistUpdateInterval = 3f;
+
     void Awake()
     {
         GameManager.Instance.UI.Initialize(UIManager.UIType.Lobby);
@@ -16,16 +20,32 @@ public class Lobby : MonoBehaviour
         _ui.OnPlay = OnPlay;
 
         _network = GameManager.Instance.Network;
-        _network.OnRoomListUpdated += (roomList)=> _roomList = roomList;
+        _network.OnRoomListUpdated += (roomList) =>
+        {
+            Debug.Log($"[UI] RoomListUpdated called. Count: {roomList.Count}");
+            _roomList = roomList;
+            _ui.CreateRoomButton(_roomList, EnterRoom);
+        };
     }
 
-    private async void OnPlay()
+    private async void Update()
     {
-        if (_network.IsMulti)
+        if (!_network.IsConnect) return;
+
+        _time += Time.deltaTime;
+        if (_time > RoomlistUpdateInterval)
+        {
+            Debug.Log("[Lobby] Requesting room list...");
+            _time = 0;
+            await _network.RequestRoomList();
+        }
+    }
+
+    private void OnPlay()
+    {
+        if (_network.IsConnect)
         {
             _ui.ActiveRoomListPanel(true);
-            await _network.RequestRoomList();
-            await UpdateRoomListButtons();
         }
         else
         {
@@ -39,43 +59,19 @@ public class Lobby : MonoBehaviour
         GameManager.Instance.LoadScene(GameManager.Scenes.Game);
     }
 
-    private async Task UpdateRoomListButtons()
-    {
-        _ui.ClearAll();
-        await WaitUntilAsync(() => _roomList != null);
-        _ui.CreateRoomButton(_roomList, EnterRoom);
-        _roomList = null;
-    }
-
 
     private async void EnterRoom(string roomID)
     {
         Debug.Log($"[Lobby] Joining room with ID: {roomID}");
 
-        if (!_network.IsMulti)
+        if (!_network.IsConnect)
         {
             Debug.LogWarning("[Lobby] Not connected to server.");
-            return;
-        }
-
-        if (_network.IsInRoom)
-        {
-            Debug.LogWarning("[Lobby] Already in a room.");
             return;
         }
 
         await _network.JoinRoom(roomID);
         GameManager.Instance.LoadScene(GameManager.Scenes.Game);
     }
-
-    private async Task WaitUntilAsync(Func<bool> condition, int checkIntervalMs = 100)
-    {
-        while (!condition())
-        {
-            await Task.Delay(checkIntervalMs);
-        }
-    }
-
-
 }
  

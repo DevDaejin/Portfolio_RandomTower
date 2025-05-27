@@ -43,13 +43,17 @@ public class LobbyUI : MonoBehaviour
 
     public void CreateRoomButton(List<Room> roomList, Action<string> onEnter)
     {
+        _roomButtons.ReturnAll();
+
         for (int index = 0; index < roomList.Count; index++)
         {
-            RoomButton roomButton = _roomButtons.Get();
-            roomButton.transform.SetParent(_container, false);
-            roomButton.Set(
+            RoomButton target = _roomButtons.Get();
+            target.transform.SetParent(_container, false);
+
+            target.transform.SetSiblingIndex(index);
+            target.Set(
                 roomList[index].Name,
-                roomList[index].ID,
+                roomList[index].RoomID,
                 onEnter
             );
         }

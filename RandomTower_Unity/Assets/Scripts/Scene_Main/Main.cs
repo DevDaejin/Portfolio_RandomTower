@@ -10,12 +10,15 @@ public class Main : MonoBehaviour
 
         _ui.Main.SinglePlayButton = () => GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
         _ui.Main.QuitButton = () => Application.Quit();
-        _ui.Main.OnMultiConfirm += GameManager.Instance.Network.Connect;
+        _ui.Main.OnMultiConfirm += Main_OnMultiConfirm;
         _ui.Main.OnConnectingCancel += GameManager.Instance.Network.CancelConnect;
-
         GameManager.Instance.Network.OnConnected += LoadNextScene;
-
         GameManager.Instance.Network.Disconnect();
+    }
+
+    private void Main_OnMultiConfirm(string ip, string port)
+    {
+        GameManager.Instance.Network.Connect(ip, port);
     }
 
     private void LoadNextScene()

@@ -26,5 +26,6 @@ public class RoomButton : MonoBehaviour
         _buttonTxt.text = roomName;
         _roomID = roomID;
         _onClicked = buttonCallback;
+        gameObject.SetActive(true);
     }
 }

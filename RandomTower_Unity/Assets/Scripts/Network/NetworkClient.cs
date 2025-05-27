@@ -3,160 +3,126 @@ using NativeWebSocket;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
 public class NetworkClient
 {
-    
     private WebSocket _socket;
     private readonly string _url;
 
-    public string RoomID { get; set; }
+    private Dictionary<string, Action<string>> _packetHandlers = new();
+
     public string ClientID { get; set; }
-    public bool IsInRoom => !string.IsNullOrEmpty(RoomID);
+    public string RoomID { get; set; }
 
-    public event Action OnConnected;
-    private readonly Dictionary<string, Action<string>> _packetHandlers = new();
+    public Action OnConnected;
+    public Action<string> OnMessage;
 
-
-    public NetworkClient(string url)
+    public NetworkClient(string address)
     {
-        _url = url;
-    }
-
-    public void RegisterHandler(string type, Action<string> handler)
-    {
-        _packetHandlers[type] = handler;
+        _url = $"ws://{address}";
     }
 
     public async Task Connect()
     {
-        _socket = new WebSocket($"ws://{_url}");
+        _socket = new WebSocket(_url);
 
         _socket.OnOpen += () =>
         {
-            OnConnected.Invoke();
-            Debug.Log("[WebSocket] Connected to server");
+            Debug.Log("[WebSocket] Connected");
+            OnConnected?.Invoke();
         };
 
-        _socket.OnError += (e) =>
-        {
-            Debug.LogError($"[WebSocket] Error: {e}");
-        };
-
-        _socket.OnClose += (e) =>
-        {
-            Debug.LogWarning($"[WebSocket] Closed with code {e}");
-        };
-
-        _socket.OnMessage += (bytes) =>
-        {
-            try
-            {
-                string json = Encoding.UTF8.GetString(bytes);
-                var basePacket = JsonConvert.DeserializeObject<BasePacket>(json);
-                HandlePacket(basePacket.Type, json);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"[OnMessage] JSON Parsing Error: {e.Message}");
-            }
-        };
+        _socket.OnMessage += ProcessMessage;
 
         await _socket.Connect();
+
+    }
+    public void RegisterHandler(string type, Action<string> callback)
+    {
+        _packetHandlers[type] = callback;
     }
 
-    public void CancelConnect() => _socket.CancelConnection();
-    public void DispatchMessages() => _socket?.DispatchMessageQueue();
-    public async Task Disconnect() => await _socket?.Close();
-
-    public async Task Send<T>(T packet) where T : INetworkMessage
+    private void ProcessMessage(byte[] bytes)
     {
-        if (_socket == null || _socket.State != WebSocketState.Open)
-        {
-            Debug.LogWarning("[Send] WebSocket not connected.");
-            return;
-        }
+        string json = System.Text.Encoding.UTF8.GetString(bytes);
+        Debug.Log($"[NetClient] Raw JSON: {json}");
 
-        try
-        {
-            string json = JsonConvert.SerializeObject(packet);
-            await _socket.SendText(json);
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"[Send] Failed to send packet: {e.Message}");
-        }
-    }
+        BasePacket basePacket = JsonConvert.DeserializeObject<BasePacket>(json);
+        Debug.Log($"[NetClient] Parsed type: {basePacket?.Type}");
 
-    private void HandlePacket(string type, string json)
-    {
-        Debug.Log(json);
-
-        if (_packetHandlers.TryGetValue(type, out var handler))
+        if (basePacket.Type == "sync")
         {
-            try
-            {
-                handler(json);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"[HandlePacket] Handler exception: {e.Message}");
-            }
+            OnMessage?.Invoke(json);
         }
         else
         {
-            Debug.LogWarning($"[NetworkClient] Unknown packet type: {type}");
+            if (_packetHandlers.TryGetValue(basePacket.Type, out var handler))
+            {
+                Debug.Log($"[NetClient] Found handler for: {basePacket.Type}");
+                handler.Invoke(json);
+            }
+            else
+            {
+                Debug.LogWarning($"[NetClient] No handler registered for type: {basePacket.Type}");
+            }
         }
+    }
+
+
+    public async Task Send(string json)
+    {
+        await _socket.SendText(json);
+    }
+
+    public void DispatchMessages()
+    {
+        _socket?.DispatchMessageQueue();
+    }
+    public void CancelConnect()
+    {
+        _socket?.CancelConnection();
+    }
+
+    public void Disconnect()
+    {
+        _socket?.Close();
     }
 
     public async Task CreateRoom(string name)
     {
-        if (IsInRoom)
-        {
-            Debug.LogWarning("[CreateRoom] Already in a room.");
-            return;
-        }
-
-        var packet = new CreateRoomPacket { Name = name };
+        string packet = JsonConvert.SerializeObject(new SendCreateRoomPacket { Name = name });
         await Send(packet);
     }
 
     public async Task JoinRoom(string roomId)
     {
-        if (IsInRoom)
-        {
-            Debug.LogWarning("[JoinRoom] Already in a room.");
-            return;
-        }
-
-        var packet = new JoinRoomPacket { RoomID = roomId };
-        await Send(packet);
-    }
-
-    public async Task RequestRoomList()
-    {
-        var packet = new ListRoomsRequest();
+        string packet = JsonConvert.SerializeObject(new SendJoinRoomPacket { RoomID = roomId });
         await Send(packet);
     }
 
     public async Task LeaveRoom()
     {
-        if (!IsInRoom)
-        {
-            Debug.LogWarning("[LeaveRoom] Not in a room.");
-            return;
-        }
+        string packet = JsonConvert.SerializeObject(new SendLeaveRoomPacket { RoomID = RoomID });
+        await Send(packet);
+    }
 
-        var packet = new LeaveRoomPacket
+    public async Task RequestRoomList()
+    {
+        string packet = JsonConvert.SerializeObject(new SendListRoomsRequest());
+        await Send(packet);
+    }
+
+    public async Task SpawnNetworkObject(string name)
+    {
+        var packet = new
         {
-            RoomID = RoomID
+            type = "spawn",
+            prefab_name = name,
+            room_id = RoomID
         };
 
-        await Send(packet);
-        RoomID = string.Empty;
+        await Send(JsonConvert.SerializeObject(packet));
     }
 }

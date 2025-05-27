@@ -12,25 +12,13 @@ public class SyncObjectManager
         _syncObjects[syncObject.ObjectID] = syncObject;
     }
 
-    public bool TryGet(string id, out SyncObject syncObject) => _syncObjects.TryGetValue(id, out syncObject);
-
-    public IEnumerable<SyncObject> Get(Func<SyncObject, bool> predicate)
+    public void Unregister(string objectID)
     {
-        List<SyncObject> results = new();
-
-        foreach (var obj in _syncObjects.Values)
-        {
-            if (predicate(obj))
-            {
-                results.Add(obj);
-            }
-        }
-
-        return results;
+        _syncObjects.Remove(objectID);
     }
 
-    public void Clear()
+    public SyncObject GetSyncObject(string objectID)
     {
-        _syncObjects.Clear();
+        return _syncObjects.TryGetValue(objectID, out SyncObject sync) ? sync : null;
     }
 }

@@ -1,203 +1,160 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
+
 public class NetworkManager : MonoBehaviour
 {
-    //TODO: for the test;
-    [SerializeField] private string _roomID;
-    private string _roomName = "room id";
-
-    private string _address = "127.0.0.1";
-    private string _port = "8765";
-
-    private NetworkClient _client;
     private SyncObjectManager _syncObjectManager;
+    private NetworkClient _client;
+    public bool IsConnect { get; private set; } = false;
 
-    public bool IsMulti { get; private set; } = false;
-    public bool IsInRoom => _client.IsInRoom;
-
-    public event Action OnConnected;
-    public event Action<List<Room>> OnRoomListUpdated;
-
-    public string ClientID => _client.ClientID;
+    public Action OnConnected;
+    public Action<List<Room>> OnRoomListUpdated;
 
     private void Awake()
     {
-        _syncObjectManager ??= new SyncObjectManager();
-    }
-
-    private void Start()
-    {
-        OnConnected += () => IsMulti = true;
-    }
-
-    private void Update()
-    {
-        _client?.DispatchMessages();
-    }
-    
-    private async void OnDestroy()
-    {
-        await _client?.LeaveRoom();
-        await _client?.Disconnect();
+        _syncObjectManager = new SyncObjectManager();
     }
 
     public async void Connect(string ip, string port)
     {
-        _address = ip;
-        _port = port;
+        
+        _client = new($"{ip}:{port}");
+        _client.OnConnected = OnConnectComplete;
+        RegisterDefaultHandlers();
 
-        _client = new($"{_address}:{_port}");
-        _client.OnConnected += OnConnected;
+        await _client.Connect();
+    }
 
-        _client.RegisterHandler("room_list", OnRoomListReceived);
+    private void OnConnectComplete()
+    {
+        OnConnected.Invoke();
+        IsConnect = true;
+    }
+
+    public void CancelConnect()
+    {
+        _client.CancelConnect();
+    }
+
+    public void Disconnect()
+    {
+        _client?.Disconnect();
+    }
+
+    private void RegisterDefaultHandlers()
+    {
         _client.RegisterHandler("room_created", OnRoomCreated);
         _client.RegisterHandler("room_joined", OnRoomJoined);
-        _client.RegisterHandler("spawn", json =>
-        {
-            var packet = JsonConvert.DeserializeObject<SpawnObjectPacket>(json);
-            SpawnFromPacket(packet, false);
-        });
-        _client.RegisterHandler("sync", OnReceiveSync);
-
-        try
-        {
-            await _client.Connect();
-        }
-        catch (OperationCanceledException)
-        {
-            Debug.LogWarning("[NetworkManager] Connection cancelled.");
-            return;
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"[NetworkManager] Connection failed: {ex.Message}");
-            return;
-        }
+        _client.RegisterHandler("room_list", OnRoomListReceived);
+        _client.RegisterHandler("room_left", OnRoomLeft);
+        _client.RegisterHandler("spawn", OnSpawnReceived);
     }
 
-    public void Disconnect() => _client?.Disconnect();
-
-    public void CancelConnect() => _client?.CancelConnect();
-
-    public void Register(SyncObject syncObject) => _syncObjectManager.Register(syncObject);
-
-    public async Task RequestRoomList() => await _client.RequestRoomList();
-
-    public async Task JoinRoom(string roomID) => await _client.JoinRoom(roomID);
-
-    public async Task CreateRoom(string roomName) => await _client.CreateRoom(roomName);
-
-    public async Task SpawnNetworkObject(string prefabName)
+    public void RegistSyncObject(SyncObject syncObject)
     {
-        string objectID = Guid.NewGuid().ToString();
-        Debug.Log($"[SnedSpawningNetworkObject] Sending prefab: {prefabName}, id: {objectID}");
-
-        SpawnObjectPacket packet = new()
-        {
-            PrefabName = prefabName,
-            ObjectID = objectID,
-            RoomID = _client.RoomID,
-            SceneID = GameManager.Instance.SceneLoader.CurrentScene
-        };
-
-        await _client.Send(packet);
-        //SpawnFromPacket(packet, true);
+        _syncObjectManager.Register(syncObject);
     }
 
-    public void SpawnFromPacket(SpawnObjectPacket packet, bool isOwner = false)
+    public void UnregistSyncObject(SyncObject syncObject)
     {
-        Debug.Log($"[SpawnFromPacket] Start - isOwner: {isOwner}, prefab: {packet.PrefabName}");
-
-        Addressables.LoadAssetAsync<GameObject>(packet.PrefabName).Completed += handle =>
-        {
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                GameObject gameObject = Instantiate(handle.Result);
-                Debug.Log($"[SpawnFromPacket] Instantiated prefab: {packet.PrefabName}");
-
-                SyncObject syncObject = gameObject.GetComponent<SyncObject>();
-                if (syncObject != null)
-                {
-                    syncObject.Initialize(
-                        packet.ObjectID, 
-                        isOwner ? _client.ClientID : "remote", 
-                        packet.RoomID, 
-                        packet.SceneID,
-                        GameManager.Instance.Network.ClientID);
-                    _syncObjectManager.Register(syncObject);
-                }
-                else
-                {
-                    Debug.LogError($"SyncObject component not found on prefab {packet.PrefabName}");
-                }
-            }
-            else
-            {
-                Debug.LogError($"Failed to load prefab {packet.PrefabName}: {handle.OperationException}");
-            }
-        };
+        _syncObjectManager.Unregister(syncObject.ObjectID);
     }
 
-    public void OnReceiveSync(string json)
+    public async Task Send(string json)
     {
-        SyncObjectHeader packet = JsonConvert.DeserializeObject<SyncObjectHeader>(json);
-
-        if (_syncObjectManager.TryGet(packet.ObjectID, out SyncObject syncObject))
-        {
-            if (!syncObject.IsOwner &&
-                syncObject.RoomID == _client.RoomID &&
-                syncObject.SceneID == GameManager.Instance.SceneLoader.CurrentScene)
-            {
-                syncObject.Deserialize(json);
-            }
-        }
+        await _client.Send(json);
     }
 
-    public void OnRoomListReceived(string json)
+    public async Task CreateRoom(string roomName)
     {
-        var packet = JsonConvert.DeserializeObject<RoomListPacket>(json);
-        Debug.Log($"[RoomList] {packet.Rooms.Count} rooms received");
-        foreach (Room room in packet.Rooms)
-        {
-            Debug.Log($"[Room] {room.ID} - {room.Name} ({room.ClientCount})");
-        }
+        await _client.CreateRoom(roomName);
+    }
 
-        OnRoomListUpdated?.Invoke(packet.Rooms);
+    public async Task JoinRoom(string roomId)
+    {
+        await _client.JoinRoom(roomId);
+    }
+
+    public async Task LeaveRoom()
+    {
+        await _client.LeaveRoom();
+    }
+
+    public async Task RequestRoomList()
+    {
+        await _client.RequestRoomList();
+    }
+
+    public async Task SpawnNetworkObjectawn(string addressableName)
+    {
+        await _client.SpawnNetworkObject(addressableName);
     }
 
     private void OnRoomCreated(string json)
     {
-        var packet = JsonConvert.DeserializeObject<RoomCreatedPacket>(json);
-        Debug.Log($"[RoomCreated] RoomID: {packet.RoomID}");
-        _client.RoomID = packet.RoomID;
+        var packet = JsonConvert.DeserializeObject<ReceiveRoomCreatedPacket>(json);
+        Debug.Log($"[RoomCreated] ID: {packet.RoomID}, Name: {packet.Name}");
     }
 
     private void OnRoomJoined(string json)
     {
-        var packet = JsonConvert.DeserializeObject<RoomJoinedPacket>(json);
-        Debug.Log($"[RoomJoined] RoomID: {packet.RoomID}");
+        var packet = JsonConvert.DeserializeObject<ReceiveRoomJoinedPacket>(json);
+        Debug.Log($"[RoomJoined] RoomID: {packet.RoomID}, Name: {packet.Name}");
+
         _client.RoomID = packet.RoomID;
+        _client.ClientID = packet.ClientID; // ⬅ 서버에서 받은 값 저장
     }
 
-    public async void LeaveRoom()
+    private void OnRoomListReceived(string json)
     {
-        if (!_client.IsInRoom)
+        Debug.Log("aa");
+        var packet = JsonConvert.DeserializeObject<ReceiveRoomListPacket>(json);
+        OnRoomListUpdated?.Invoke(packet.Rooms);
+        foreach (var room in packet.Rooms)
         {
-            Debug.LogWarning("[NetworkManager] Cannot leave room: not currently in any room.");
-            return;
+            Debug.Log($"[RoomList] ID: {room.RoomID}, Name: {room.Name}, Count: {room.ClientCount}");
         }
-
-        await _client.LeaveRoom();
-
-        Debug.Log($"[NetworkManager] Left room");
-
-        GameManager.Instance.LoadScene(GameManager.Scenes.Main);
     }
+
+    private void OnRoomLeft(string json)
+    {
+        Debug.Log("[RoomLeft] You have left the room.");
+    }
+
+    private void OnSpawnReceived(string json)
+    {
+        var packet = JsonConvert.DeserializeObject<SpawnObjectPacket>(json);
+
+        Addressables.LoadAssetAsync<GameObject>(packet.PrefabName).Completed += handle =>
+        {
+            if (handle.Status != AsyncOperationStatus.Succeeded)
+            {
+                Debug.LogError($"[Spawn] Failed: {packet.PrefabName}");
+                return;
+            }
+
+            GameObject obj = Instantiate(handle.Result);
+
+            var syncObject = obj.GetComponent<SyncObject>();
+            if (syncObject != null)
+            {
+                syncObject.Initialize(
+                    packet.ObjectID,
+                    packet.OwnerID,
+                    packet.RoomID,
+                    packet.SceneID,
+                    _client.ClientID
+                );
+
+                _syncObjectManager.Register(syncObject);
+            }
+        };
+    }
+
 }

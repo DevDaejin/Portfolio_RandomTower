@@ -104,7 +104,7 @@ public class InGame : MonoBehaviour
     private async void EnemySpawnCallback(string enemyName)
     {
         Debug.Log($"[EnemySpawnCallback] called with: {"TestEnemy"}");
-        await GameManager.Instance.Network.SpawnNetworkObject("TestEnemy");
+        await GameManager.Instance.Network.SpawnNetworkObjectawn("TestEnemy");
     }
 
     private int GetEnemyCount()
