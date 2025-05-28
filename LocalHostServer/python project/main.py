@@ -47,6 +47,9 @@ async def handle_message(context, message):
         elif message_type == "spawn_enemy":
             await room_manager.spawn_enemy(context, data)
 
+        elif message_type == "spawn_tower":
+            await room_manager.spawn_tower(context, data)
+
         elif message_type == "sync":
             await room_manager.relay_sync(context, data)
 

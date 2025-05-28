@@ -1,30 +1,45 @@
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
-using UnityEngine;
 
 public class SpawnService
 {
     private NetworkClient _client;
-    public Action<string, SpawnObjectPacket> OnReceivedSpawnPacket;
+    public Action<string, SpawnEnemyPacket> OnReceivedEnemyPacket;
+    public Action<string, SpawnTowerPacket> OnReceivedTowerPacket;
 
     public SpawnService(NetworkClient client)
     {
         _client = client;
-        _client?.RegisterHandler("spawn_enemy", OnSpawnReceived);
+        _client?.RegisterHandler("spawn_enemy", OnEnemySpawnReceived);
+        _client?.RegisterHandler("spawn_tower", OnTowerSpawnReceived);
     }
 
-    private void OnSpawnReceived(string json)
+    private void OnEnemySpawnReceived(string json)
     {
-        SpawnObjectPacket packet = JsonConvert.DeserializeObject<SpawnObjectPacket>(json);
+        SpawnEnemyPacket packet = JsonConvert.DeserializeObject<SpawnEnemyPacket>(json);
 
         if (packet == null || packet.OwnerID == _client?.ClientID) return;
 
-        OnReceivedSpawnPacket?.Invoke(packet.EnemyID, packet);
+        OnReceivedEnemyPacket?.Invoke(packet.EnemyID, packet);
     }
 
-    public async Task SpawnNetworkObject(string id, ISyncObject syncObject)
+    public async Task SendEnemySpawn(string id, ISyncObject syncObject)
     {
-        await _client?.SpawnNetworkObject(id, syncObject);
+        await _client?.SendEnemySpawn(id, syncObject);
+    }
+
+    private void OnTowerSpawnReceived(string json)
+    {
+        SpawnTowerPacket packet = JsonConvert.DeserializeObject<SpawnTowerPacket>(json);
+
+        if (packet == null || packet.OwnerID == _client?.ClientID) return;
+
+        OnReceivedTowerPacket?.Invoke(packet.TowerID, packet);
+    }
+
+    public async Task SendTowerSpawn(string id, ISyncObject syncObject)
+    {
+        await _client?.SendTowerSpawn(id, syncObject);
     }
 }

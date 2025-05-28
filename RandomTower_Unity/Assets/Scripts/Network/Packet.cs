@@ -58,13 +58,31 @@ public class SendListRoomsRequest : INetworkMessage
     [JsonProperty("type")]
     public string Type => "room_list";
 }
-public class SpawnObjectPacket : INetworkMessage
+public class SpawnEnemyPacket : INetworkMessage
 {
     [JsonProperty("type")]
     public string Type => "spawn_enemy";
 
     [JsonProperty("enemy_id")]
     public string EnemyID;
+
+    [JsonProperty("object_id")]
+    public string ObjectID;
+
+    [JsonProperty("room_id")]
+    public string RoomID;
+
+    [JsonProperty("owner_id")]
+    public string OwnerID;
+}
+
+public class SpawnTowerPacket : INetworkMessage
+{
+    [JsonProperty("type")]
+    public string Type => "spawn_tower";
+
+    [JsonProperty("tower_id")]
+    public string TowerID;
 
     [JsonProperty("object_id")]
     public string ObjectID;

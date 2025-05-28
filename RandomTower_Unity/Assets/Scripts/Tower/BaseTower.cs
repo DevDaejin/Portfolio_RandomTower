@@ -52,6 +52,8 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
 
     protected virtual void Update()
     {
+        if (_enemyProvider == null) return;
+
         _fireElapsed += Time.deltaTime;
 
         var enemies = FindClosestEnemies();

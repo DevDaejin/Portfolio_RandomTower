@@ -129,6 +129,30 @@ class RoomManager:
                 await self._send(target, spawn_packet)
 
 
+    async def spawn_tower(self, client, data):
+            room_id = client.room_id
+            if not room_id or room_id not in self.rooms:
+                await self._send(client, {
+                    "type": "error",
+                    "message": "Cannot spawn: not in a valid room"
+                })
+                return
+
+            tower_id = data.get("tower_id")
+            object_id = data.get("object_id")
+
+            spawn_packet = {
+                "type": "spawn_tower",
+                "tower_id" : tower_id,
+                "object_id": object_id,
+                "room_id": room_id,
+                "owner_id": client.client_id
+            }
+
+            for target in self.rooms[room_id].clients:
+                if target != client:
+                    await self._send(target, spawn_packet)
+
     async def _send(self, client, message_dict):
         try:
             await client.websocket.send(json.dumps(message_dict))

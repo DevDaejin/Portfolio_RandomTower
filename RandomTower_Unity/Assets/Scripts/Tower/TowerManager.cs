@@ -4,8 +4,9 @@ using UnityEngine;
 public class TowerManager : MonoBehaviour
 {
     [SerializeField] private Transform _installationGrid;
-    [SerializeField] private TowerDatabase _towerDatabase;
     [SerializeField] private TowerChanceTable _towerChanceTable;
+    [SerializeField] private TowerDatabase _towerDatabase;
+    public TowerDatabase TowerDatabase => _towerDatabase;
 
     private IEnemyProvider _enemyProvider;
     private TowerGridController _gridController;
@@ -13,13 +14,14 @@ public class TowerManager : MonoBehaviour
 
     private int _installableCount;
 
+    public Action<int, ISyncObject> OnSendSpawnPacket;
     public Action<int, int> OnTowerUpdated;
 
     private void Awake()
     {
         Transform[] tree = GetChildrenTransformArray(_installationGrid);
         _gridController = new TowerGridController(tree);
-        _towerFactory = new TowerFactory(_towerDatabase);
+        _towerFactory = new TowerFactory(TowerDatabase);
     }
 
     //TODO : 타워 강화 로직 파라미터로 전달 받기
@@ -55,17 +57,26 @@ public class TowerManager : MonoBehaviour
             data = grid.GetTower().Data;
         }
 
-        ITower tower = _towerFactory.CreateTower(data, grid.transform.position, _enemyProvider);
+        ITower tower = CreateTower(data, grid.transform.position, _enemyProvider, 1);
 
         if (!grid.TryAddTower(tower))
         {
             _towerFactory.Return(tower);
         }
-
-        TowerGridSelectionHandler.Reselect();
-        OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
+        else
+        { 
+            ISyncObject syncObject = tower.Transform.gameObject.GetComponent<ISyncObject>();
+            OnSendSpawnPacket.Invoke(data.ID, syncObject);
+            OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
+            TowerGridSelectionHandler.Reselect();
+        }
     }
 
+    public ITower CreateTower(TowerData data, Vector3 position, IEnemyProvider enemyProvider, int level)
+    {
+        return _towerFactory.CreateTower(data, position, enemyProvider, level);
+    }
+     
     public Transform[] GetChildrenTransformArray(Transform root)
     {
         Transform[] all = root.GetComponentsInChildren<Transform>(true);

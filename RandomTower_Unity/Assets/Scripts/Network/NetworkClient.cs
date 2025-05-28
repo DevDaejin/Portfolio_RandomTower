@@ -111,12 +111,26 @@ public class NetworkClient
         await Send(packet);
     }
 
-    public async Task SpawnNetworkObject(string id, ISyncObject syncObject)
+    public async Task SendEnemySpawn(string id, ISyncObject syncObject)
     {
         var packet = new
         {
             type = "spawn_enemy",
             enemy_id = id,
+            room_id = syncObject.RoomID,
+            object_id = syncObject.ObjectID,
+            owner_id = syncObject.OwnerID,
+        };
+
+        await Send(JsonConvert.SerializeObject(packet));
+    }
+
+    public async Task SendTowerSpawn(string id, ISyncObject syncObject)
+    {
+        var packet = new
+        {
+            type = "spawn_tower",
+            tower_id = id,
             room_id = syncObject.RoomID,
             object_id = syncObject.ObjectID,
             owner_id = syncObject.OwnerID,
