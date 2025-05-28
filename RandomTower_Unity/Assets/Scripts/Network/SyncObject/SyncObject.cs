@@ -1,32 +1,34 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class SyncObject : MonoBehaviour
+public class SyncObject : MonoBehaviour, ISyncObject
 {
     public string ObjectID { get; private set; }
     public string OwnerID { get; private set; }
     public string RoomID { get; private set; }
-    public string SceneID { get; private set; }
     public string LocalClientID { get; private set; }
     public bool IsOwner => OwnerID == LocalClientID;
 
     private List<ISyncable> _syncables = new();
+    private NetworkManager _network;
 
-    public void Initialize(string objectId, string ownerId, string roomId, string sceneId, string localClientId)
+    public void Initialize(string objectID, string ownerID, string roomID)
     {
-        ObjectID = objectId;
-        OwnerID = ownerId;
-        RoomID = roomId;
-        SceneID = sceneId;
-        LocalClientID = localClientId;
+        ObjectID = objectID;
+        OwnerID = ownerID;
+        RoomID = roomID;
+
+        _network = GameManager.Instance.Network;
+        LocalClientID = _network.ClientID;
 
         _syncables = GetComponents<ISyncable>().ToList();
-        GameManager.Instance.Network.RegistSyncObject(this);
+        _network.SyncObjectManager.Register(this);
     }
 
-    private async void Update()
+    private void Update()
     {
         if (!IsOwner) return;
 
@@ -42,14 +44,15 @@ public class SyncObject : MonoBehaviour
                 Payload = json
             };
 
-            await GameManager.Instance.Network.Send(JsonConvert.SerializeObject(packet));
+            _ = _network.Send(JsonConvert.SerializeObject(packet));
+
             syncable.ClearDirty();
         }
     }
 
     private void OnDestroy()
     {
-        GameManager.Instance.Network.UnregistSyncObject(this);
+        _network.SyncObjectManager.Unregister(ObjectID);
     }
 
     public void Receive(string syncType, string json)

@@ -38,14 +38,17 @@ async def handle_message(context, message):
             await room_manager.join_room(context, data)
 
         elif message_type == "leave_room":
-            await room_manager.leave_room(context, data)
+            await room_manager.leave_room(context)
 
         elif message_type == "room_list":
             print("[main] room_list message received")
             await room_manager.list_rooms(context)
         
-        elif message_type == "spawn":
-            await room_manager.spawn_object(context, data)
+        elif message_type == "spawn_enemy":
+            await room_manager.spawn_enemy(context, data)
+
+        elif message_type == "sync":
+            await room_manager.relay_sync(context, data)
 
         else:
             print(f"[Warn] Unknown type: {message_type}")

@@ -38,19 +38,34 @@ class RoomManager:
         await self._send(client, {
             "type": "room_joined",
             "room_id": room_id,
-            "name": room.name
+            "name": room.name,
+            "client": client.client_id
         })
 
     async def leave_room(self, client):
         room_id = client.room_id
-        if not room_id or room_id not in self.rooms:
+        if not room_id:
+            print(f"[LeaveRoom] {client.client_id} is not in any room.")
             return
-        room = self.rooms[room_id]
-        room.clients.discard(client)
+
+        room = self.rooms.get(room_id)
+        if not room:
+            print(f"[LeaveRoom] Room {room_id} does not exist.")
+            client.room_id = None
+            return
+
+        if client not in room.clients:
+            print(f"[LeaveRoom] {client.client_id} not found in room {room_id}.")
+        else:
+            room.clients.discard(client)
+            print(f"[Room] {client.client_id} left {room_id}")
+
         if not room.clients:
+            print(f"[Room] {room_id} is empty. Deleting room.")
             del self.rooms[room_id]
-        print(f"[Room] {client.client_id} left {room_id}")
+
         client.room_id = None
+
         await self._send(client, {
             "type": "room_left",
             "room_id": room_id
@@ -76,7 +91,7 @@ class RoomManager:
         }
 
         print("[Server] Sending room_list response:\n" + json.dumps(payload, indent=2))
-        await self._send(client, payload)  # ✅ 딱 한 번만 전송
+        await self._send(client, payload) 
 
 
         
@@ -89,7 +104,7 @@ class RoomManager:
             if client != sender:
                 await self._send(client, data)
 
-    async def spawn_object(self, client, data):
+    async def spawn_enemy(self, client, data):
         room_id = client.room_id
         if not room_id or room_id not in self.rooms:
             await self._send(client, {
@@ -98,19 +113,21 @@ class RoomManager:
             })
             return
 
-        prefab_name = data.get("prefab_name", "Unknown")
-        object_id = str(uuid.uuid4())
+        enemy_id = data.get("enemy_id")
+        object_id = data.get("object_id")
 
         spawn_packet = {
-            "type": "spawn",
+            "type": "spawn_enemy",
+            "enemy_id" : enemy_id,
             "object_id": object_id,
-            "prefab_name": prefab_name,
             "room_id": room_id,
             "owner_id": client.client_id
         }
 
         for target in self.rooms[room_id].clients:
-            await self._send(target, spawn_packet)
+            if target != client:
+                await self._send(target, spawn_packet)
+
 
     async def _send(self, client, message_dict):
         try:

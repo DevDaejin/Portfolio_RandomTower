@@ -32,6 +32,9 @@ public class GameManager : MonoBehaviour
     public SceneLoader SceneLoader => _sceneLoader ??= GetComponentInChildren<SceneLoader>();
     private SceneLoader _sceneLoader;
 
+    public Dispatcher Dispatcher => _dispatcher ??= GetComponent<Dispatcher>();
+    private Dispatcher _dispatcher;
+
 
     public enum Scenes { Main, Lobby, Game };
 

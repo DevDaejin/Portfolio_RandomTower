@@ -17,7 +17,6 @@ public class NetworkClient
     public string RoomID { get; set; }
 
     public Action OnConnected;
-    public Action<string> OnMessage;
 
     public NetworkClient(string address)
     {
@@ -47,26 +46,24 @@ public class NetworkClient
     private void ProcessMessage(byte[] bytes)
     {
         string json = System.Text.Encoding.UTF8.GetString(bytes);
-        Debug.Log($"[NetClient] Raw JSON: {json}");
 
         BasePacket basePacket = JsonConvert.DeserializeObject<BasePacket>(json);
         Debug.Log($"[NetClient] Parsed type: {basePacket?.Type}");
 
-        if (basePacket.Type == "sync")
+        if (basePacket == null || string.IsNullOrEmpty(basePacket.Type))
         {
-            OnMessage?.Invoke(json);
+            Debug.LogWarning("[NetClient] Invalid packet received.");
+            return;
+        }
+
+        if (_packetHandlers.TryGetValue(basePacket.Type, out var handler))
+        {
+            Debug.Log($"[NetClient] Found handler for: {basePacket.Type}");
+            handler.Invoke(json);
         }
         else
         {
-            if (_packetHandlers.TryGetValue(basePacket.Type, out var handler))
-            {
-                Debug.Log($"[NetClient] Found handler for: {basePacket.Type}");
-                handler.Invoke(json);
-            }
-            else
-            {
-                Debug.LogWarning($"[NetClient] No handler registered for type: {basePacket.Type}");
-            }
+            Debug.LogWarning($"[NetClient] No handler registered for type: {basePacket.Type}");
         }
     }
 
@@ -114,13 +111,15 @@ public class NetworkClient
         await Send(packet);
     }
 
-    public async Task SpawnNetworkObject(string name)
+    public async Task SpawnNetworkObject(string id, ISyncObject syncObject)
     {
         var packet = new
         {
-            type = "spawn",
-            prefab_name = name,
-            room_id = RoomID
+            type = "spawn_enemy",
+            enemy_id = id,
+            room_id = syncObject.RoomID,
+            object_id = syncObject.ObjectID,
+            owner_id = syncObject.OwnerID,
         };
 
         await Send(JsonConvert.SerializeObject(packet));

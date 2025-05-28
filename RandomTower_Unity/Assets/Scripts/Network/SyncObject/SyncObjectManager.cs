@@ -9,6 +9,12 @@ public class SyncObjectManager
 
     public void Register(SyncObject syncObject)
     {
+        string id = syncObject.ObjectID;
+        if(_syncObjects.ContainsKey(id))
+        {
+            Debug.Log($"Already added object. {id}");
+            return;
+        }
         _syncObjects[syncObject.ObjectID] = syncObject;
     }
 

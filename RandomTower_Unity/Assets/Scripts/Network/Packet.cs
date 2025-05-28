@@ -61,19 +61,16 @@ public class SendListRoomsRequest : INetworkMessage
 public class SpawnObjectPacket : INetworkMessage
 {
     [JsonProperty("type")]
-    public string Type => "spawn";
+    public string Type => "spawn_enemy";
 
-    [JsonProperty("prefab_name")]
-    public string PrefabName;
+    [JsonProperty("enemy_id")]
+    public string EnemyID;
 
     [JsonProperty("object_id")]
     public string ObjectID;
 
     [JsonProperty("room_id")]
     public string RoomID;
-
-    [JsonProperty("scene_id")]
-    public string SceneID;
 
     [JsonProperty("owner_id")]
     public string OwnerID;

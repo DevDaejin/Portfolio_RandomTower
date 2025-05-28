@@ -1,14 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour, IEnemyProvider
 {
     [SerializeField] private Transform _routeGroup;
     [SerializeField] private EnemyUIManager _enemyUIManager;
+    [SerializeField] private EnemyDataConfig[] _enemyDatas;
 
     private EnemyFactory _enemyFactory;
     private List<BaseEnemy> _enemies = new();
@@ -16,7 +15,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     private readonly List<BaseEnemy> _cachingSortedList = new();
     private Dictionary<int, Coroutine> _spawnCoroutine = new();
 
-    public Action<string> OnEnemySpawned;
+    public Action<int, ISyncObject> OnSendSpawnPacket;
     public Action<int> OnReward;
 
     private const float SpawnInterval = 0.5f;
@@ -24,11 +23,6 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     private void Awake()
     {
         _enemyFactory = new EnemyFactory();
-    }
-
-    private void Start()
-    {
-        _enemyFactory.OnEnenmySpawnd = OnEnemySpawned;
     }
 
     public void SpawnWave(StageConfig config, int waveIndex)
@@ -43,15 +37,39 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     {
         for (int i = 0; i < info.Count; i++)
         {
-            BaseEnemy enemy = _enemyFactory.CreateEnemy(info.Config.Data, _routeGroup);
-            enemy.OnDie = ReturnEnemy;
-            enemy.OnReward = OnReward;
-            _enemyUIManager?.Register(enemy);
+            BaseEnemy enemy = GetEnemy(info.Config.Data);
+            ISyncObject syncObject = enemy.GetComponent<ISyncObject>();
+            OnSendSpawnPacket.Invoke(enemy.Data.ID, syncObject);
             _enemies.Add(enemy);
             yield return new WaitForSecondsRealtime(SpawnInterval);
         }
 
         _spawnCoroutine.Remove(id);
+    }
+
+    public EnemyData GetEnemyDataWithID(int id)
+    {
+        EnemyDataConfig target = null;
+        foreach (EnemyDataConfig config in _enemyDatas)
+        {
+            if(config.Data.ID == id)
+            {
+                target = config;
+                break;
+            }
+        }
+
+        return target.Data;
+    }
+
+    public BaseEnemy GetEnemy(EnemyData data)
+    {
+        BaseEnemy enemy = _enemyFactory.CreateEnemy(data, _routeGroup);
+        enemy.OnDie = ReturnEnemy;
+        enemy.OnReward = OnReward;
+        _enemyUIManager?.Register(enemy);
+
+        return enemy;
     }
 
     public void ReturnEnemy(BaseEnemy enemy)

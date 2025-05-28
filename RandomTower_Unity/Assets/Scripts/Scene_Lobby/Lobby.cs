@@ -20,7 +20,7 @@ public class Lobby : MonoBehaviour
         _ui.OnPlay = OnPlay;
 
         _network = GameManager.Instance.Network;
-        _network.OnRoomListUpdated += (roomList) =>
+        _network.RoomService.OnRoomListUpdated += (roomList) =>
         {
             Debug.Log($"[UI] RoomListUpdated called. Count: {roomList.Count}");
             _roomList = roomList;
@@ -37,14 +37,15 @@ public class Lobby : MonoBehaviour
         {
             Debug.Log("[Lobby] Requesting room list...");
             _time = 0;
-            await _network.RequestRoomList();
+            await _network.RoomService.RequestRoomList();
         }
     }
 
-    private void OnPlay()
+    private async void OnPlay()
     {
         if (_network.IsConnect)
         {
+            await _network.RoomService.RequestRoomList();
             _ui.ActiveRoomListPanel(true);
         }
         else
@@ -55,7 +56,7 @@ public class Lobby : MonoBehaviour
 
     private async void OnCreate()
     {
-        await _network.CreateRoom(_ui.InputedRoomName);
+        await _network.RoomService.CreateRoom(_ui.InputedRoomName);
         GameManager.Instance.LoadScene(GameManager.Scenes.Game);
     }
 
@@ -70,7 +71,7 @@ public class Lobby : MonoBehaviour
             return;
         }
 
-        await _network.JoinRoom(roomID);
+        await _network.RoomService.JoinRoom(roomID);
         GameManager.Instance.LoadScene(GameManager.Scenes.Game);
     }
 }

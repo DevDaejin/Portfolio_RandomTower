@@ -1166,6 +1166,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _routeGroup: {fileID: 1251800037}
   _enemyUIManager: {fileID: 1195791143}
+  _enemyDatas:
+  - {fileID: 11400000, guid: 6b1eb705a677eb64b8e953ed5e952ca2, type: 2}
 --- !u!114 &1195791143
 MonoBehaviour:
   m_ObjectHideFlags: 0
