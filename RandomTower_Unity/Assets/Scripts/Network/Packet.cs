@@ -104,6 +104,9 @@ public class ReceiveRoomCreatedPacket
 
     [JsonProperty("name")]
     public string Name;
+
+    [JsonProperty("client_id")]
+    public string ClientID;
 }
 
 public class ReceiveRoomJoinedPacket

@@ -11,6 +11,7 @@ public class InGame : MonoBehaviour
     private EnemyManager _enemyManager;
     private WaveController _waveController;
     private ResourceManager _resourceManager;
+    private NetworkManager _networkManager;
     private InGameUI _ui;
 
     private int _currentStage = 0;
@@ -58,21 +59,26 @@ public class InGame : MonoBehaviour
         _ui.SetSpawnButton(SpawnTower);
         _ui.SetResultButtons(Retry, GoToLobby);
 
-        GameManager.Instance.Network.SpawnService.OnReceivedEnemyPacket = OnReceivedEnemyPacket;
-        GameManager.Instance.Network.SpawnService.OnReceivedTowerPacket = OnReceivedTowerPacket;
+        _networkManager = GameManager.Instance.Network;
+
+        if (_networkManager.IsConnect)
+        {
+            _networkManager.SpawnService.OnReceivedEnemyPacket = OnReceivedEnemyPacket;
+            _networkManager.SpawnService.OnReceivedTowerPacket = OnReceivedTowerPacket;
+        }
         GetEnemyCount();
     }
 
     private async void OnSendSpawnEnemyPacket(int id, ISyncObject syncObject)
     {
-        if (!GameManager.Instance.Network.IsConnect) return;
+        if (!_networkManager.IsConnect) return;
 
         syncObject.Initialize(
             Guid.NewGuid().ToString(),
-            GameManager.Instance.Network.ClientID,
-            GameManager.Instance.Network.RoomID);
+            _networkManager.ClientID,
+            _networkManager.RoomID);
 
-        await GameManager.Instance.Network.SpawnService.SendEnemySpawn(id.ToString(), syncObject);
+        await _networkManager.SpawnService.SendEnemySpawn(id.ToString(), syncObject);
     }
 
     private void OnReceivedEnemyPacket(string id, SpawnEnemyPacket packet)
@@ -88,14 +94,14 @@ public class InGame : MonoBehaviour
 
     private async void OnSendSpawnTowerPacket(int id, ISyncObject syncObject)
     {
-        if (!GameManager.Instance.Network.IsConnect) return;
+        if (!_networkManager.IsConnect) return;
 
         syncObject.Initialize(
             Guid.NewGuid().ToString(),
-            GameManager.Instance.Network.ClientID,
-            GameManager.Instance.Network.RoomID);
+            _networkManager.ClientID,
+            _networkManager.RoomID);
 
-        await GameManager.Instance.Network.SpawnService.SendTowerSpawn(id.ToString(), syncObject);
+        await _networkManager.SpawnService.SendTowerSpawn(id.ToString(), syncObject);
     }
 
     private void OnReceivedTowerPacket(string id, SpawnTowerPacket packet)
@@ -107,6 +113,15 @@ public class InGame : MonoBehaviour
             packet.ObjectID,
             packet.OwnerID,
             packet.RoomID);
+
+        string ObjectID = syncObject.ObjectID;
+        List<SyncPacket> packets = _networkManager.SpawnService.GetSyncPackets(ObjectID);
+        if (packets == null) return;
+
+        foreach (SyncPacket syncPacket in packets)
+        {
+            
+        }
     }
 
     private void Update()

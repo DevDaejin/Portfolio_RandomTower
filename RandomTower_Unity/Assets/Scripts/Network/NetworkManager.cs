@@ -33,6 +33,7 @@ public class NetworkManager : MonoBehaviour
     public async void Connect(string ip, string port)
     {
         _client = new($"{ip}:{port}");
+        _client.RegisterHandler("sync", OnSyncReceived);
         _client.OnConnected = OnConnectComplete;
         await _client.Connect();
     }
@@ -42,9 +43,6 @@ public class NetworkManager : MonoBehaviour
         SyncObjectManager = new SyncObjectManager();
         RoomService = new RoomService(_client);
         SpawnService = new SpawnService(_client);
-
-        _client.RegisterHandler("sync", OnSyncReceived);
-
         OnConnected.Invoke();
         IsConnect = true;
     }
@@ -53,7 +51,15 @@ public class NetworkManager : MonoBehaviour
     {
         var packet = JsonConvert.DeserializeObject<SyncPacket>(json);
         var syncObject = SyncObjectManager.GetSyncObject(packet.ObjectID);
-        syncObject?.Receive(packet.SyncType, packet.Payload);
+
+        if(syncObject != null)
+        {
+            syncObject?.Receive(packet.SyncType, packet.Payload);
+        }
+        else
+        {
+            SpawnService.AddSyncPacketBuffer(packet);
+        }
     }
 
     public void CancelConnect() => _client.CancelConnect();

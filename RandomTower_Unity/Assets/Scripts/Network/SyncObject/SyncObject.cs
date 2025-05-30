@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEngine.Tilemaps.Tilemap;
 
 public class SyncObject : MonoBehaviour, ISyncObject
 {
@@ -26,33 +27,45 @@ public class SyncObject : MonoBehaviour, ISyncObject
 
         _syncables = GetComponents<ISyncable>().ToList();
         _network.SyncObjectManager.Register(this);
+
+        if (!IsOwner) return;
+
+        foreach (ISyncable syncable in _syncables)
+        {
+            Send(syncable);
+        }
     }
 
     private void Update()
     {
         if (!IsOwner) return;
 
-        foreach(ISyncable syncable in _syncables)
+        foreach (ISyncable syncable in _syncables)
         {
             if (!syncable.IsDirty()) continue;
 
-            string json = syncable.Serialize();
-            SyncPacket packet = new SyncPacket
-            {
-                ObjectID = ObjectID,
-                SyncType = syncable.SyncType,
-                Payload = json
-            };
-
-            _ = _network.Send(JsonConvert.SerializeObject(packet));
-
-            syncable.ClearDirty();
+            Send(syncable);
         }
+    }
+
+    private void Send(ISyncable syncable)
+    {
+        string json = syncable.Serialize();
+        SyncPacket packet = new SyncPacket
+        {
+            ObjectID = ObjectID,
+            SyncType = syncable.SyncType,
+            Payload = json
+        };
+
+        _ = _network.Send(JsonConvert.SerializeObject(packet));
+
+        syncable.ClearDirty();
     }
 
     private void OnDestroy()
     {
-        _network.SyncObjectManager.Unregister(ObjectID);
+        _network?.SyncObjectManager.Unregister(ObjectID);
     }
 
     public void Receive(string syncType, string json)

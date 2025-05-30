@@ -1,42 +1,36 @@
-using Newtonsoft.Json;
 using UnityEngine;
 
-public class SyncRotation : MonoBehaviour, ISyncable
+public class SyncRotation : BaseSync<SyncRotation.Data>
 {
-    private Vector3 _synced;
-    public string SyncType => "rotation";
-  
+    public override string SyncType => "rotation";
 
-    public string Serialize()
+    protected override Data GetCurrentData()
     {
-        return JsonConvert.SerializeObject(new Data
+        return new Data
         {
-            rotationX = transform.eulerAngles.x,
-            rotationY = transform.eulerAngles.y,
-            rotationZ = transform.eulerAngles.z,
-        });
+            X = transform.eulerAngles.x,
+            Y = transform.eulerAngles.y,
+            Z = transform.eulerAngles.z,
+        };
     }
 
-    public void Deserialize(string json)
+    protected override void ApplyData(Data data)
     {
-        Data data = JsonConvert.DeserializeObject<Data>(json);
-        transform.eulerAngles = new Vector3(data.rotationX, data.rotationY, data.rotationZ);
+        transform.eulerAngles = new Vector3(data.X, data.Y, data.Z);
     }
 
-    public bool IsDirty()
+    protected override bool Equals(Data a, Data b)
     {
-        return (transform.eulerAngles - _synced).sqrMagnitude > 0.01f;
+        Vector3 aRotation = new Vector3(a.X, a.Y, a.Z);
+        Vector3 bRotation = new Vector3(b.X, b.Y, b.Z);
+
+        return aRotation == bRotation;
     }
 
-    public void ClearDirty()
+    public class Data
     {
-        _synced = transform.eulerAngles;
-    }
-
-    private class Data
-    {
-        public float rotationX;
-        public float rotationY;
-        public float rotationZ;
+        public float X;
+        public float Y;
+        public float Z;
     }
 }

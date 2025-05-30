@@ -1,10 +1,13 @@
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 public class SpawnService
 {
     private NetworkClient _client;
+    private Dictionary<string, List<SyncPacket>> _syncBuffer = new();
+
     public Action<string, SpawnEnemyPacket> OnReceivedEnemyPacket;
     public Action<string, SpawnTowerPacket> OnReceivedTowerPacket;
 
@@ -13,6 +16,22 @@ public class SpawnService
         _client = client;
         _client?.RegisterHandler("spawn_enemy", OnEnemySpawnReceived);
         _client?.RegisterHandler("spawn_tower", OnTowerSpawnReceived);
+    }
+
+    public void AddSyncPacketBuffer(SyncPacket packet)
+    {
+        string id = packet.ObjectID;
+        if (!_syncBuffer.ContainsKey(id))
+        {
+            _syncBuffer[id] = new List<SyncPacket>();
+        }
+
+        _syncBuffer[id].Add(packet);
+    }
+
+    public List<SyncPacket> GetSyncPackets(string objectID)
+    {
+        return _syncBuffer[objectID];
     }
 
     private void OnEnemySpawnReceived(string json)

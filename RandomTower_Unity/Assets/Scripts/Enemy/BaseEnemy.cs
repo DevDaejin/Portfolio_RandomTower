@@ -7,15 +7,14 @@ using UnityEngine.AI;
 public class BaseEnemy : MonoBehaviour
 {
     public EnemyData Data { get; private set; }
-    private Transform[] _routes;
-    protected NavMeshAgent _agent;
-
+    
     private bool _isInitailized = false;
-
-    private int _targetIndex;
+    private Transform[] _routes;
+    private NavMeshAgent _agent;
     private Vector3 _destination;
+    private int _targetIndex;
 
-    protected float _currentHP;
+    public float CurrentHP;
 
     public Action<int> OnReward;
     public Action<BaseEnemy> OnDie;
@@ -63,7 +62,7 @@ public class BaseEnemy : MonoBehaviour
     private void InitializeEnemyData(EnemyData data)
     {
         Data = data;
-        _currentHP = Data.MaxHP;
+        CurrentHP = Data.MaxHP;
     }
 
     private void NextDestination()
@@ -87,10 +86,10 @@ public class BaseEnemy : MonoBehaviour
 
     public virtual void TakeDamage(float amount)
     {
-        _currentHP -= amount;
+        CurrentHP -= amount;
         OnTakeDamage?.Invoke(this, amount);
 
-        if(_currentHP <= 0)
+        if(CurrentHP <= 0)
         {
             Die();
         }
@@ -104,6 +103,6 @@ public class BaseEnemy : MonoBehaviour
 
     public float GetHPRatio()
     {
-        return Mathf.Clamp01(_currentHP / Data.MaxHP);
+        return Mathf.Clamp01(CurrentHP / Data.MaxHP);
     }
 }

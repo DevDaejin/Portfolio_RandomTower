@@ -1,40 +1,37 @@
-using Newtonsoft.Json;
 using UnityEngine;
 
-public class SyncPosition : MonoBehaviour, ISyncable
+public class SyncPosition : BaseSync<SyncPosition.Data>
 {
-    private Vector3 _synced;
-    public string SyncType => "position";
+    public override string SyncType => "position";
 
-    public string Serialize()
+    protected override Data GetCurrentData()
     {
-        return JsonConvert.SerializeObject(new Data{ 
-            positionX = transform.position.x,
-            positionY = transform.position.y,
-            positionZ = transform.position.z,
-        });
+        return new Data
+        {
+            X = transform.position.x,
+            Y = transform.position.y,
+            Z = transform.position.z,
+        };
     }
 
-    public void Deserialize(string json)
+    protected override void ApplyData(Data data)
     {
-        Data data = JsonConvert.DeserializeObject<Data>(json);
-        transform.position = new Vector3 (data.positionX, data.positionY, data.positionZ);
+        transform.position = new Vector3(data.X, data.Y, data.Z);
     }
 
-    public bool IsDirty()
+    protected override bool Equals(Data a, Data b)
     {
-        return (transform.position - _synced).sqrMagnitude > 0.01f;
+        Vector3 aPosition = new Vector3(a.X, a.Y, a.Z);
+        Vector3 bPosition = new Vector3(b.X, b.Y, b.Z);
+
+        return aPosition == bPosition;
     }
 
-    public void ClearDirty()
+    public class Data
     {
-        _synced = transform.position;
-    }
-
-    private class Data
-    {
-        public float positionX;
-        public float positionY;
-        public float positionZ;
+        public float X;
+        public float Y;
+        public float Z;
     }
 }
+

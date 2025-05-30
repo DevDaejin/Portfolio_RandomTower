@@ -26,6 +26,8 @@ public class RoomService
     private void OnRoomCreated(string json)
     {
         var packet = JsonConvert.DeserializeObject<ReceiveRoomCreatedPacket>(json);
+        _client.RoomID = packet.RoomID;
+        _client.ClientID = packet.ClientID;
     }
 
     private void OnRoomJoined(string json)

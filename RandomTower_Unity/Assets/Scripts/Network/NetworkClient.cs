@@ -93,9 +93,9 @@ public class NetworkClient
         await Send(packet);
     }
 
-    public async Task JoinRoom(string roomId)
+    public async Task JoinRoom(string roomID)
     {
-        string packet = JsonConvert.SerializeObject(new SendJoinRoomPacket { RoomID = roomId });
+        string packet = JsonConvert.SerializeObject(new SendJoinRoomPacket { RoomID = roomID });
         await Send(packet);
     }
 
