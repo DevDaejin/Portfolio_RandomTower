@@ -3,6 +3,6 @@ using UnityEngine;
 
 public interface IProjectilePool
 {
-    Projectile Get(BaseEnemy target, Vector3 origin, float damage, float speed);
+    public Projectile Get(BaseEnemy target, Vector3 origin, float damage, float speed, Action<Projectile, ISyncObject> onSyncReturn);
     void Release();
 }

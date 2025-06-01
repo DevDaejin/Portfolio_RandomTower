@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: -6769894850395103719}
   - component: {fileID: -3792564684091467396}
   - component: {fileID: -5066201287958174312}
+  - component: {fileID: 8568762403594604962}
   m_Layer: 0
   m_Name: StraightProjectile
   m_TagString: Untagged
@@ -173,3 +174,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c3467965021b734b956d33f9bd6ddbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8568762403594604962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8195383268220158610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72d5c6413a271c949916686f19c81cd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isLaserType: 0

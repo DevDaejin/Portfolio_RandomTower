@@ -106,7 +106,7 @@ public class SpawnProjectilePacket : ISpawnPacket
     public string OwnerID { get; set; }
     public string RoomID { get; set; }
     public void SetSpawnID(string id) => ProjectileID = id;
-    public string GetSpawnID() => OwnerID;
+    public string GetSpawnID() => ProjectileID;
 }
 
 public class ReceiveRoomCreatedPacket : ITypePacket, IRoomIDPacket, INamePacket, IClientIDPacket

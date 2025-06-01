@@ -35,7 +35,7 @@ class RoomManager:
             "type": "room_joined",
             "room_id": room_id,
             "name": room.name,
-            "client": client.client_id
+            "client_id": client.client_id
         })
 
     async def leave_room(self, client):
@@ -139,6 +139,30 @@ class RoomManager:
         spawn_packet = {
             "type": "spawn_tower",
             "tower_id": tower_id,
+            "object_id": object_id,
+            "room_id": room_id,
+            "owner_id": client.client_id
+        }
+
+        for target in self.rooms[room_id].clients:
+            print(f" → target {target.client_id}")
+            if target != client:
+                await self._send(target, spawn_packet)
+
+    async def spawn_projectile(self, client, data):
+        room_id = client.room_id
+        print(f"[spawn_projectile] sender: {client.client_id} in room {room_id}")
+
+        if not room_id or room_id not in self.rooms:
+            print(f"[spawn_projectile] invalid room_id")
+            return
+
+        projectile_id = data.get("projectile_id")
+        object_id = data.get("object_id")
+
+        spawn_packet = {
+            "type": "spawn_projectile",
+            "projectile_id": projectile_id,
             "object_id": object_id,
             "room_id": room_id,
             "owner_id": client.client_id

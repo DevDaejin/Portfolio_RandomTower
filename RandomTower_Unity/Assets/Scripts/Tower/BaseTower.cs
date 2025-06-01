@@ -48,8 +48,8 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
 
         foreach (BaseEnemy target in targets)
         {
-            ISyncObject syncObject = _projectilePool.Get(target, transform.position, Damage, Data.ProjectileSpeed).GetComponent<ISyncObject>();
-            OnAttack?.Invoke(Data.ID, syncObject);
+            ISyncObject syncObject = _projectilePool.Get(target, transform.position, Damage, Data.ProjectileSpeed, null).GetComponent<ISyncObject>();
+            OnAttack.Invoke(Data.ID, syncObject);
             _fireElapsed = 0f;
         }
     }

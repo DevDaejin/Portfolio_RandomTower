@@ -8,9 +8,9 @@ public class CurveProjectile : Projectile
     private const float Duration = 0.5f;
     private const float HitThreshold = 0.05f;
 
-    public override void Initialize(BaseEnemy target, Vector3 origin, float damage, float speed, Action<Projectile> onHit)
+    public override void Initialize(BaseEnemy target, Vector3 origin, float damage, float speed, Action<Projectile> onHit, Action<Projectile, ISyncObject> onSyncReturn)
     {
-        base.Initialize(target, origin, damage, speed, onHit);
+        base.Initialize(target, origin, damage, speed, onHit, onSyncReturn);
         _origin = transform.position;
         _elapsed = 0;
     }
