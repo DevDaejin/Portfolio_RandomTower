@@ -9,8 +9,9 @@ public class TowerFactory
     private readonly TowerDatabase _database;
     private readonly  Transform _towerGroup;
 
-    private readonly Dictionary<int, Pool<BaseTower>> _towerPools = new();
+    private readonly Dictionary<int, GameObjectPool<BaseTower>> _towerPools = new();
     private readonly Dictionary<int, IProjectilePool> _projectilePools = new();
+    public Dictionary<int, IProjectilePool> ProjectilePool => _projectilePools;
 
     private const string TowerGroupName = "TowerGroup";
 
@@ -28,24 +29,28 @@ public class TowerFactory
         return candidates[Random.Range(0, candidates.Length)];
     }
 
-    public ITower CreateTower(TowerData data, Vector3 gridPosition, IEnemyProvider enemyProvider, int level = 1)
+    public ITower CreateTower(TowerData data, Vector3 gridPosition, IEnemyProvider enemyProvider, Action<int, ISyncObject> onAttack, int level = 1)
     {
-        Pool<BaseTower> towerPool = GetTowerPool(data);
+        GameObjectPool<BaseTower> towerPool = GetTowerPool(data);
         BaseTower tower = towerPool.Get();
         IProjectilePool projectilePool = GetProjectilePool(data);
-        tower.Initialize(data, gridPosition, projectilePool, enemyProvider, level);
+        tower.Initialize(data, gridPosition, projectilePool, enemyProvider, onAttack, level);
 
         return tower;
     }
 
-    private Pool<BaseTower> GetTowerPool(TowerData data)
+    private GameObjectPool<BaseTower> GetTowerPool(TowerData data)
     {
-        if(!_towerPools.TryGetValue(data.ID, out Pool<BaseTower> pool))
+        if(!_towerPools.TryGetValue(data.ID, out GameObjectPool<BaseTower> pool))
         {
-            pool = new Pool<BaseTower>(data.TowerPrefab, _towerGroup);
+            pool = new GameObjectPool<BaseTower>(data.TowerPrefab, _towerGroup);
             _towerPools.Add(data.ID, pool);
         }
         return pool;
+    }
+
+    public void GetTower()
+    {
     }
 
     private IProjectilePool GetProjectilePool(TowerData data)
@@ -76,34 +81,34 @@ public class TowerFactory
 
         for (int index = 0; index < keys.Length; index++)
         {
-            count += _towerPools[keys[index]].Actived.Count;
+            count += _towerPools[keys[index]].CountActived();
         }
 
         return count;
     }
 
-    public void Return(ITower tower)
+    public void Release(ITower tower)
     {
         if(tower is BaseTower baseTower &&
-            _towerPools.TryGetValue(baseTower.Data.ID, out Pool<BaseTower> pool))
+            _towerPools.TryGetValue(baseTower.Data.ID, out GameObjectPool<BaseTower> pool))
         {
-            pool.Return(baseTower);
+            pool.Release(baseTower);
         }
     }
 
-    public void ReturnAllTower()
+    public void ReleaseAllTower()
     {
         foreach (var pool in _towerPools)
         {
-            pool.Value.ReturnAll();
+            pool.Value.ReleaseAll();
         }
     }
 
-    public void ReturnAllProjectile()
+    public void ReleaseAllProjectile()
     {
         foreach(var pool in _projectilePools)
         {
-            pool.Value.ReturnAll();
+            pool.Value.Release();
         }
     }
 }

@@ -1,10 +1,6 @@
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 
 public class NetworkManager : MonoBehaviour
@@ -17,7 +13,7 @@ public class NetworkManager : MonoBehaviour
     public string ClientID => _client?.ClientID ?? string.Empty;
     public string RoomID => _client?.RoomID ?? string.Empty;
 
-    public Action OnConnected;
+    public Action OnSceneLoad;
 
     private void Update()
     {
@@ -26,30 +22,30 @@ public class NetworkManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        _client?.LeaveRoom();
-        _client?.Disconnect();
+        RoomService?.LeaveRoom();
+        Disconnect();
     }
 
     public async void Connect(string ip, string port)
     {
         _client = new($"{ip}:{port}");
         _client.RegisterHandler("sync", OnSyncReceived);
-        _client.OnConnected = OnConnectComplete;
+        _client.OnConnected += Connected;
         await _client.Connect();
     }
 
-    private void OnConnectComplete()
+    private void Connected()
     {
         SyncObjectManager = new SyncObjectManager();
         RoomService = new RoomService(_client);
         SpawnService = new SpawnService(_client);
-        OnConnected.Invoke();
         IsConnect = true;
+        OnSceneLoad.Invoke();
     }
 
     private void OnSyncReceived(string json)
     {
-        var packet = JsonConvert.DeserializeObject<SyncPacket>(json);
+        var packet = JsonUtility.DeserializeObject<SyncPacket>(json);
         var syncObject = SyncObjectManager.GetSyncObject(packet.ObjectID);
 
         if(syncObject != null)

@@ -59,7 +59,7 @@ public class Lobby : MonoBehaviour
     {
         Debug.Log($"[UI] RoomListUpdated called. Count: {roomList.Count}");
         _roomList = roomList;
-        _ui.CreateRoomButton(_roomList, EnterRoom);
+        _ui.CreateRoomButtons(_roomList, EnterRoom);
     }
 
     private async void EnterRoom(string roomID)

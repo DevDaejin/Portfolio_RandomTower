@@ -13,6 +13,10 @@ GameObject:
   - component: {fileID: 8924389743816124890}
   - component: {fileID: 1958396812034696364}
   - component: {fileID: 5545857387291020970}
+  - component: {fileID: 2695755723393160726}
+  - component: {fileID: 6101971964410443084}
+  - component: {fileID: -7139758886556352717}
+  - component: {fileID: -2365681512181914643}
   m_Layer: 0
   m_Name: CurvedProjectile
   m_TagString: Untagged
@@ -119,5 +123,53 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b861fb014a4ae24ab2b65175de0b21b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2695755723393160726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8195383268220158610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6e69cb5371f233448bc3c5d5694c993, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6101971964410443084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8195383268220158610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 126f1555bcfb78d48b52a65ed2b1de7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-7139758886556352717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8195383268220158610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3fc63ef0ce945344aa4ad1924028a6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-2365681512181914643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8195383268220158610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c3467965021b734b956d33f9bd6ddbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

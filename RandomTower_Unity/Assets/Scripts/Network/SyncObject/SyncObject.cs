@@ -1,9 +1,7 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
-using static UnityEngine.Tilemaps.Tilemap;
 
 public class SyncObject : MonoBehaviour, ISyncObject
 {
@@ -58,7 +56,7 @@ public class SyncObject : MonoBehaviour, ISyncObject
             Payload = json
         };
 
-        _ = _network.Send(JsonConvert.SerializeObject(packet));
+        _ = _network.Send(JsonUtility.SerializeObject(packet));
 
         syncable.ClearDirty();
     }

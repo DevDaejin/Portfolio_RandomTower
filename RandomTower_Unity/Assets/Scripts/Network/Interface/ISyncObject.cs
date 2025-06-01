@@ -7,6 +7,5 @@ public interface ISyncObject
     string RoomID { get; }
 
     void Initialize(string objectID, string ownerID, string roomID);
-
-    //TODO: 버퍼 적용로직
+    void Receive(string syncType, string json);
 }

@@ -14,7 +14,8 @@ public class TowerManager : MonoBehaviour
 
     private int _installableCount;
 
-    public Action<int, ISyncObject> OnSendSpawnPacket;
+    public Action<int, ISyncObject> OnSendSpawnTowerPacket;
+    public Action<int, ISyncObject> OnSendSpawnProjectilePacket;
     public Action<int, int> OnTowerUpdated;
 
     private void Awake()
@@ -61,12 +62,12 @@ public class TowerManager : MonoBehaviour
 
         if (!grid.TryAddTower(tower))
         {
-            _towerFactory.Return(tower);
+            _towerFactory.Release(tower);
         }
         else
         { 
             ISyncObject syncObject = tower.Transform.gameObject.GetComponent<ISyncObject>();
-            OnSendSpawnPacket.Invoke(data.ID, syncObject);
+            OnSendSpawnTowerPacket.Invoke(data.ID, syncObject);
             OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
             TowerGridSelectionHandler.Reselect();
         }
@@ -74,7 +75,12 @@ public class TowerManager : MonoBehaviour
 
     public ITower CreateTower(TowerData data, Vector3 position, IEnemyProvider enemyProvider, int level)
     {
-        return _towerFactory.CreateTower(data, position, enemyProvider, level);
+        return _towerFactory.CreateTower(data, position, enemyProvider, OnTowerAttack, level);
+    }
+
+    private void OnTowerAttack(int id, ISyncObject syncable)
+    {
+        OnSendSpawnProjectilePacket.Invoke(id, syncable);
     }
      
     public Transform[] GetChildrenTransformArray(Transform root)
@@ -98,10 +104,15 @@ public class TowerManager : MonoBehaviour
         return result;
     }
 
-    public void ReturnAll()
+    public IProjectilePool GetProjectilePool(TowerData data)
+    {
+        return _towerFactory.ProjectilePool[data.ID];
+    }
+
+    public void ReleaseAll()
     {
         _gridController.RemoveAllTower();
-        _towerFactory.ReturnAllTower();
-        _towerFactory.ReturnAllProjectile();
+        _towerFactory.ReleaseAllTower();
+        _towerFactory.ReleaseAllProjectile();
     }
 }

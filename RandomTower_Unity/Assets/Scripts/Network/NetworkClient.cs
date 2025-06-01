@@ -47,24 +47,11 @@ public class NetworkClient
     {
         string json = System.Text.Encoding.UTF8.GetString(bytes);
 
-        BasePacket basePacket = JsonConvert.DeserializeObject<BasePacket>(json);
-        Debug.Log($"[NetClient] Parsed type: {basePacket?.Type}");
+        BasePacket basePacket = JsonUtility.DeserializeObject<BasePacket>(json);
 
-        if (basePacket == null || string.IsNullOrEmpty(basePacket.Type))
-        {
-            Debug.LogWarning("[NetClient] Invalid packet received.");
-            return;
-        }
+        if (!_packetHandlers.TryGetValue(basePacket.Type, out var handler)) return;
 
-        if (_packetHandlers.TryGetValue(basePacket.Type, out var handler))
-        {
-            Debug.Log($"[NetClient] Found handler for: {basePacket.Type}");
-            handler.Invoke(json);
-        }
-        else
-        {
-            Debug.LogWarning($"[NetClient] No handler registered for type: {basePacket.Type}");
-        }
+        handler.Invoke(json);
     }
 
 
@@ -72,7 +59,6 @@ public class NetworkClient
     {
         await _socket.SendText(json);
     }
-
     public void DispatchMessages()
     {
         _socket?.DispatchMessageQueue();
@@ -81,61 +67,26 @@ public class NetworkClient
     {
         _socket?.CancelConnection();
     }
-
     public void Disconnect()
     {
         _socket?.Close();
     }
 
-    public async Task CreateRoom(string name)
+    public async Task SendPacket<T>(T packet) where T : ITypePacket
     {
-        string packet = JsonConvert.SerializeObject(new SendCreateRoomPacket { Name = name });
-        await Send(packet);
+        await Send(JsonUtility.SerializeObject(packet));
     }
 
-    public async Task JoinRoom(string roomID)
+    public async Task SendSpawnPacket<T>(string id, ISyncObject syncObject) where T : ISpawnPacket, new()
     {
-        string packet = JsonConvert.SerializeObject(new SendJoinRoomPacket { RoomID = roomID });
-        await Send(packet);
-    }
-
-    public async Task LeaveRoom()
-    {
-        string packet = JsonConvert.SerializeObject(new SendLeaveRoomPacket { RoomID = RoomID });
-        await Send(packet);
-    }
-
-    public async Task RequestRoomList()
-    {
-        string packet = JsonConvert.SerializeObject(new SendListRoomsRequest());
-        await Send(packet);
-    }
-
-    public async Task SendEnemySpawn(string id, ISyncObject syncObject)
-    {
-        var packet = new
+        var packet = new T
         {
-            type = "spawn_enemy",
-            enemy_id = id,
-            room_id = syncObject.RoomID,
-            object_id = syncObject.ObjectID,
-            owner_id = syncObject.OwnerID,
+            ObjectID = syncObject.ObjectID,
+            RoomID = syncObject.RoomID,
+            OwnerID = syncObject.OwnerID,
         };
 
-        await Send(JsonConvert.SerializeObject(packet));
-    }
-
-    public async Task SendTowerSpawn(string id, ISyncObject syncObject)
-    {
-        var packet = new
-        {
-            type = "spawn_tower",
-            tower_id = id,
-            room_id = syncObject.RoomID,
-            object_id = syncObject.ObjectID,
-            owner_id = syncObject.OwnerID,
-        };
-
-        await Send(JsonConvert.SerializeObject(packet));
+        packet.SetSpawnID(id);
+        await SendPacket(packet);
     }
 }

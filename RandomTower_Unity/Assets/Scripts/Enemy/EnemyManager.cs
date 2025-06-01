@@ -10,7 +10,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     [SerializeField] private EnemyDataConfig[] _enemyDatas;
 
     private EnemyFactory _enemyFactory;
-    private List<BaseEnemy> _enemies = new();
+    private List<BaseEnemy> _spawnedEnemies = new();
     private readonly List<BaseEnemy> _cachingList = new();
     private readonly List<BaseEnemy> _cachingSortedList = new();
     private Dictionary<int, Coroutine> _spawnCoroutine = new();
@@ -40,7 +40,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
             BaseEnemy enemy = GetEnemy(info.Config.Data);
             ISyncObject syncObject = enemy.GetComponent<ISyncObject>();
             OnSendSpawnPacket.Invoke(enemy.Data.ID, syncObject);
-            _enemies.Add(enemy);
+            _spawnedEnemies.Add(enemy);
             yield return new WaitForSecondsRealtime(SpawnInterval);
         }
 
@@ -65,23 +65,23 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     public BaseEnemy GetEnemy(EnemyData data)
     {
         BaseEnemy enemy = _enemyFactory.CreateEnemy(data, _routeGroup);
-        enemy.OnDie = ReturnEnemy;
+        enemy.OnDie = ReleaseEnemy;
         enemy.OnReward = OnReward;
         _enemyUIManager?.Register(enemy);
 
         return enemy;
     }
 
-    public void ReturnEnemy(BaseEnemy enemy)
+    public void ReleaseEnemy(BaseEnemy enemy)
     {
-        if (!_enemies.Contains(enemy)) return;
+        if (!_spawnedEnemies.Contains(enemy)) return;
 
         enemy.OnDie = null;
         enemy.OnReward = null;
 
         _enemyUIManager?.Unregister(enemy);
-        _enemies.Remove(enemy);
-        _enemyFactory.Return(enemy);
+        _spawnedEnemies.Remove(enemy);
+        _enemyFactory.Release(enemy);
     }
 
     public BaseEnemy FindClosest(Vector3 position, float range)
@@ -90,7 +90,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         float minSqrDistance = float.MaxValue;
         BaseEnemy closest = null;
 
-        foreach (BaseEnemy enemy in _enemies)
+        foreach (BaseEnemy enemy in _spawnedEnemies)
         {
             float sqrDistance = (position - enemy.transform.position).sqrMagnitude;
             if (sqrDistance <= sqrRange && sqrDistance < minSqrDistance)
@@ -109,7 +109,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
 
         _cachingList.Clear();
 
-        foreach (BaseEnemy enemy in _enemies)
+        foreach (BaseEnemy enemy in _spawnedEnemies)
         {
             if ((enemy.transform.position - position).sqrMagnitude <= sqrRange)
             {
@@ -145,7 +145,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
 
     public int GetCurrentEnemyCount()
     {
-        return _enemies.Count;
+        return _spawnedEnemies.Count;
     }
 
     public bool IsSpawningState()
@@ -163,21 +163,22 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         return isSpawning;
     }
 
-    public void ReturnAll()
+    public void ReleaseAll()
     {
         foreach (KeyValuePair<int, Coroutine> pair in _spawnCoroutine)
         {
             StopCoroutine(pair.Value);
         }
-        _spawnCoroutine.Clear();
 
-        for (int i = 0; i < _enemies.Count; i++)
+        for (int i = 0; i < _spawnedEnemies.Count; i++)
         {
-            ReturnEnemy(_enemies[0]);
+            ReleaseEnemy(_spawnedEnemies[0]);
         }
-        _enemies.Clear();
+        _spawnedEnemies.Clear();
+        _cachingList.Clear();
+        _cachingSortedList.Clear();
 
-        _enemyFactory.ReturnAll();
-        _enemyUIManager.ReturnAll();
+        _enemyFactory.ReleaseAll();
+        _enemyUIManager.ReleaseAll();
     }
 }

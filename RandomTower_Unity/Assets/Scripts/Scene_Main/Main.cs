@@ -12,7 +12,7 @@ public class Main : MonoBehaviour
         _ui.Main.QuitButton = () => Application.Quit();
         _ui.Main.OnMultiConfirm += Main_OnMultiConfirm;
         _ui.Main.OnConnectingCancel += GameManager.Instance.Network.CancelConnect;
-        GameManager.Instance.Network.OnConnected += LoadNextScene;
+        GameManager.Instance.Network.OnSceneLoad += LoadNextScene;
         GameManager.Instance.Network.Disconnect();
     }
 
@@ -28,6 +28,6 @@ public class Main : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameManager.Instance.Network.OnConnected -= LoadNextScene;
+        GameManager.Instance.Network.OnSceneLoad -= LoadNextScene;
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 public class EnemyFactory
 {
     private readonly Transform _enemyGroup;
-    private readonly Dictionary<int, Pool<BaseEnemy>> _pools = new();
+    public Dictionary<int, GameObjectPool<BaseEnemy>> Pools { get; private set; } = new();
     private const string EnemyGroupName = "EnemyGroup";
 
     public EnemyFactory()
@@ -17,7 +17,7 @@ public class EnemyFactory
 
     public BaseEnemy CreateEnemy(EnemyData data, Transform routeGroup)
     {
-        Pool<BaseEnemy> pool = GetEnemyPool(data);
+        GameObjectPool<BaseEnemy> pool = GetEnemyPool(data);
         BaseEnemy enemy = pool.Get();
 
         enemy.Initialize(data, routeGroup);
@@ -25,33 +25,31 @@ public class EnemyFactory
         return enemy;
     }
 
-    private Pool<BaseEnemy> GetEnemyPool(EnemyData data)
+    private GameObjectPool<BaseEnemy> GetEnemyPool(EnemyData data)
     {
         int id = data.ID;
 
-        if (_pools.TryGetValue(id, out var pool)) return pool;
+        if (Pools.TryGetValue(id, out var pool)) return pool;
 
-        pool = new Pool<BaseEnemy>(data.Prefab, _enemyGroup);
-        _pools[id] = pool;
+        pool = new GameObjectPool<BaseEnemy>(data.Prefab, _enemyGroup);
+        Pools[id] = pool;
 
         return pool;
     }
 
-    public void Return(BaseEnemy enemy)
+    public void Release(BaseEnemy enemy)
     {
-        if(_pools.TryGetValue(enemy.Data.ID, out Pool<BaseEnemy> pool))
+        if(Pools.TryGetValue(enemy.Data.ID, out GameObjectPool<BaseEnemy> pool))
         {
-            pool.Return(enemy);
+            pool.Release(enemy);
         }
     }
 
-    public void ReturnAll()
+    public void ReleaseAll()
     {
-        int[] keys = _pools.Keys.ToArray();
-
-        for (int i = 0; i < keys.Length; i++)
+        foreach(GameObjectPool<BaseEnemy> pool in Pools.Values)
         {
-            _pools[keys[i]].ReturnAll();
+            pool.ReleaseAll();
         }
     }
 }

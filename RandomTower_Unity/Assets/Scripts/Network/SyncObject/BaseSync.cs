@@ -12,12 +12,12 @@ public abstract class BaseSync<TData> : MonoBehaviour, ISyncable
 
     public string Serialize()
     {
-        return JsonConvert.SerializeObject(GetCurrentData());
+        return JsonUtility.SerializeObject(GetCurrentData());
     }
 
     public void Deserialize(string json)
     {
-        TData data = JsonConvert.DeserializeObject<TData>(json);
+        TData data = JsonUtility.DeserializeObject<TData>(json);
         ApplyData(data);
     }
 

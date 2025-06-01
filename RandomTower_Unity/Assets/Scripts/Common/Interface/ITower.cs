@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public interface ITower
@@ -11,5 +12,5 @@ public interface ITower
     
     ISelectable Selectable { get; }
 
-    void Initialize(TowerData data, Vector3 gridPosition, IProjectilePool pool, IEnemyProvider enemyProvider, int level = 1);
+    void Initialize(TowerData data, Vector3 gridPosition, IProjectilePool pool, IEnemyProvider enemyProvider, Action<int, ISyncObject> onActtack, int level = 1);
 }

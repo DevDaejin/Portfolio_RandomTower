@@ -9,8 +9,8 @@ public class EnemyUIManager : MonoBehaviour
     [SerializeField] private GameObject _enemyUIPrefab;
     [SerializeField] private GameObject _damageUIPrefab;
 
-    private Pool<EnemyUI> _enemyUIPool;
-    private Pool<DamageUI> _damageUIPool;
+    private GameObjectPool<EnemyUI> _enemyUIPool;
+    private GameObjectPool<DamageUI> _damageUIPool;
     private Camera _cam;
 
     private readonly Dictionary<BaseEnemy, EnemyUI> _uiDict = new();
@@ -20,8 +20,8 @@ public class EnemyUIManager : MonoBehaviour
     {
         _cam = Camera.main;
         Transform canvasTransform = _canvas.transform;
-        _enemyUIPool = new Pool<EnemyUI>(_enemyUIPrefab, canvasTransform);
-        _damageUIPool = new Pool<DamageUI>(_damageUIPrefab, canvasTransform);
+        _enemyUIPool = new GameObjectPool<EnemyUI>(_enemyUIPrefab, canvasTransform);
+        _damageUIPool = new GameObjectPool<DamageUI>(_damageUIPrefab, canvasTransform);
     }
 
     private void LateUpdate()
@@ -51,7 +51,7 @@ public class EnemyUIManager : MonoBehaviour
     {
         if (_uiDict.TryGetValue(enemy, out EnemyUI ui))
         {
-            _enemyUIPool.Return(ui);
+            _enemyUIPool.Release(ui);
 
             if (_uiDict.ContainsKey(enemy))
             {
@@ -76,7 +76,7 @@ public class EnemyUIManager : MonoBehaviour
 
     private void ReturnDamageUI(DamageUI damageUI)
     {
-        _damageUIPool.Return(damageUI);
+        _damageUIPool.Release(damageUI);
     }
 
     private Vector2 GetScreenPosition(BaseEnemy enemy)
@@ -85,9 +85,9 @@ public class EnemyUIManager : MonoBehaviour
         return _cam.WorldToScreenPoint(world);
     }
 
-    public void ReturnAll()
+    public void ReleaseAll()
     {
-        _enemyUIPool.ReturnAll();
-        _damageUIPool.ReturnAll();
+        _enemyUIPool.ReleaseAll();
+        _damageUIPool.ReleaseAll();
     }
 }

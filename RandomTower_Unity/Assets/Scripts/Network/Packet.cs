@@ -1,164 +1,150 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-public class SyncPacket
+public class BasePacket : ITypePacket
 {
-    [JsonProperty("type")]
-    public string Type => "sync";
+    public string Type { get; set; }
+}
 
-    [JsonProperty("objectId")]
-    public string ObjectID;
+public interface ITypePacket
+{
+    public string Type { get; set; }
+}
 
-    [JsonProperty("syncType")]
+public interface IOwnerIDPacket
+{
+    public string OwnerID { get; set; }
+}
+public interface IClientIDPacket
+{
+    public string ClientID { get; set; }
+}
+
+public interface IObjectIDPacket
+{
+    public string ObjectID { get; set; }
+}
+
+public interface INamePacket
+{
+    public string Name { get; set; }
+}
+
+public interface IRoomIDPacket
+{ 
+    public string RoomID { get; set; }
+}
+
+public class SyncPacket : ITypePacket, IObjectIDPacket
+{
+    public string Type { get; set; } = "sync";
+
+    public string ObjectID { get; set; }
+
     public string SyncType;
-
-    [JsonProperty("payload")]
     public string Payload;
 }
-public class BasePacket
+
+public class SendCreateRoomPacket : ITypePacket, INamePacket
 {
-    [JsonProperty("type")]
-    public string Type;
+    public string Type { get; set; } = "create_room";
+    public string Name { get; set; }
 }
 
-public interface INetworkMessage
+public class SendJoinRoomPacket : ITypePacket, IRoomIDPacket
 {
-    string Type { get; }
+    public string Type { get; set; } = "join_room";
+    public string RoomID { get; set; }
 }
 
-public class SendCreateRoomPacket : INetworkMessage
+public class SendLeaveRoomPacket : ITypePacket, IRoomIDPacket
 {
-    [JsonProperty("type")]
-    public string Type => "create_room";
-
-    [JsonProperty("name")]
-    public string Name;
+    public string Type { get; set; } = "leave_room";
+    public string RoomID { get; set; }
 }
 
-public class SendJoinRoomPacket : INetworkMessage
+public class SendListRoomsRequest : ITypePacket
 {
-    [JsonProperty("type")]
-    public string Type => "join_room";
-
-    [JsonProperty("room_id")]
-    public string RoomID;
+    public string Type { get; set; } = "room_list";
 }
 
-public class SendLeaveRoomPacket : INetworkMessage
-{
-    [JsonProperty("type")]
-    public string Type => "leave_room";
 
-    [JsonProperty("room_id")]
-    public string RoomID;
+public interface ISpawnPacket : ITypePacket, IObjectIDPacket, IOwnerIDPacket, IRoomIDPacket
+{
+    void SetSpawnID(string id);
+    string GetSpawnID();
 }
 
-public class SendListRoomsRequest : INetworkMessage
+public class SpawnEnemyPacket : ISpawnPacket
 {
-    [JsonProperty("type")]
-    public string Type => "room_list";
-}
-public class SpawnEnemyPacket : INetworkMessage
-{
-    [JsonProperty("type")]
-    public string Type => "spawn_enemy";
+    public string Type { get; set; } = "spawn_enemy";
+    public string EnemyID { get; set; }
+    public string ObjectID { get; set; }
+    public string OwnerID { get; set; }
+    public string RoomID { get; set; }
+    public void SetSpawnID(string id) => EnemyID = id;
+    public string GetSpawnID() => EnemyID;
 
-    [JsonProperty("enemy_id")]
-    public string EnemyID;
-
-    [JsonProperty("object_id")]
-    public string ObjectID;
-
-    [JsonProperty("room_id")]
-    public string RoomID;
-
-    [JsonProperty("owner_id")]
-    public string OwnerID;
 }
 
-public class SpawnTowerPacket : INetworkMessage
+public class SpawnTowerPacket : ISpawnPacket
 {
-    [JsonProperty("type")]
-    public string Type => "spawn_tower";
-
-    [JsonProperty("tower_id")]
-    public string TowerID;
-
-    [JsonProperty("object_id")]
-    public string ObjectID;
-
-    [JsonProperty("room_id")]
-    public string RoomID;
-
-    [JsonProperty("owner_id")]
-    public string OwnerID;
+    public string Type { get; set; } = "spawn_tower";
+    public string TowerID { get; set; }
+    public string ObjectID { get; set; }
+    public string OwnerID { get; set; }
+    public string RoomID { get; set; }
+    public void SetSpawnID(string id) => TowerID = id;
+    public string GetSpawnID() => TowerID;
 }
 
-public class ReceiveRoomCreatedPacket
+public class SpawnProjectilePacket : ISpawnPacket
 {
-    [JsonProperty("type")]
+    public string Type { get; set; } = "spawn_projectile";
+    public string ProjectileID { get; set; }
+    public string ObjectID { get; set; }
+    public string OwnerID { get; set; }
+    public string RoomID { get; set; }
+    public void SetSpawnID(string id) => ProjectileID = id;
+    public string GetSpawnID() => OwnerID;
+}
+
+public class ReceiveRoomCreatedPacket : ITypePacket, IRoomIDPacket, INamePacket, IClientIDPacket
+{
     public string Type { get; set; }
-
-    [JsonProperty("room_id")]
-    public string RoomID;
-
-    [JsonProperty("name")]
-    public string Name;
-
-    [JsonProperty("client_id")]
-    public string ClientID;
+    public string RoomID { get; set; }
+    public string Name { get; set; }
+    public string ClientID { get; set; }
 }
 
-public class ReceiveRoomJoinedPacket
+public class ReceiveRoomJoinedPacket : ITypePacket, IRoomIDPacket, INamePacket, IClientIDPacket
 {
-    [JsonProperty("type")]
     public string Type { get; set; }
-
-    [JsonProperty("room_id")]
-    public string RoomID;
-
-    [JsonProperty("name")]
-    public string Name;
-
-    [JsonProperty("client_id")]
-    public string ClientID;
+    public string RoomID { get; set; }
+    public string Name { get; set; }
+    public string ClientID { get; set; }
+}
+public class ReceiveRoomLeftPacket : ITypePacket, IRoomIDPacket
+{
+    public string Type { get; set; }
+    public string RoomID { get; set; }
 }
 
-public class ReceiveRoomLeftPacket
+public class ReceiveRoomListPacket : ITypePacket
 {
-    [JsonProperty("type")]
     public string Type { get; set; }
-
-    [JsonProperty("room_id")]
-    public string RoomID;
-}
-
-public class ReceiveRoomListPacket
-{
-    [JsonProperty("type")]
-    public string Type { get; set; }
-
-    [JsonProperty("rooms")]
     public List<Room> Rooms;
 }
 
-public class Room
+public class Room : IRoomIDPacket, INamePacket
 {
-    [JsonProperty("room_id")]
-    public string RoomID;
-
-    [JsonProperty("name")]
-    public string Name;
-
-    [JsonProperty("client_count")]
+    public string RoomID { get; set; }
+    public string Name { get; set; }
     public int ClientCount;
 }
 
-public class ReceiveErrorPacket
+public class ReceiveErrorPacket : ITypePacket
 {
-    [JsonProperty("type")]
     public string Type { get; set; }
-
-    [JsonProperty("message")]
     public string Message;
 }

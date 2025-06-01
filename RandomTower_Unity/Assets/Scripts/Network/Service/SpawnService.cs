@@ -1,21 +1,39 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using UnityEngine.Android;
 
 public class SpawnService
 {
     private NetworkClient _client;
     private Dictionary<string, List<SyncPacket>> _syncBuffer = new();
-
-    public Action<string, SpawnEnemyPacket> OnReceivedEnemyPacket;
-    public Action<string, SpawnTowerPacket> OnReceivedTowerPacket;
+    private GenericPool<List<SyncPacket>> _bufferPool = new();
 
     public SpawnService(NetworkClient client)
     {
         _client = client;
-        _client?.RegisterHandler("spawn_enemy", OnEnemySpawnReceived);
-        _client?.RegisterHandler("spawn_tower", OnTowerSpawnReceived);
+    }
+
+    public void Initialize(
+        Action<string, SpawnEnemyPacket> OnReceivedEnemyPacket,
+        Action<string, SpawnTowerPacket> OnReceivedTowerPacket,
+        Action<string, SpawnProjectilePacket> OnReceivedProjectilePacket)
+    {
+        RegisterSpawnHandler(OnReceivedEnemyPacket);
+        RegisterSpawnHandler(OnReceivedTowerPacket);
+        RegisterSpawnHandler(OnReceivedProjectilePacket);
+    }
+
+    public void RegisterSpawnHandler<T>(Action<string, T> callback) where T : class, ISpawnPacket, new()
+    {
+        _client.RegisterHandler(new T().Type, json =>
+        {
+            T packet = JsonUtility.DeserializeObject<T>(json);
+            if (packet == null || packet.OwnerID == _client.ClientID) return;
+
+            callback?.Invoke(packet.GetSpawnID(), packet);
+        });
     }
 
     public void AddSyncPacketBuffer(SyncPacket packet)
@@ -23,42 +41,28 @@ public class SpawnService
         string id = packet.ObjectID;
         if (!_syncBuffer.ContainsKey(id))
         {
-            _syncBuffer[id] = new List<SyncPacket>();
+            _syncBuffer[id] = _bufferPool.Get();
         }
 
         _syncBuffer[id].Add(packet);
     }
 
-    public List<SyncPacket> GetSyncPackets(string objectID)
+    public void OnApplybufferWhenSpawned(ISyncObject syncObject)
     {
-        return _syncBuffer[objectID];
+        string objectID = syncObject.ObjectID;
+        if (_syncBuffer.TryGetValue(objectID, out List<SyncPacket> packets))
+        {
+            foreach (SyncPacket packet in packets)
+            {
+                syncObject.Receive(packet.SyncType, packet.Payload);
+            }
+            _bufferPool.Release(_syncBuffer[objectID]);
+            _syncBuffer.Remove(objectID);
+        }
     }
 
-    private void OnEnemySpawnReceived(string json)
+    public async Task SendSpawn<T>(string id, ISyncObject syncObject) where T : class, ISpawnPacket, new()
     {
-        SpawnEnemyPacket packet = JsonConvert.DeserializeObject<SpawnEnemyPacket>(json);
-
-        if (packet == null || packet.OwnerID == _client?.ClientID) return;
-
-        OnReceivedEnemyPacket?.Invoke(packet.EnemyID, packet);
-    }
-
-    public async Task SendEnemySpawn(string id, ISyncObject syncObject)
-    {
-        await _client?.SendEnemySpawn(id, syncObject);
-    }
-
-    private void OnTowerSpawnReceived(string json)
-    {
-        SpawnTowerPacket packet = JsonConvert.DeserializeObject<SpawnTowerPacket>(json);
-
-        if (packet == null || packet.OwnerID == _client?.ClientID) return;
-
-        OnReceivedTowerPacket?.Invoke(packet.TowerID, packet);
-    }
-
-    public async Task SendTowerSpawn(string id, ISyncObject syncObject)
-    {
-        await _client?.SendTowerSpawn(id, syncObject);
+        await _client?.SendSpawnPacket<T>(id, syncObject);
     }
 }

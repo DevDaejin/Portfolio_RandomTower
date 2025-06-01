@@ -13,6 +13,12 @@ MonoBehaviour:
   m_Name: TowerDatabase
   m_EditorClassIdentifier: 
   _towers:
-  - {fileID: 11400000, guid: 6965e8d632e175a4aaa45d09ed31a70c, type: 2}
+  - {fileID: 11400000, guid: 3761a15b70e1e86419bf437e899ade5c, type: 2}
   - {fileID: 11400000, guid: d91a147e8469c7b4d9b515abff6e31af, type: 2}
+  - {fileID: 11400000, guid: 0bad5e314792e6c40abdaa1e37fc446c, type: 2}
+  - {fileID: 11400000, guid: 6965e8d632e175a4aaa45d09ed31a70c, type: 2}
+  - {fileID: 11400000, guid: 4bd2c17c5e8b40a4dabefa8977c03c4d, type: 2}
   - {fileID: 11400000, guid: 527eaa1f29132344dbfafeb66b31f577, type: 2}
+  - {fileID: 11400000, guid: 83ac940d2a76ee14b90dc44aa4b8ae34, type: 2}
+  - {fileID: 11400000, guid: b74779e80095b284aab281f95382b23f, type: 2}
+  - {fileID: 11400000, guid: f54ea764bb096ae4f8dc59af608040ec, type: 2}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
     public float Damage => Data.Damage + ((Level - 1) * 0.1f);
     public float Range => Data.Range + ((Level - 1) * 0.1f);
     public float FireRate => Data.FireRate + ((Level - 1) * 0.1f);
+    public Action<int, ISyncObject> OnAttack;
 
     public ISelectable Selectable => this;
 
@@ -23,7 +25,7 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
     private IProjectilePool _projectilePool;
 
 
-    public void Initialize(TowerData data, Vector3 gridPosition, IProjectilePool pool, IEnemyProvider enemyProvider, int level = 1)
+    public void Initialize(TowerData data, Vector3 gridPosition, IProjectilePool pool, IEnemyProvider enemyProvider, Action<int, ISyncObject> onActtack, int level = 1)
     {
         Data = data;
         _gridPosition = gridPosition;
@@ -31,6 +33,7 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
         _projectilePool ??= pool;
         _enemyProvider ??= enemyProvider;
         _rangeViewer ??= GetComponentInChildren<TowerRangeViewer>();
+        OnAttack = onActtack;
     }
 
     protected virtual List<BaseEnemy> FindClosestEnemies()
@@ -45,7 +48,8 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
 
         foreach (BaseEnemy target in targets)
         {
-            Projectile projectile = _projectilePool.Get(target, transform.position, Damage, Data.ProjectileSpeed);
+            ISyncObject syncObject = _projectilePool.Get(target, transform.position, Damage, Data.ProjectileSpeed).GetComponent<ISyncObject>();
+            OnAttack?.Invoke(Data.ID, syncObject);
             _fireElapsed = 0f;
         }
     }

@@ -23,7 +23,7 @@ public class LobbyUI : MonoBehaviour
 
     public Action OnCreate;
 
-    private Pool<RoomButton> _roomButtons;
+    private GameObjectPool<RoomButton> _roomButtons;
     private Transform _roomButtonGroup;
 
     private const string RoomButtonGroupName = "RoomButtons";
@@ -41,9 +41,9 @@ public class LobbyUI : MonoBehaviour
         _roomListCancelButton.onClick.AddListener(() => _roomListPanel.SetActive(false));
     }
 
-    public void CreateRoomButton(List<Room> roomList, Action<string> onEnter)
+    public void CreateRoomButtons(List<Room> roomList, Action<string> onEnter)
     {
-        _roomButtons.ReturnAll();
+        _roomButtons.ReleaseAll();
 
         for (int index = 0; index < roomList.Count; index++)
         {
@@ -62,11 +62,6 @@ public class LobbyUI : MonoBehaviour
     public void ActiveRoomListPanel(bool isAct)
     {
         _roomListPanel.SetActive(isAct);
-    }
-
-    public void ClearAll()
-    {
-        _roomButtons.ReturnAll();
     }
 
     private void OnPlayButton()

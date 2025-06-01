@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class SyncHP : BaseSync<SyncHP.Data>
 {
     private BaseEnemy _enemy;
@@ -9,30 +7,18 @@ public class SyncHP : BaseSync<SyncHP.Data>
     private void Awake()
     {
         _enemy = GetComponent<BaseEnemy>();
-        _enemy.OnTakeDamage += OnTakeDamage;
     }
 
-    private void OnDestroy()
-    {
-        if (_enemy != null)
-        {
-            _enemy.OnTakeDamage -= OnTakeDamage;
-        }
-    }
-
-    private void OnTakeDamage(BaseEnemy enemy, float damage)
-    {
-        _syncedData = GetCurrentData();
-    }
 
     protected override Data GetCurrentData()
     {
-        return new Data { HP = _enemy.CurrentHP};
+        return new Data { HP = _enemy.CurrentHP };
     }
 
     protected override void ApplyData(Data data)
     {
-        _enemy.CurrentHP = data.HP;
+        float amount = (_enemy.CurrentHP - data.HP);
+        _enemy.TakeDamage(amount);
     }
 
     protected override bool Equals(Data a, Data b)

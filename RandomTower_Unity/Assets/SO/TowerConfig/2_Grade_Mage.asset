@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1fd5000039b63434092159bc3de298b2, type: 3}
-  m_Name: Mage
+  m_Name: 2_Grade_Mage
   m_EditorClassIdentifier: 
   _data:
-    grade: 1
-    id: 12
+    grade: 2
+    id: 22
     towerName: "\uB9C8\uBC95\uC0AC"
     towerPrefab: {fileID: 5521364266558028829, guid: 89e0929c08d16b84589ba64a01cc5f0e, type: 3}
     projectilePrefab: {fileID: 8195383268220158610, guid: 3e8196170e91dea4eb8af4675b82bc6a, type: 3}
