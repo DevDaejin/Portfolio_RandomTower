@@ -16,6 +16,7 @@ public class TowerManager : MonoBehaviour
 
     public Action<int, ISyncObject> OnSendSpawnTowerPacket;
     public Action<int, ISyncObject> OnSendSpawnProjectilePacket;
+    public Action<Projectile, ISyncObject> OnSendProejctileReturn;
     public Action<int, int> OnTowerUpdated;
 
     private void Awake()
@@ -58,7 +59,7 @@ public class TowerManager : MonoBehaviour
             data = grid.GetTower().Data;
         }
 
-        ITower tower = CreateTower(data, grid.transform.position, _enemyProvider, 1);
+        ITower tower = CreateTower(data, grid.transform.position, _enemyProvider, OnSendProejctileReturn, 1);
 
         if (!grid.TryAddTower(tower))
         {
@@ -73,9 +74,9 @@ public class TowerManager : MonoBehaviour
         }
     }
 
-    public ITower CreateTower(TowerData data, Vector3 position, IEnemyProvider enemyProvider, int level)
+    public ITower CreateTower(TowerData data, Vector3 position, IEnemyProvider enemyProvider, Action<Projectile, ISyncObject> onSendProjectileReturn, int level)
     {
-        return _towerFactory.CreateTower(data, position, enemyProvider, OnTowerAttack, level);
+        return _towerFactory.CreateTower(data, position, enemyProvider, OnTowerAttack, onSendProjectileReturn, level);
     }
 
     private void OnTowerAttack(int id, ISyncObject syncable)

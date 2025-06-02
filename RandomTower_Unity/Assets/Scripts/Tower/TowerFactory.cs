@@ -29,12 +29,12 @@ public class TowerFactory
         return candidates[Random.Range(0, candidates.Length)];
     }
 
-    public ITower CreateTower(TowerData data, Vector3 gridPosition, IEnemyProvider enemyProvider, Action<int, ISyncObject> onAttack, int level = 1)
+    public ITower CreateTower(TowerData data, Vector3 gridPosition, IEnemyProvider enemyProvider, Action<int, ISyncObject> onAttack, Action<Projectile, ISyncObject> onSendProjectileReturn, int level = 1)
     {
         GameObjectPool<BaseTower> towerPool = GetTowerPool(data);
         BaseTower tower = towerPool.Get();
         IProjectilePool projectilePool = GetProjectilePool(data);
-        tower.Initialize(data, gridPosition, projectilePool, enemyProvider, onAttack, level);
+        tower.Initialize(data, gridPosition, projectilePool, enemyProvider, onAttack, onSendProjectileReturn, level);
 
         return tower;
     }
@@ -47,10 +47,6 @@ public class TowerFactory
             _towerPools.Add(data.ID, pool);
         }
         return pool;
-    }
-
-    public void GetTower()
-    {
     }
 
     private IProjectilePool GetProjectilePool(TowerData data)

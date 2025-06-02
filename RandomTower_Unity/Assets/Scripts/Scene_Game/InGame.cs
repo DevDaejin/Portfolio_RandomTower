@@ -42,6 +42,7 @@ public class InGame : MonoBehaviour
         _towerManager.OnTowerUpdated += _ui.SetTowerCount;
         _towerManager.OnSendSpawnTowerPacket += OnSendSpawnTowerPacket;
         _towerManager.OnSendSpawnProjectilePacket += OnSendSpawnProjectilePacket;
+        _towerManager.OnSendProejctileReturn += ForceSendReturn;
 
         _enemyManager.OnReward += OnReward;
         _enemyManager.OnSendSpawnPacket += OnSendSpawnEnemyPacket;
@@ -105,7 +106,7 @@ public class InGame : MonoBehaviour
     private void OnReceivedTowerPacket(string id, SpawnTowerPacket packet)
     {
         TowerData data = _towerManager.TowerDatabase.GetTowerByID(int.Parse(id));
-        ITower tower = _towerManager.CreateTower(data, Vector3.down, null, 1);
+        ITower tower = _towerManager.CreateTower(data, Vector3.down, null, null, 1);
         ISyncObject syncObject = tower.Transform.GetComponent<ISyncObject>();
         syncObject.Initialize(packet.ObjectID, packet.OwnerID, packet.RoomID);
 
@@ -125,7 +126,7 @@ public class InGame : MonoBehaviour
     {
         TowerData data = _towerManager.TowerDatabase.GetTowerByID(int.Parse(packet.GetSpawnID()));
         IProjectilePool pool = _towerManager.GetProjectilePool(data);
-        Projectile projectile = pool.Get(null, Vector3.down, 0, data.ProjectileSpeed, ForceSendReturn);
+        Projectile projectile = pool.Get(null, Vector3.down, 0, data.ProjectileSpeed, null);
 
         ISyncObject syncObject = projectile.GetComponent<ISyncObject>();
         syncObject.Initialize(packet.ObjectID, packet.OwnerID, packet.RoomID);

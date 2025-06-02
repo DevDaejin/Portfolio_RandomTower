@@ -8,9 +8,9 @@ public class StraightProjectile : Projectile
     private const float Duration = 0.5f;
     private const float HitThreshold = 0.01f;
 
-    public override void Initialize(BaseEnemy target, Vector3 origin, float damage, float speed, Action<Projectile> onHit, Action<Projectile, ISyncObject> onSyncReturn)
+    public override void Initialize(BaseEnemy target, Vector3 origin, float damage, float speed, Action<Projectile> onHit, Action<Projectile, ISyncObject> onSendProjectileReturn)
     {
-        base.Initialize(target, origin, damage, speed, onHit, onSyncReturn);
+        base.Initialize(target, origin, damage, speed, onHit, onSendProjectileReturn);
         _origin = transform.position;
         _elapsed = 0;
     }

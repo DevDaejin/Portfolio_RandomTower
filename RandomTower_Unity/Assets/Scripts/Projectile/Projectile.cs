@@ -8,7 +8,7 @@ public abstract class Projectile : MonoBehaviour, IProjectileMovement, IProjecti
     private float _speed;
     private ISyncObject _syncObject;
     private Action<Projectile> _onReturn;
-    public Action<Projectile, ISyncObject> OnSyncReturn;
+    private Action<Projectile, ISyncObject> _onSendProjectileReturn;
 
     private void Awake()
     {
@@ -19,7 +19,7 @@ public abstract class Projectile : MonoBehaviour, IProjectileMovement, IProjecti
     {
         if (_target == null)
         {
-            if (OnSyncReturn != null)
+            if (_onSendProjectileReturn != null)
             {
                 _onReturn?.Invoke(this);
             }
@@ -37,17 +37,17 @@ public abstract class Projectile : MonoBehaviour, IProjectileMovement, IProjecti
 
     private void OnDisable()
     {
-        OnSyncReturn?.Invoke(this, _syncObject);
+        _onSendProjectileReturn?.Invoke(this, _syncObject);
     }
 
-    public virtual void Initialize(BaseEnemy target, Vector3 origin, float damage, float speed, Action<Projectile> onReutrn, Action<Projectile, ISyncObject> onSyncReturn)
+    public virtual void Initialize(BaseEnemy target, Vector3 origin, float damage, float speed, Action<Projectile> onReutrn, Action<Projectile, ISyncObject> onSendProjectileReturn)
     {
         _target = target;
         transform.position = origin;
         _damage = damage;
         _speed = speed;
         _onReturn = onReutrn;
-        OnSyncReturn = onSyncReturn;
+        _onSendProjectileReturn = onSendProjectileReturn;
     }
 
     public void ForceReturn()

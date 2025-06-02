@@ -11,10 +11,10 @@ public class ProjectilePool<T> : IProjectilePool where T : Projectile
         _onReturn = projectile => _pool.Release((T)projectile);
     }
 
-    public Projectile Get(BaseEnemy target, Vector3 origin, float damage, float speed, Action<Projectile, ISyncObject> onSyncReturn)
+    public Projectile Get(BaseEnemy target, Vector3 origin, float damage, float speed, Action<Projectile, ISyncObject> onSendProjectileReturn)
     {
         var projectile = _pool.Get();
-        projectile.Initialize(target, origin, damage, speed, _onReturn, onSyncReturn);
+        projectile.Initialize(target, origin, damage, speed, _onReturn, onSendProjectileReturn);
         return projectile;
     }
 
