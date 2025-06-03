@@ -1,8 +1,10 @@
+using Google.Protobuf;
+
 public interface ISyncable
 {
     string SyncType { get; }
-    string Serialize();
-    void Deserialize(string json);
+    IMessage Serialize();
+    void Deserialize(ByteString payload);
     bool IsDirty();
     void ClearDirty();
 }

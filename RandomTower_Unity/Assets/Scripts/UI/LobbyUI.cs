@@ -1,3 +1,4 @@
+using Room;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -41,7 +42,7 @@ public class LobbyUI : MonoBehaviour
         _roomListCancelButton.onClick.AddListener(() => _roomListPanel.SetActive(false));
     }
 
-    public void CreateRoomButtons(List<Room> roomList, Action<string> onEnter)
+    public void CreateRoomButtons(List<RoomInfo> roomList, Action<string> onEnter)
     {
         _roomButtons.ReleaseAll();
 
@@ -53,7 +54,7 @@ public class LobbyUI : MonoBehaviour
             target.transform.SetSiblingIndex(index);
             target.Set(
                 roomList[index].Name,
-                roomList[index].RoomID,
+                roomList[index].RoomId,
                 onEnter
             );
         }

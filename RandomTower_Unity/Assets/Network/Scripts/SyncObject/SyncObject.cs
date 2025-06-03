@@ -1,6 +1,9 @@
-using Newtonsoft.Json;
+using Google.Protobuf;
+using Net;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class SyncObject : MonoBehaviour, ISyncObject
@@ -13,6 +16,9 @@ public class SyncObject : MonoBehaviour, ISyncObject
 
     private List<ISyncable> _syncables = new();
     private NetworkManager _network;
+
+    private Coroutine _syncRoutine;
+    private float _syncInterval = 0.1f;
 
     public void Initialize(string objectID, string ownerID, string roomID)
     {
@@ -28,36 +34,36 @@ public class SyncObject : MonoBehaviour, ISyncObject
 
         if (!IsOwner) return;
 
-        foreach (ISyncable syncable in _syncables)
+        _syncRoutine = StartCoroutine(SyncRoutine());
+    }
+
+    private IEnumerator SyncRoutine()
+    {
+        WaitForSecondsRealtime wait = new WaitForSecondsRealtime(_syncInterval);
+
+        while (true)
         {
-            Send(syncable);
+            foreach (ISyncable syncable in _syncables)
+            {
+                if (!syncable.IsDirty()) continue;
+
+                _ = Send(syncable);
+            }
+
+            yield return wait;
         }
     }
 
-    private void Update()
+    private async Task Send(ISyncable syncable)
     {
-        if (!IsOwner) return;
-
-        foreach (ISyncable syncable in _syncables)
+        SyncPacketData syncPacket = new SyncPacketData
         {
-            if (!syncable.IsDirty()) continue;
-
-            Send(syncable);
-        }
-    }
-
-    private void Send(ISyncable syncable)
-    {
-        string json = syncable.Serialize();
-        SyncPacket packet = new SyncPacket
-        {
-            ObjectID = ObjectID,
+            ObjectId = ObjectID,
             SyncType = syncable.SyncType,
-            Payload = json
+            Payload = ByteString.CopyFrom(syncable.Serialize().ToByteArray())
         };
 
-        _ = _network.Send(JsonUtility.SerializeObject(packet));
-
+        await _network.SendEnvelope("sync", syncPacket);
         syncable.ClearDirty();
     }
 
@@ -66,13 +72,13 @@ public class SyncObject : MonoBehaviour, ISyncObject
         _network?.SyncObjectManager.Unregister(ObjectID);
     }
 
-    public void Receive(string syncType, string json)
+    public void Receive(string syncType, ByteString payload)
     {
-        foreach(ISyncable syncable in _syncables)
+        foreach (ISyncable syncable in _syncables)
         {
             if (syncable.SyncType == syncType)
             {
-                syncable.Deserialize(json);
+                syncable.Deserialize(payload);
                 break;
             }
         }

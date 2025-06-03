@@ -1,0 +1,4 @@
+<linker>
+  <assembly fullname="System.Runtime.CompilerServices.Unsafe" preserve="all"/>
+  <assembly fullname="Google.Protobuf" preserve="all"/>
+</linker>

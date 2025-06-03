@@ -154,8 +154,6 @@ GameObject:
   - component: {fileID: 8078249403661906621}
   - component: {fileID: 4016776956598732804}
   - component: {fileID: 5617452575257576782}
-  - component: {fileID: -3481214783465289273}
-  - component: {fileID: 7680604710699457853}
   - component: {fileID: 8593672713531396296}
   m_Layer: 0
   m_Name: LaserPojectile
@@ -291,30 +289,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 126f1555bcfb78d48b52a65ed2b1de7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-3481214783465289273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8195383268220158610}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3fc63ef0ce945344aa4ad1924028a6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7680604710699457853
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8195383268220158610}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c3467965021b734b956d33f9bd6ddbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  isSyncRotation: 1
+  isSyncScale: 1
 --- !u!114 &8593672713531396296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -327,4 +303,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72d5c6413a271c949916686f19c81cd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isLaserType: 1

@@ -1,3 +1,5 @@
+using Google.Protobuf;
+using System.Buffers.Text;
 using UnityEngine;
 
 public interface ISyncObject
@@ -7,5 +9,5 @@ public interface ISyncObject
     string RoomID { get; }
 
     void Initialize(string objectID, string ownerID, string roomID);
-    void Receive(string syncType, string json);
+    void Receive(string syncType, ByteString payload);
 }

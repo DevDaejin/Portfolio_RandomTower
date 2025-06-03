@@ -1,3 +1,4 @@
+using Room;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ public class Lobby : MonoBehaviour
 {
     private LobbyUI _ui;
     private NetworkManager _network;
-    private List<Room> _roomList = null;
+    private List<RoomInfo> _roomList = null;
 
     private float _time = 0;
     private const float RoomlistUpdateInterval = 3f;
@@ -39,7 +40,7 @@ public class Lobby : MonoBehaviour
     {
         if (_network.IsConnect)
         {
-            _network.RoomService.OnRoomListUpdated ??= RequsetRoomList;
+            _network.RoomService.OnRoomListUpdated ??= UpdateRoomList;
             await _network.RoomService.RequestRoomList();
             _ui.ActiveRoomListPanel(true);
         }
@@ -55,7 +56,7 @@ public class Lobby : MonoBehaviour
         GameManager.Instance.LoadScene(GameManager.Scenes.Game);
     }
 
-    private void RequsetRoomList(List<Room> roomList)
+    private void UpdateRoomList(List<RoomInfo> roomList)
     {
         Debug.Log($"[UI] RoomListUpdated called. Count: {roomList.Count}");
         _roomList = roomList;
