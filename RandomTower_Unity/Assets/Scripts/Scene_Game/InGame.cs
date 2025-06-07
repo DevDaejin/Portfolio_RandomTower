@@ -1,4 +1,7 @@
+using Google.Protobuf;
+using Net;
 using Spawn;
+using Sync;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -126,6 +129,20 @@ public class InGame : MonoBehaviour
         //};
 
         //_ = _networkManager.Send(JsonUtility.SerializeObject(packet));
+
+        var data = new SyncProjectileData
+        {
+            IsReturned = true
+        };
+
+        var packet = new SyncPacketData
+        {
+            ObjectId = syncObject.ObjectID,
+            SyncType = "projectile",
+            Payload = data.ToByteString()
+        };
+
+        _ = _networkManager.SendEnvelope("sync", packet);
     }
 
     private void Update()

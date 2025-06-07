@@ -12,6 +12,17 @@ public abstract class BaseSync<TData> : MonoBehaviour, ISyncable where TData : I
     protected abstract void ApplyData(TData data);
     protected abstract bool Equals(TData a, TData b);
 
+    protected virtual void Awake()
+    {
+        _currentData = new TData();
+        _receivedData = new TData();
+    }
+
+    protected virtual void Start()
+    {
+        _currentData.MergeFrom(GetCurrentData());
+    }
+
     public IMessage Serialize()
     {
         return GetCurrentData();

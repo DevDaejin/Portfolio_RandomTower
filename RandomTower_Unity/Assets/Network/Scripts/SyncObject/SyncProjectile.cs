@@ -9,11 +9,9 @@ public class SyncProjectile : BaseSync<SyncProjectileData>
 
     public override string SyncType => "projectile";
 
-    private void Awake()
+    protected override void Awake()
     {
-        _currentData = new();
-        _receivedData = new();
-
+        base.Awake();
         _lineRenderer = GetComponentInChildren<LineRenderer>();
         if (_isLaser)
         {    
@@ -81,8 +79,8 @@ public class SyncProjectile : BaseSync<SyncProjectileData>
         return true;
     }
 
-    private bool Near(float a, float b, float threshold = 0.01f)
+    private bool Near(float a, float b, float epsilon = 0.001f)
     {
-        return Mathf.Abs(a - b) < threshold;
+        return Mathf.Abs(a - b) < epsilon;
     }
 }

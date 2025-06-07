@@ -7,11 +7,11 @@ public class SyncHP : BaseSync<SyncHPData>
 
     public override string SyncType => "hp";
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         _enemy = GetComponent<BaseEnemy>();
     }
-
 
     protected override SyncHPData GetCurrentData()
     {
@@ -30,8 +30,8 @@ public class SyncHP : BaseSync<SyncHPData>
         return Near(a.Hp, b.Hp);
     }
 
-    private bool Near(float a, float b, float threshold = 0.01f)
+    private bool Near(float a, float b, float epsilon = 0.001f)
     {
-        return Mathf.Abs(a - b) < threshold;
+        return Mathf.Abs(a - b) < epsilon;
     }
 }

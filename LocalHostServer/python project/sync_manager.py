@@ -31,8 +31,6 @@ class SyncManager:
             print(f"[SyncError] Failed to parse {sync_packet.sync_type}: {e}")
             return
 
-        print(f"[Sync] Relaying {sync_packet.sync_type} from {sender.client_id}")
-
         # 3. Envelope에 넣고 전송
         envelope = Envelope()
         envelope.type = "sync"

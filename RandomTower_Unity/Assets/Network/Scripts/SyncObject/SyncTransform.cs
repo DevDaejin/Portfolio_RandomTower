@@ -8,12 +8,6 @@ public class SyncTransform : BaseSync<SyncTransformData>
 
     public override string SyncType => "transform";
 
-    private void Start()
-    {
-        _currentData = new();
-        _currentData.MergeFrom(GetCurrentData());
-        _receivedData = new();
-    }
     protected override SyncTransformData GetCurrentData()
     {
         _currentData.Position = VectorToProtoVector(transform.position);
@@ -70,7 +64,7 @@ public class SyncTransform : BaseSync<SyncTransformData>
         return Near(a.X, b.X) && Near(a.Y, b.Y) && Near(a.Z, b.Z);
     }
 
-    private bool Near(float a, float b, float epsilon = 0.01f)
+    private bool Near(float a, float b, float epsilon = 0.001f)
     {
         return Mathf.Abs(a - b) < epsilon;
     }
