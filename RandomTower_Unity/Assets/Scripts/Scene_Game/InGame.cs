@@ -100,7 +100,6 @@ public class InGame : MonoBehaviour
         ITower tower = _towerManager.CreateTower(data, Vector3.down, null, null, 1);
         ISyncObject syncObject = tower.Transform.GetComponent<ISyncObject>();
         syncObject.Initialize(packet.ObjectId, packet.OwnerId, packet.RoomId);
-
         _networkManager.SpawnService.OnApplybufferWhenSpawned(syncObject);
     }
 

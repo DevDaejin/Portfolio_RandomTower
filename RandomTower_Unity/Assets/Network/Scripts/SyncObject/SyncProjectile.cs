@@ -11,6 +11,9 @@ public class SyncProjectile : BaseSync<SyncProjectileData>
 
     private void Awake()
     {
+        _currentData = new();
+        _receivedData = new();
+
         _lineRenderer = GetComponentInChildren<LineRenderer>();
         if (_isLaser)
         {    

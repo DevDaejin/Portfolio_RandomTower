@@ -40,6 +40,8 @@ public class SyncObject : MonoBehaviour, ISyncObject
     private IEnumerator SyncRoutine()
     {
         WaitForSecondsRealtime wait = new WaitForSecondsRealtime(_syncInterval);
+        
+        yield return new WaitUntil(() => !string.IsNullOrEmpty(ObjectID));
 
         while (true)
         {
@@ -58,7 +60,7 @@ public class SyncObject : MonoBehaviour, ISyncObject
     {
         SyncPacketData syncPacket = new SyncPacketData
         {
-            ObjectId = ObjectID,
+            ObjectId = this.ObjectID,
             SyncType = syncable.SyncType,
             Payload = ByteString.CopyFrom(syncable.Serialize().ToByteArray())
         };

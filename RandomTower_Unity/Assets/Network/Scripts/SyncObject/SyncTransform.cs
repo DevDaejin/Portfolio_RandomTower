@@ -8,9 +8,10 @@ public class SyncTransform : BaseSync<SyncTransformData>
 
     public override string SyncType => "transform";
 
-    private void Awake()
+    private void Start()
     {
         _currentData = new();
+        _currentData.MergeFrom(GetCurrentData());
         _receivedData = new();
     }
     protected override SyncTransformData GetCurrentData()
@@ -31,7 +32,7 @@ public class SyncTransform : BaseSync<SyncTransformData>
 
     protected override void ApplyData(SyncTransformData data)
     {
-        _receivedData = data;
+        _receivedData.MergeFrom(data);
 
         transform.position = ProtoVectorToVector(_receivedData.Position);
         if(isSyncRotation)
@@ -46,17 +47,20 @@ public class SyncTransform : BaseSync<SyncTransformData>
 
     protected override bool Equals(SyncTransformData a, SyncTransformData b)
     {
+        if (a.Position == null || b.Position == null) return false;
         if (!EqualVector(a.Position, b.Position)) return false;
 
-        bool hasRotationA = a.Rotation != null;
-        bool hasRotationB = b.Rotation != null;
-        if (hasRotationA != hasRotationB) return false;
-        if (hasRotationA && !EqualVector(a.Rotation, b.Rotation)) return false;
+        if (isSyncRotation)
+        {
+            if (a.Rotation == null || b.Rotation == null) return false;
+            if (!EqualVector(a.Rotation, b.Rotation)) return false;
+        }
 
-        bool hasScaleA = a.Scale != null;
-        bool hasScaleB = b.Scale != null;
-        if (hasScaleA != hasScaleB) return false;
-        if (hasScaleA && !EqualVector(a.Scale, b.Scale)) return false;
+        if (isSyncScale)
+        {
+            if (a.Scale == null || b.Scale == null) return false;
+            if (!EqualVector(a.Scale, b.Scale)) return false;
+        }
 
         return true;
     }

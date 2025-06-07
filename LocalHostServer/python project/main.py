@@ -1,6 +1,7 @@
 # main.py
 
 import asyncio
+import datetime
 import websockets
 import uuid
 
@@ -9,10 +10,8 @@ from room_manager import RoomManager
 from spawn_manager import SpawnManager
 from sync_manager import SyncManager
 
-from proto.net_pb2 import SyncPacketData
-from proto.net_pb2 import Envelope
+from proto.net_pb2 import SyncPacketData, Envelope
 from proto.room_pb2 import RoomPacket
-from proto.spawn_pb2 import SpawnEnemyPacket
 
 room_manager = RoomManager()
 spawn_manager = SpawnManager(room_manager)
@@ -36,6 +35,12 @@ async def handler(websocket):
         await room_manager.leave_room(context)
         del client[websocket]
 
+def dump_raw_message(data: bytes, label: str):
+    now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    with open(f"error_dump_{label}_{now}.bin", "wb") as f:
+        f.write(data)
+    print(f"[ErrorDump] Raw data written to error_dump_{label}_{now}.bin")
+
 async def handle_message(context, message: bytes):
     try:
         envelope = Envelope()
@@ -49,7 +54,7 @@ async def handle_message(context, message: bytes):
         elif envelope.type == "sync":
             sync_packet = SyncPacketData()
             sync_packet.ParseFromString(envelope.payload)
-            await sync_manager.handle_sync(context, sync_packet.sync_type, sync_packet.payload)
+            await sync_manager.handle_sync(context, sync_packet)
 
         elif envelope.type == "spawn_enemy":
             await spawn_manager.handle_spawn_enemy(context, envelope.payload)

@@ -44,6 +44,17 @@ public class SpawnService
         });
     }
 
+    public void AddSyncPacketBuffer(SyncPacketData packet)
+    {
+        string id = packet.ObjectId;
+        if (!_syncBuffer.ContainsKey(id))
+        {
+            _syncBuffer[id] = _bufferPool.Get();
+        }
+
+        _syncBuffer[id].Add(packet);
+    }
+
     public void OnApplybufferWhenSpawned(ISyncObject syncObject)
     {
         string objectID = syncObject.ObjectID;

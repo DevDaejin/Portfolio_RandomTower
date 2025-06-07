@@ -1,6 +1,8 @@
 using Google.Protobuf;
 using Net;
 using System;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -48,19 +50,20 @@ public class NetworkManager : MonoBehaviour
 
     private void HandleSyncEnvelope(byte[] data)
     {
-        //var packet = SyncPacket.Parser.ParseFrom(data);
+        var packet = SyncPacketData.Parser.ParseFrom(data);
 
-        //var syncObject = SyncObjectManager.GetSyncObject(packet.ObjectId);
+        var syncObject = SyncObjectManager.GetSyncObject(packet.ObjectId);
 
-        //if(syncObject != null)
-        //{
-        //    syncObject?.Receive(packet.SyncType, packet.Payload.ToByteArray());
-        //}
-        //else
-        //{
-        //    SpawnService.AddSyncPacketBuffer(packet);
-        //}
+        if (syncObject != null)
+        {
+            syncObject?.Receive(packet.SyncType, packet.Payload);
+        }
+        else
+        {
+            SpawnService.AddSyncPacketBuffer(packet);
+        }
     }
+
     public async Task SendEnvelope(string type, IMessage payload) => await _client.SendEnvelope(type, payload);
     public void CancelConnect() => _client.CancelConnect();
     public void Disconnect() => _client?.Disconnect();

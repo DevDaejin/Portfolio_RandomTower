@@ -1,11 +1,12 @@
 
 using Google.Protobuf;
 using NativeWebSocket;
+using Net;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
-using Net;
 
 public class NetworkClient
 {
@@ -50,10 +51,6 @@ public class NetworkClient
         if (_envelopeHandlers.TryGetValue(env.Type, out var handler))
         {
             handler.Invoke(env.Payload.ToByteArray());
-        }
-        else
-        {
-            Debug.LogWarning($"[Envelope] No handler for type: {env.Type}");
         }
     }
 
