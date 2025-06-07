@@ -21,17 +21,16 @@ public class SyncHP : BaseSync<SyncHPData>
 
     protected override void ApplyData(SyncHPData data)
     {
-        _receivedData  = data;
-        _enemy.CurrentHP = _receivedData.Hp;
+        Debug.Log("a14i12u3490128374");
+        var damage = _enemy.CurrentHP - data.Hp;
+        _enemy.TakeDamage(damage);
+        
     }
 
     protected override bool Equals(SyncHPData a, SyncHPData b)
     {
-        return Near(a.Hp, b.Hp);
-    }
-
-    private bool Near(float a, float b, float epsilon = 0.00001f)
-    {
-        return Mathf.Abs(a - b) < epsilon;
+        Debug.Log("asfasdfsdf");
+        if (a.Hp - b.Hp == 0) return true;
+        return a.Hp == b.Hp;
     }
 }

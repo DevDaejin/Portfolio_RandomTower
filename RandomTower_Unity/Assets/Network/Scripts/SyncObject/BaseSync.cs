@@ -8,6 +8,8 @@ public abstract class BaseSync<TData> : MonoBehaviour, ISyncable where TData : I
     protected TData _receivedData;
 
     public abstract string SyncType { get; }
+    public string ObjectID { get; private set; }
+    
     protected abstract TData GetCurrentData();
     protected abstract void ApplyData(TData data);
     protected abstract bool Equals(TData a, TData b);
@@ -20,6 +22,7 @@ public abstract class BaseSync<TData> : MonoBehaviour, ISyncable where TData : I
 
     protected virtual void Start()
     {
+        ObjectID = GetComponent<SyncObject>().ObjectID;
         _currentData.MergeFrom(GetCurrentData());
     }
 

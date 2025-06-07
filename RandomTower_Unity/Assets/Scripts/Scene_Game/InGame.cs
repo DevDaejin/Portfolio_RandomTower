@@ -125,16 +125,6 @@ public class InGame : MonoBehaviour
 
     private void ForceSendReturn(Projectile projectile, ISyncObject syncObject)
     {
-        //SyncProjectile.Data data = new SyncProjectile.Data { IsReturned = true };
-        //SyncPacket packet = new SyncPacket
-        //{
-        //    ObjectID = syncObject.ObjectID,
-        //    SyncType = "projectile",
-        //    Payload = JsonUtility.SerializeObject(data)
-        //};
-
-        //_ = _networkManager.Send(JsonUtility.SerializeObject(packet));
-
         var data = new SyncProjectileData
         {
             IsReturned = true
