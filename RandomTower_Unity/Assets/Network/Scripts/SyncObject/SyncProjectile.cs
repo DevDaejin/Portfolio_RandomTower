@@ -24,13 +24,17 @@ public class SyncProjectile : BaseSync<SyncProjectileData>
     {
         if (_isLaser)
         {
-            _currentData.Start.X = _lineRenderer.GetPosition(0).x;
-            _currentData.Start.Y = _lineRenderer.GetPosition(0).y;
-            _currentData.Start.Z = _lineRenderer.GetPosition(0).z;
+            var startPosition = _lineRenderer.GetPosition(0);
+            _currentData.Start ??= new();
+            _currentData.Start.X = startPosition.x;
+            _currentData.Start.Y = startPosition.y;
+            _currentData.Start.Z = startPosition.z;
 
-            _currentData.End.X = _lineRenderer.GetPosition(1).x;
-            _currentData.End.Y = _lineRenderer.GetPosition(1).y;
-            _currentData.End.Z = _lineRenderer.GetPosition(1).z;
+            var endPosition = _lineRenderer.GetPosition(1);
+            _currentData.End ??= new();
+            _currentData.End.X = endPosition.x;
+            _currentData.End.Y = endPosition.y;
+            _currentData.End.Z = endPosition.z;
         }
 
         return _currentData;
@@ -79,7 +83,7 @@ public class SyncProjectile : BaseSync<SyncProjectileData>
         return true;
     }
 
-    private bool Near(float a, float b, float epsilon = 0.001f)
+    private bool Near(float a, float b, float epsilon = 0.00001f)
     {
         return Mathf.Abs(a - b) < epsilon;
     }

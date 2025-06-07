@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -48,6 +49,22 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        Network.OnConnectFailed += ActiveNetowrkPanel;
+        Network.OnError += ActiveNetowrkPanel;
+        Network.OnClose += ActiveNetowrkPanel;
+
+        UI.Global.OnNetworkConfirmClicked = () => LoadScene(Scenes.Main);
+        UI.Global.OnNetworkWaittingClicked = () => LoadScene(Scenes.Lobby);
+    }
+
+    private void ActiveNetowrkPanel()
+    {
+        UI.Main.DeactiveConnectPanel();
+        UI.Global.Set(GlobalUI.GlobalUIOption.Error);
     }
 
     public void Initialize()

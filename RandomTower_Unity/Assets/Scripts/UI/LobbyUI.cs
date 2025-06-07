@@ -11,6 +11,7 @@ public class LobbyUI : MonoBehaviour
 
     [Header("Lobby")]
     [SerializeField] private Button _playButton;
+    [SerializeField] private Button _backButton;
 
     public Action OnPlay;
 
@@ -23,6 +24,7 @@ public class LobbyUI : MonoBehaviour
     public string InputedRoomName => _createRoomNameInput.text;
 
     public Action OnCreate;
+    public Action OnBack;
 
     private GameObjectPool<RoomButton> _roomButtons;
     private Transform _roomButtonGroup;
@@ -39,6 +41,7 @@ public class LobbyUI : MonoBehaviour
     {
         _createRoomButton.onClick.AddListener(OnCreateButton);
         _playButton.onClick.AddListener(OnPlayButton);
+        _backButton.onClick.AddListener(OnBack.Invoke);
         _roomListCancelButton.onClick.AddListener(() => _roomListPanel.SetActive(false));
     }
 

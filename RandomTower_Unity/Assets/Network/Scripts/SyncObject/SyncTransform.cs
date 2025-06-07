@@ -64,7 +64,7 @@ public class SyncTransform : BaseSync<SyncTransformData>
         return Near(a.X, b.X) && Near(a.Y, b.Y) && Near(a.Z, b.Z);
     }
 
-    private bool Near(float a, float b, float epsilon = 0.001f)
+    private bool Near(float a, float b, float epsilon = 0.00001f)
     {
         return Mathf.Abs(a - b) < epsilon;
     }

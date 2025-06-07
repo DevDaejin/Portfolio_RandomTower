@@ -1,8 +1,6 @@
 using Google.Protobuf;
 using Net;
 using System;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -20,6 +18,10 @@ public class NetworkManager : MonoBehaviour
 
     public Action OnSceneLoad;
 
+    public event Action OnConnectFailed;
+    public event Action OnError;
+    public event Action OnClose;
+
     private void Update()
     {
         _client?.DispatchMessages();
@@ -35,7 +37,19 @@ public class NetworkManager : MonoBehaviour
     {
         _client = new($"{ip}:{port}");
         _client.RegisterEnvelopeHandler("sync", HandleSyncEnvelope);
-        _client.OnConnected += Connected;
+
+        OnError += () => IsConnect = false;
+        _client.OnError = OnError;
+        
+        OnError += () => IsConnect = false;
+        _client.OnClose = OnClose;
+
+        OnError += () => IsConnect = false;
+        _client.OnConnectFailed = OnConnectFailed;
+
+
+        _client.OnConnected = Connected;
+
         await _client.Connect();
     }
 
@@ -45,6 +59,7 @@ public class NetworkManager : MonoBehaviour
         RoomService = new RoomService(_client);
         SpawnService = new SpawnService(_client);
         IsConnect = true;
+
         OnSceneLoad.Invoke();
     }
 

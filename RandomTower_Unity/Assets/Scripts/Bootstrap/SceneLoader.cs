@@ -7,7 +7,7 @@ public class SceneLoader : MonoBehaviour
     public LoadingUI LoadingUI => _loadingUI ??= GetComponentInChildren<LoadingUI>(true);
     [SerializeField] private LoadingUI _loadingUI;
 
-    private float _loadDelay;
+    WaitForSeconds waitting = new WaitForSeconds(0.5f);
 
     public string CurrentScene { get; private set; } = string.Empty;
 
@@ -35,7 +35,7 @@ public class SceneLoader : MonoBehaviour
         {
             if(operation.progress >= 0.9f)
             {
-                yield return new WaitForSeconds(_loadDelay);
+                yield return waitting;
                 operation.allowSceneActivation = true;
                 LoadingUI.Hide();
             }

@@ -22,7 +22,7 @@ public class LoadingUI : MonoBehaviour
     private float _fillAmountEnd;
     private float _loadingAnimationTime;
 
-    private const float LoadingAnimationSpeed = 1f;
+    private const float LoadingAnimationSpeed = 2f;
 
     public void Show()
     {
@@ -35,10 +35,7 @@ public class LoadingUI : MonoBehaviour
     {
         _isShow = true;
         _isUp = true;
-        _fillAmountStart = 0;
-        _fillAmountEnd = 1;
-        _loadingAnimationTime = 0;
-        _loadingImg.fillAmount = 0;
+        UpdateImageAnimCondition(_isUp);
     }
 
     private void Update()
@@ -55,23 +52,27 @@ public class LoadingUI : MonoBehaviour
     {
         if (!_isShow) return;
 
-        _loadingAnimationTime += Time.deltaTime * LoadingAnimationSpeed;
-
         if (_loadingAnimationTime > 1 || _loadingAnimationTime < 0)
         {
             _isUp = !_isUp;
-            _fillAmountStart = _isUp ? 0 : 1;
-            _fillAmountEnd = _isUp ? 1 : 0;
-            _loadingImg.transform.localScale = _isUp ? Vector3.one : new Vector3(-1, 1, 1);
-            _loadingAnimationTime = 0;
+            UpdateImageAnimCondition(_isUp);
         }
+
+        _loadingAnimationTime += Time.deltaTime * LoadingAnimationSpeed;
 
         _loadingImg.fillAmount = Mathf.Lerp(_fillAmountStart, _fillAmountEnd, _loadingAnimationTime);
     }
 
+    private void  UpdateImageAnimCondition(bool isUp)
+    {
+        _fillAmountStart = isUp ? 0 : 1;
+        _fillAmountEnd = isUp ? 1 : 0;
+        _loadingImg.transform.localScale = isUp ? Vector3.one : new Vector3(-1, 1, 1);
+        _loadingAnimationTime = 0;
+    }
+
     public void Hide()
     {
-        _isShow = false;
         gameObject.SetActive(false);
     }
 }

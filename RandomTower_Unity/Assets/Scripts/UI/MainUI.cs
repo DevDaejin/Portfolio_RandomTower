@@ -144,4 +144,10 @@ public class MainUI : MonoBehaviour
         _connectingPanel.SetActive(false);
         _uriPanel.SetActive(true);
     }
+
+    public void DeactiveConnectPanel()
+    {
+        _connectingPanel.SetActive(false);
+        _uriPanel.SetActive(false);
+    }
 }

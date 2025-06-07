@@ -30,7 +30,7 @@ public class SyncHP : BaseSync<SyncHPData>
         return Near(a.Hp, b.Hp);
     }
 
-    private bool Near(float a, float b, float epsilon = 0.001f)
+    private bool Near(float a, float b, float epsilon = 0.00001f)
     {
         return Mathf.Abs(a - b) < epsilon;
     }

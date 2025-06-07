@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class Main : MonoBehaviour
 {
-    private UIManager _ui;
+    private MainUI _ui;
     void Start()
     {
-        _ui = GameManager.Instance.UI;
-        _ui.Initialize(UIManager.UIType.Main);
+        GameManager.Instance.UI.Initialize(UIManager.UIType.Main);
+        _ui = GameManager.Instance.UI.Main;
 
-        _ui.Main.SinglePlayButton = () => GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
-        _ui.Main.QuitButton = () => Application.Quit();
-        _ui.Main.OnMultiConfirm += Main_OnMultiConfirm;
-        _ui.Main.OnConnectingCancel += GameManager.Instance.Network.CancelConnect;
-        GameManager.Instance.Network.OnSceneLoad += LoadNextScene;
+        _ui.SinglePlayButton = () => GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
+        _ui.QuitButton = () => Application.Quit();
+        _ui.OnMultiConfirm += Main_OnMultiConfirm;
+        _ui.OnConnectingCancel += GameManager.Instance.Network.CancelConnect;
+        GameManager.Instance.Network.OnSceneLoad = LoadNextScene;
         GameManager.Instance.Network.Disconnect();
     }
 
@@ -23,11 +23,14 @@ public class Main : MonoBehaviour
 
     private void LoadNextScene()
     {
+        _ui.DeactiveConnectPanel();
         GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
     }
 
     private void OnDestroy()
     {
         GameManager.Instance.Network.OnSceneLoad -= LoadNextScene;
+        _ui.OnConnectingCancel -= GameManager.Instance.Network.CancelConnect;
+        _ui.OnMultiConfirm -= Main_OnMultiConfirm;
     }
 }

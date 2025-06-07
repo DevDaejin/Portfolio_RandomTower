@@ -4,7 +4,6 @@ using NativeWebSocket;
 using Net;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -18,6 +17,9 @@ public class NetworkClient
     public string RoomID { get; set; }
 
     public Action OnConnected;
+    public Action OnConnectFailed;
+    public Action OnError;
+    public Action OnClose;
 
     public NetworkClient(string address)
     {
@@ -34,10 +36,33 @@ public class NetworkClient
             OnConnected?.Invoke();
         };
 
+        _socket.OnError += error =>
+        {
+            Debug.Log($"[WebSocket] Error - {error}");
+            OnError?.Invoke();
+        };
+
+        _socket.OnClose += code =>
+        {
+            Debug.Log($"[WebSocket] close - {code.ToString()}");
+
+            if (code != WebSocketCloseCode.Normal)
+            {
+                OnClose?.Invoke();
+            }
+        };
+
+
         _socket.OnMessage += OnMessageReceived;
 
-        await _socket.Connect();
-
+        try
+        {
+            await _socket.Connect();
+        }
+        catch (Exception)
+        {
+            OnConnectFailed?.Invoke();
+        }
     }
 
     public void RegisterEnvelopeHandler(string type, Action<byte[]> handler)
@@ -63,7 +88,7 @@ public class NetworkClient
         };
 
         byte[] bytes = envelope.ToByteArray();
-        await _socket.Send(bytes);
+        await _socket?.Send(bytes);
     }
 
     public async Task Send<T>(string type, T packet) where T : IMessage

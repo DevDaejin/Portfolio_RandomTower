@@ -13,6 +13,7 @@ public class RoomButton : MonoBehaviour
 
     private void Awake()
     {
+        _button.onClick.RemoveListener(OnClick);
         _button.onClick.AddListener(OnClick);
     }
 

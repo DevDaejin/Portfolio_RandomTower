@@ -1,7 +1,5 @@
 using Room;
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class Lobby : MonoBehaviour
@@ -17,10 +15,14 @@ public class Lobby : MonoBehaviour
     {
         GameManager.Instance.UI.Initialize(UIManager.UIType.Lobby);
         _ui = GameManager.Instance.UI.Lobby;
+        _network = GameManager.Instance.Network;
+    }
+
+    private void Start()
+    {
         _ui.OnCreate = OnCreate;
         _ui.OnPlay = OnPlay;
-
-        _network = GameManager.Instance.Network;
+        _ui.OnBack = OnBack;
     }
 
     private async void Update()
@@ -54,6 +56,12 @@ public class Lobby : MonoBehaviour
     {
         await _network.RoomService.CreateRoom(_ui.InputedRoomName);
         GameManager.Instance.LoadScene(GameManager.Scenes.Game);
+    }
+
+
+    private void OnBack()
+    {
+        GameManager.Instance.LoadScene(GameManager.Scenes.Main);
     }
 
     private void UpdateRoomList(List<RoomInfo> roomList)

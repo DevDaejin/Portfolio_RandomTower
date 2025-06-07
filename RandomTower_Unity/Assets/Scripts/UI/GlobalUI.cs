@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GlobalUI : MonoBehaviour
 {
-    public enum GlobalUIOption { None, Option, Quit };
+    public enum GlobalUIOption { None, Option, Quit, Error, Watting};
 
     [Header("Option")]
     [SerializeField] private GameObject _optionPanel;
@@ -18,11 +18,22 @@ public class GlobalUI : MonoBehaviour
     [SerializeField] private Button _quitConfirmButton;
     [SerializeField] private Button _quitCancelButton;
 
+    [Header("Network error")]
+    [SerializeField] private GameObject _networkErrorPanel;
+    [SerializeField] private Button _confirmNetworkErrorButton;
+    public Action OnNetworkConfirmClicked;
+
+    [Header("Network waitting")]
+    [SerializeField] private GameObject _networkWattingPanel;
+    [SerializeField] private Button _confirmNetworkWattingButton;
+    public Action OnNetworkWaittingClicked;
+
     private void Start()
     {
         _optionConfirmButton.onClick.AddListener(OnOptionConfirm);
-        
         _optionCancelButton.onClick.AddListener(OnOptionCancel);
+        _confirmNetworkErrorButton.onClick.AddListener(OnNetworkErrorConfirm);
+        _confirmNetworkWattingButton.onClick.AddListener(OnNetworkWaittingConfirm);
     }
 
     public void Set(GlobalUIOption option)
@@ -31,6 +42,8 @@ public class GlobalUI : MonoBehaviour
 
         _optionPanel.SetActive(option == GlobalUIOption.Option);
         _quitPanel.SetActive(option == GlobalUIOption.Quit);
+        _networkErrorPanel.SetActive(option == GlobalUIOption.Error);
+        _networkWattingPanel.SetActive(option == GlobalUIOption.Watting);
     }
 
     private void OnOptionConfirm()
@@ -45,6 +58,15 @@ public class GlobalUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    public void OnNetworkErrorConfirm()
+    {
+        OnNetworkConfirmClicked?.Invoke();
+    }
+
+    public void OnNetworkWaittingConfirm()
+    {
+        OnNetworkWaittingClicked?.Invoke();
+    }
 
     public void SetQuitConfrimButton(Action callback)
     {

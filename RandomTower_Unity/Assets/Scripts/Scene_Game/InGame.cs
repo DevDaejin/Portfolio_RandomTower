@@ -16,6 +16,7 @@ public class InGame : MonoBehaviour
     private NetworkManager _networkManager;
     private IDGenerator _idGenerator;
     private InGameUI _ui;
+    private GlobalUI _globalUI;
 
     private int _currentStage = 0;
 
@@ -31,7 +32,9 @@ public class InGame : MonoBehaviour
         _towerManager.Initialize(_enemyManager, MaxTower);
 
         GameManager.Instance.UI.Initialize(UIManager.UIType.InGame);
+        
         _ui = GameManager.Instance.UI.InGame;
+        _globalUI = GameManager.Instance.UI.Global;
 
         _resourceManager = new ResourceManager();
 
@@ -74,6 +77,8 @@ public class InGame : MonoBehaviour
                 OnReceivedEnemyPacket,
                 OnReceivedTowerPacket,
                 OnReceivedProjectilePacket);
+
+            _globalUI.Set(GlobalUI.GlobalUIOption.Watting);
         }
         GetEnemyCount();
     }
