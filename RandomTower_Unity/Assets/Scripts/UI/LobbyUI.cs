@@ -58,6 +58,7 @@ public class LobbyUI : MonoBehaviour
             target.Set(
                 roomList[index].Name,
                 roomList[index].RoomId,
+                roomList[index].ClientCount,
                 onEnter
             );
         }

@@ -60,7 +60,6 @@ public class InGame : MonoBehaviour
         _waveController.OnStageResult += Result;
         _waveController.OnWaveEnded += OnWave;
         _waveController.OnWaveStarted += OnWaveStarted;
-
         _waveController.Initialize();
 
         _ui.SetWaveButton(OnWave);
