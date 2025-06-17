@@ -49,7 +49,7 @@ public class InGame : MonoBehaviour
         _towerManager.OnTowerUpdated += _ui.SetTowerCount;
         _towerManager.OnSendSpawnTowerPacket += (id, syncObject) => OnSendSpawnPacket<SpawnTowerPacket>("spawn_tower", id, syncObject);
         _towerManager.OnSendSpawnProjectilePacket += (id, syncObject) => OnSendSpawnPacket<SpawnProjectilePacket>("spawn_projectile", id, syncObject);
-        _towerManager.OnSendProejctileReturn += ForceSendReturn;
+        _towerManager.OnSendProejctileReturn += ForceProjectileReturn;
 
         _enemyManager.OnReward += OnReward;
         _enemyManager.OnSendSpawnPacket += (id, syncObject) => OnSendSpawnPacket<SpawnEnemyPacket>("spawn_enemy", id, syncObject);
@@ -72,10 +72,9 @@ public class InGame : MonoBehaviour
         {
             _idGenerator = new(_networkManager.ClientID);
 
-            _networkManager.SpawnService.Initialize(
-                OnReceivedEnemyPacket,
-                OnReceivedTowerPacket,
-                OnReceivedProjectilePacket);
+            _networkManager.SpawnService.OnEnemySpawned += packet => OnReceivedEnemyPacket(packet.SpawnId, packet);
+            _networkManager.SpawnService.OnTowerSpawned += packet => OnReceivedTowerPacket(packet.SpawnId, packet);
+            _networkManager.SpawnService.OnProjectileSpawned += packet => OnReceivedProjectilePacket(packet.SpawnId, packet);
 
             _globalUI.Set(GlobalUI.GlobalUIOption.Watting);
         }
@@ -95,34 +94,39 @@ public class InGame : MonoBehaviour
     {
         EnemyData data = _enemyManager.GetEnemyDataWithID(int.Parse(id));
         BaseEnemy enemy = _enemyManager.GetEnemy(data);
+
         ISyncObject syncObject = enemy.GetComponent<ISyncObject>();
         syncObject.Initialize(packet.ObjectId, packet.OwnerId, packet.RoomId);
+
         _enemyManager.AddSpawnedEnemy(enemy);
-        _networkManager.SpawnService.OnApplybufferWhenSpawned(syncObject);
+        _networkManager.SyncService.OnSyncObjectSpawned(syncObject);
     }
 
     private void OnReceivedTowerPacket(string id, SpawnTowerPacket packet)
     {
         TowerData data = _towerManager.TowerDatabase.GetTowerByID(int.Parse(id));
         ITower tower = _towerManager.CreateTower(data, Vector3.down, null, null, 1);
+
         ISyncObject syncObject = tower.Transform.GetComponent<ISyncObject>();
         syncObject.Initialize(packet.ObjectId, packet.OwnerId, packet.RoomId);
-        _networkManager.SpawnService.OnApplybufferWhenSpawned(syncObject);
+
+        _networkManager.SyncService.OnSyncObjectSpawned(syncObject);
     }
 
     private void OnReceivedProjectilePacket(string id, SpawnProjectilePacket packet)
     {
         TowerData data = _towerManager.TowerDatabase.GetTowerByID(int.Parse(id));
+
         IProjectilePool pool = _towerManager.GetProjectilePool(data);
         Projectile projectile = pool.Get(null, Vector3.down, 0, data.ProjectileSpeed, null);
 
         ISyncObject syncObject = projectile.GetComponent<ISyncObject>();
         syncObject.Initialize(packet.ObjectId, packet.OwnerId, packet.RoomId);
 
-        _networkManager.SpawnService.OnApplybufferWhenSpawned(syncObject);
+        _networkManager.SyncService.OnSyncObjectSpawned(syncObject);
     }
 
-    private void ForceSendReturn(Projectile projectile, ISyncObject syncObject)
+    private void ForceProjectileReturn(Projectile projectile, ISyncObject syncObject)
     {
         var data = new SyncProjectileData
         {
@@ -137,6 +141,15 @@ public class InGame : MonoBehaviour
         };
 
         _ = _networkManager.SendEnvelope("sync", packet);
+    }
+
+    //TODO : 강제 발송하기
+    private void ForceEnemyReturn(BaseEnemy enemy, ISyncObject syncObject)
+    {
+        var data = new SyncHPData
+        {
+            Hp = -1
+        };
     }
 
     private void Update()

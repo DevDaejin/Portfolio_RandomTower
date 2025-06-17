@@ -1,31 +1,28 @@
 using Google.Protobuf;
 using Net;
+using Room;
+using Spawn;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
-
 public class NetworkManager : MonoBehaviour
 {
     private NetworkClient _client;
-    public SyncObjectManager SyncObjectManager { get; private set; }
-    public RoomService RoomService {get; private set; }
+    public RoomService RoomService { get; private set; }
     public SpawnService SpawnService { get; private set; }
+    public SyncService SyncService { get; private set; }
     public bool IsConnect { get; private set; } = false;
 
     public string ClientID => _client?.ClientID ?? string.Empty;
     public string RoomID => _client?.RoomID ?? string.Empty;
 
     public Action OnSceneLoad;
-
     public event Action OnConnectFailed;
     public event Action OnError;
     public event Action OnClose;
 
-    private void Update()
-    {
-        _client?.DispatchMessages();
-    }
+    private void Update() => _client?.DispatchMessages();
 
     private void OnDestroy()
     {
@@ -35,19 +32,21 @@ public class NetworkManager : MonoBehaviour
 
     public async void Connect(string ip, string port)
     {
-        _client = new($"{ip}:{port}");
-        _client.RegisterEnvelopeHandler("sync", HandleSyncEnvelope);
+        _client = new NetworkClient($"{ip}:{port}");
 
-        OnError += () => IsConnect = false;
-        _client.OnError = OnError;
-        
-        OnError += () => IsConnect = false;
-        _client.OnClose = OnClose;
+        RoomService = new RoomService(_client);
+        SpawnService = new SpawnService(_client);
+        SyncService = new SyncService();
 
-        OnError += () => IsConnect = false;
-        _client.OnConnectFailed = OnConnectFailed;
+        _client.RegisterEnvelopeHandler("room", HandleRoomEnvelope);
+        _client.RegisterEnvelopeHandler("spawn_enemy", HandleSpawnEnemy);
+        _client.RegisterEnvelopeHandler("spawn_tower", HandleSpawnTower);
+        _client.RegisterEnvelopeHandler("spawn_projectile", HandleSpawnProjectile);
+        _client.RegisterEnvelopeHandler("sync", HandleSync);
 
-
+        _client.OnError = () => OnError?.Invoke();
+        _client.OnClose = () => OnClose?.Invoke();
+        _client.OnConnectFailed = () => OnConnectFailed?.Invoke();
         _client.OnConnected = Connected;
 
         await _client.Connect();
@@ -55,31 +54,27 @@ public class NetworkManager : MonoBehaviour
 
     private void Connected()
     {
-        SyncObjectManager = new SyncObjectManager();
-        RoomService = new RoomService(_client);
-        SpawnService = new SpawnService(_client);
         IsConnect = true;
-
-        OnSceneLoad.Invoke();
+        OnSceneLoad?.Invoke();
     }
 
-    private void HandleSyncEnvelope(byte[] data)
+    private void HandleRoomEnvelope(byte[] bytes)
     {
-        var packet = SyncPacketData.Parser.ParseFrom(data);
+        var packet = RoomPacket.Parser.ParseFrom(bytes);
+        RoomService.HandleRoomPacket(packet);
+    }
 
-        var syncObject = SyncObjectManager.GetSyncObject(packet.ObjectId);
+    private void HandleSpawnEnemy(byte[] bytes) => SpawnService.OnReceiveEnemy(SpawnEnemyPacket.Parser.ParseFrom(bytes));
+    private void HandleSpawnTower(byte[] bytes) => SpawnService.OnReceiveTower(SpawnTowerPacket.Parser.ParseFrom(bytes));
+    private void HandleSpawnProjectile(byte[] bytes) => SpawnService.OnReceiveProjectile(SpawnProjectilePacket.Parser.ParseFrom(bytes));
 
-        if (syncObject != null)
-        {
-            syncObject?.Receive(packet.SyncType, packet.Payload);
-        }
-        else
-        {
-            SpawnService.AddSyncPacketBuffer(packet);
-        }
+    private void HandleSync(byte[] bytes)
+    {
+        var packet = SyncPacketData.Parser.ParseFrom(bytes);
+        SyncService.HandleSync(packet);
     }
 
     public async Task SendEnvelope(string type, IMessage payload) => await _client.SendEnvelope(type, payload);
-    public void CancelConnect() => _client.CancelConnect();
+    public void CancelConnect() => _client?.CancelConnect();
     public void Disconnect() => _client?.Disconnect();
 }

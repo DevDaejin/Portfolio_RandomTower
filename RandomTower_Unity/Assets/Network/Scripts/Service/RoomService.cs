@@ -7,17 +7,14 @@ public class RoomService
 {
     private readonly NetworkClient _client;
     public Action<List<RoomInfo>> OnRoomListUpdated;
+
     public RoomService(NetworkClient client)
     {
         _client = client;
-
-        _client.RegisterEnvelopeHandler("room", HandleRoomEnvelope);
     }
 
-    private void HandleRoomEnvelope(byte[] bytes)
+    public void HandleRoomPacket(RoomPacket packet)
     {
-        var packet = RoomPacket.Parser.ParseFrom(bytes);
-
         switch (packet.PayloadCase)
         {
             case RoomPacket.PayloadOneofCase.RoomCreated:
@@ -33,32 +30,18 @@ public class RoomService
             case RoomPacket.PayloadOneofCase.RoomList:
                 OnRoomListUpdated?.Invoke(new List<RoomInfo>(packet.RoomList.Rooms));
                 break;
-
-            case RoomPacket.PayloadOneofCase.RoomLeft:
-                break;
         }
     }
-    public async Task CreateRoom(string name)
-    {
-        var wrapper = new RoomPacket { CreateRoom = new CreateRoomRequest { Name = name } };
-        await _client.SendEnvelope("room", wrapper);
-    }
 
-    public async Task JoinRoom(string roomId)
-    {
-        var wrapper = new RoomPacket { JoinRoom = new JoinRoomRequest { RoomId = roomId } };
-        await _client.SendEnvelope("room", wrapper);
-    }
+    public async Task CreateRoom(string name) =>
+        await _client.SendEnvelope("room", new RoomPacket { CreateRoom = new CreateRoomRequest { Name = name } });
 
-    public async Task LeaveRoom()
-    {
-        var wrapper = new RoomPacket { LeaveRoom = new LeaveRoomRequest { RoomId = _client?.RoomID } };
-        await _client.SendEnvelope("room", wrapper);
-    }
+    public async Task JoinRoom(string roomId) =>
+        await _client.SendEnvelope("room", new RoomPacket { JoinRoom = new JoinRoomRequest { RoomId = roomId } });
 
-    public async Task RequestRoomList()
-    {
-        var wrapper = new RoomPacket { ListRoom = new ListRoomRequest() };
-        await _client.SendEnvelope("room", wrapper);
-    }
+    public async Task LeaveRoom() =>
+        await _client.SendEnvelope("room", new RoomPacket { LeaveRoom = new LeaveRoomRequest { RoomId = _client.RoomID } });
+
+    public async Task RequestRoomList() =>
+        await _client.SendEnvelope("room", new RoomPacket { ListRoom = new ListRoomRequest() });
 }

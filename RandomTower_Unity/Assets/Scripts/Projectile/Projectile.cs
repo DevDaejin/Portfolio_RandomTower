@@ -42,8 +42,9 @@ public abstract class Projectile : MonoBehaviour, IProjectileMovement, IProjecti
 
     public virtual void Initialize(BaseEnemy target, Vector3 origin, float damage, float speed, Action<Projectile> onReutrn, Action<Projectile, ISyncObject> onSendProjectileReturn)
     {
-        _target = target;
         transform.position = origin;
+
+        _target = target;
         _damage = damage;
         _speed = speed;
         _onReturn = onReutrn;

@@ -8,26 +8,22 @@ public class SyncTransform : BaseSync<SyncTransformData>
 
     public override string SyncType => "transform";
 
-    protected override SyncTransformData GetCurrentData()
+    protected override void FillData(SyncTransformData target)
     {
-        _currentData.Position = VectorToProtoVector(transform.position);
+        target.Position = VectorToProtoVector(transform.position);
 
         if (isSyncRotation)
         {
-            _currentData.Rotation = VectorToProtoVector(transform.eulerAngles);
+            target.Rotation = VectorToProtoVector(transform.eulerAngles);
         }
         if (isSyncScale)
         {
-            _currentData.Scale = VectorToProtoVector(transform.localScale);
+            target.Scale = VectorToProtoVector(transform.localScale);
         }
-
-        return _currentData;
     }
 
     protected override void ApplyData(SyncTransformData data)
     {
-        _receivedData.MergeFrom(data);
-
         transform.position = ProtoVectorToVector(_receivedData.Position);
         if(isSyncRotation)
         {
@@ -76,12 +72,12 @@ public class SyncTransform : BaseSync<SyncTransformData>
 
     private ProtoVector3 VectorToProtoVector(Vector3 vector3)
     {
-        ProtoVector3 protoVector3 = new ProtoVector3();
-        protoVector3.X = vector3.x;
-        protoVector3.Y = vector3.y;
-        protoVector3.Z = vector3.z;
-
-        return protoVector3;
+        return new ProtoVector3
+        {
+            X = vector3.x,
+            Y = vector3.y,
+            Z = vector3.z
+        };
     }
 }
 

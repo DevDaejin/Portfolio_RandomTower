@@ -95,7 +95,7 @@ public class BaseEnemy : MonoBehaviour
         }
     }
 
-    protected virtual void Die()
+    public virtual void Die()
     {
         OnReward?.Invoke(Data.RewardGold);
         OnDie?.Invoke(this);

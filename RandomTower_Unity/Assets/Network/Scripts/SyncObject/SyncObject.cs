@@ -18,7 +18,7 @@ public class SyncObject : MonoBehaviour, ISyncObject
     private NetworkManager _network;
 
     private Coroutine _syncRoutine;
-    private float _syncInterval = 0.1f;
+    private float _syncInterval = 0.001f;
 
     public void Initialize(string objectID, string ownerID, string roomID)
     {
@@ -30,21 +30,38 @@ public class SyncObject : MonoBehaviour, ISyncObject
         LocalClientID = _network.ClientID;
 
         _syncables = GetComponents<ISyncable>().ToList();
-        _network.SyncObjectManager.Register(this);
+        _network.SyncService.Register(this);
 
-        if (!IsOwner) return;
+        if (IsOwner)
+        {
+            foreach (var syncable in _syncables)
+            {
+                _ = Send(syncable);
+            }
 
-        _syncRoutine = StartCoroutine(SyncRoutine());
+            _syncRoutine = StartCoroutine(SyncRoutine());
+        }
+        else
+        {
+            _network.SyncService.OnSyncObjectSpawned(this);
+        }
     }
 
     private IEnumerator SyncRoutine()
     {
         WaitForSecondsRealtime wait = new WaitForSecondsRealtime(_syncInterval);
-        
+
         yield return new WaitUntil(() => !string.IsNullOrEmpty(ObjectID));
 
         while (true)
         {
+            if (!gameObject.activeInHierarchy)
+            {
+                yield return wait;
+                continue;
+            }
+
+
             foreach (ISyncable syncable in _syncables)
             {
                 if (!syncable.IsDirty()) continue;
@@ -69,9 +86,18 @@ public class SyncObject : MonoBehaviour, ISyncObject
         syncable.ClearDirty();
     }
 
+    private void OnDisable()
+    {
+        if (_syncRoutine != null)
+        {
+            StopCoroutine(_syncRoutine);
+            _syncRoutine = null;
+        }
+    }
+
     private void OnDestroy()
     {
-        _network?.SyncObjectManager.Unregister(ObjectID);
+        _network?.SyncService.Unregister(ObjectID);
     }
 
     public void Receive(string syncType, ByteString payload)

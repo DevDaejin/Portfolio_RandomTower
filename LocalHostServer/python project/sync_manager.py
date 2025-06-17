@@ -14,7 +14,6 @@ class SyncManager:
 
         print(f"[Sync] Relaying {sync_packet.sync_type} from {sender.client_id} for object {sync_packet.object_id}")
 
-        # 1. 어떤 데이터 타입인지 선택
         if sync_packet.sync_type == "transform":
             msg = SyncTransformData()
         elif sync_packet.sync_type == "hp":
@@ -26,12 +25,11 @@ class SyncManager:
             return
 
         try:
-            msg.ParseFromString(sync_packet.payload)  # ✅ 정상 필드명
+            msg.ParseFromString(sync_packet.payload)
         except Exception as e:
             print(f"[SyncError] Failed to parse {sync_packet.sync_type}: {e}")
             return
 
-        # 3. Envelope에 넣고 전송
         envelope = Envelope()
         envelope.type = "sync"
         envelope.payload = sync_packet.SerializeToString()
