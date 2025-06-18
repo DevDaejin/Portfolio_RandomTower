@@ -20,6 +20,11 @@ public class SyncHP : BaseSync<SyncHPData>
 
     protected override void ApplyData(SyncHPData data)
     {
+        if(data.Hp < 0)
+        {
+            _enemy.Die();
+        }
+
         var damage = _enemy.CurrentHP - data.Hp;
         if (damage > 0)
         {

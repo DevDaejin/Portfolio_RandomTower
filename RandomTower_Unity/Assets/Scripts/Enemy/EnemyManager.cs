@@ -16,6 +16,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     private Dictionary<int, Coroutine> _spawnCoroutine = new();
 
     public Action<int, ISyncObject> OnSendSpawnPacket;
+    public Action<BaseEnemy, ISyncObject> OnSendEnemyReturn; 
     public Action<int> OnReward;
 
     private const float SpawnInterval = 0.5f;
@@ -69,7 +70,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
 
     public BaseEnemy GetEnemy(EnemyData data)
     {
-        BaseEnemy enemy = _enemyFactory.CreateEnemy(data, _routeGroup);
+        BaseEnemy enemy = _enemyFactory.CreateEnemy(data, _routeGroup, OnSendEnemyReturn);
         enemy.OnDie = ReleaseEnemy;
         enemy.OnReward = OnReward;
         _enemyUIManager?.Register(enemy);

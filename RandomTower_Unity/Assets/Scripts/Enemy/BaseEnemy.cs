@@ -13,9 +13,11 @@ public class BaseEnemy : MonoBehaviour
     private NavMeshAgent _agent;
     private Vector3 _destination;
     private int _targetIndex;
+    private ISyncObject _syncObject;
 
     public float CurrentHP;
 
+    private Action<BaseEnemy, ISyncObject> _onReturn;
     public Action<int> OnReward;
     public Action<BaseEnemy> OnDie;
     public event Action<BaseEnemy, float> OnTakeDamage;
@@ -28,12 +30,14 @@ public class BaseEnemy : MonoBehaviour
         }
     }
 
-    public void Initialize(EnemyData data, Transform routeGroup)
+    public void Initialize(EnemyData data, Transform routeGroup, Action<BaseEnemy, ISyncObject> onReturn)
     {
         if (!_isInitailized)
         {
             _isInitailized = true;
             _agent = GetComponent<NavMeshAgent>();
+            _onReturn = onReturn;
+            _syncObject = GetComponent<ISyncObject>();
             InitializeRoutes(routeGroup);
         }
         
@@ -91,6 +95,7 @@ public class BaseEnemy : MonoBehaviour
 
         if(CurrentHP <= 0)
         {
+            _onReturn?.Invoke(this, _syncObject);
             Die();
         }
     }

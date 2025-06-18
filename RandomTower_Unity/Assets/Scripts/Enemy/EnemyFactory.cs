@@ -15,12 +15,12 @@ public class EnemyFactory
         _enemyGroup.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
     }
 
-    public BaseEnemy CreateEnemy(EnemyData data, Transform routeGroup)
+    public BaseEnemy CreateEnemy(EnemyData data, Transform routeGroup, Action<BaseEnemy, ISyncObject> onReturn)
     {
         GameObjectPool<BaseEnemy> pool = GetEnemyPool(data);
         BaseEnemy enemy = pool.Get();
 
-        enemy.Initialize(data, routeGroup);
+        enemy.Initialize(data, routeGroup, onReturn);
 
         return enemy;
     }

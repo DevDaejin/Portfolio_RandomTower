@@ -53,6 +53,7 @@ public class InGame : MonoBehaviour
 
         _enemyManager.OnReward += OnReward;
         _enemyManager.OnSendSpawnPacket += (id, syncObject) => OnSendSpawnPacket<SpawnEnemyPacket>("spawn_enemy", id, syncObject);
+        _enemyManager.OnSendEnemyReturn += ForceEnemyReturn;
 
         _waveController.OnTimeChanged += _ui.SetTimer;
         _waveController.OnWaveChanged += _ui.SetWave;
@@ -143,13 +144,21 @@ public class InGame : MonoBehaviour
         _ = _networkManager.SendEnvelope("sync", packet);
     }
 
-    //TODO : 강제 발송하기
     private void ForceEnemyReturn(BaseEnemy enemy, ISyncObject syncObject)
     {
         var data = new SyncHPData
         {
             Hp = -1
         };
+
+        var packet = new SyncPacketData
+        {
+            ObjectId = syncObject.ObjectID,
+            SyncType = "hp",
+            Payload = data.ToByteString()
+        };
+
+        _ = _networkManager.SendEnvelope("sync", packet);
     }
 
     private void Update()
