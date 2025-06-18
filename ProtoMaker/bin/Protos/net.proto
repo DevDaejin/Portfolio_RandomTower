@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package net;
+
+message Envelope {
+  string type = 1;
+  bytes payload = 2;
+}
+
+message SyncPacketData {
+  string object_id = 1;
+  string sync_type = 2;
+  bytes payload = 3;
+}

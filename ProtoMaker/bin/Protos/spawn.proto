@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package spawn;
+
+message SpawnEnemyPacket {
+  string object_id = 1;
+  string owner_id = 2;
+  string room_id = 3;
+  string spawn_id = 4; 
+}
+
+message SpawnTowerPacket {
+  string object_id = 1;
+  string owner_id = 2;
+  string room_id = 3;
+  string spawn_id = 4;
+}
+
+message SpawnProjectilePacket {
+  string object_id = 1;
+  string owner_id = 2;
+  string room_id = 3;
+  string spawn_id = 4;
+}

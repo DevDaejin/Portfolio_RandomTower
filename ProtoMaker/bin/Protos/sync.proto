@@ -1,0 +1,27 @@
+syntax = "proto3";
+package sync;
+
+message ProtoVector3 {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+}
+
+message SyncTransformData {
+  string object_id = 1;
+  ProtoVector3 position = 2;
+  optional ProtoVector3 rotation = 3;
+  optional ProtoVector3 scale = 4;
+}
+
+message SyncHPData {
+  string object_id = 1;
+  float hp = 2;
+}
+
+message SyncProjectileData {
+  string object_id = 1;
+  bool isReturned = 2;
+  optional ProtoVector3 start = 3;
+  optional ProtoVector3 end = 4;
+}

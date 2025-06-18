@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package room;
+
+message CreateRoomRequest {
+  string name = 1;
+}
+
+message JoinRoomRequest {
+  string room_id = 1;
+}
+
+message LeaveRoomRequest {
+  string room_id = 1;
+}
+
+message ListRoomRequest {}
+
+message RoomCreated {
+  string room_id = 1;
+  string name = 2;
+  string client_id = 3;
+}
+
+message RoomJoined {
+  string room_id = 1;
+  string name = 2;
+  string client_id = 3;
+}
+
+message RoomList {
+  repeated RoomInfo rooms = 1;
+}
+
+message RoomLeft {
+  string room_id = 1;
+}
+
+message RoomInfo {
+  string room_id = 1;
+  string name = 2;
+  int32 client_count = 3;
+}
+
+message RoomPacket {
+  oneof payload {
+    CreateRoomRequest create_room = 1;
+    JoinRoomRequest join_room = 2;
+    LeaveRoomRequest leave_room = 3;
+    ListRoomRequest list_room = 4;
+    RoomCreated room_created = 5;
+    RoomJoined room_joined = 6;
+    RoomList room_list = 7;
+    RoomLeft room_left = 8;
+  }
+}
