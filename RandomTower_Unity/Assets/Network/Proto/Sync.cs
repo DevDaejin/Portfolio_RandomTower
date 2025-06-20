@@ -25,22 +25,23 @@ namespace Sync {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgpzeW5jLnByb3RvEgRzeW5jIi8KDFByb3RvVmVjdG9yMxIJCgF4GAEgASgC",
-            "EgkKAXkYAiABKAISCQoBehgDIAEoAiKjAQoRU3luY1RyYW5zZm9ybURhdGES",
-            "JAoIcG9zaXRpb24YASABKAsyEi5zeW5jLlByb3RvVmVjdG9yMxIpCghyb3Rh",
-            "dGlvbhgCIAEoCzISLnN5bmMuUHJvdG9WZWN0b3IzSACIAQESJgoFc2NhbGUY",
-            "AyABKAsyEi5zeW5jLlByb3RvVmVjdG9yM0gBiAEBQgsKCV9yb3RhdGlvbkII",
-            "CgZfc2NhbGUiGAoKU3luY0hQRGF0YRIKCgJocBgBIAEoAiKIAQoSU3luY1By",
-            "b2plY3RpbGVEYXRhEhIKCmlzUmV0dXJuZWQYASABKAgSJgoFc3RhcnQYAiAB",
-            "KAsyEi5zeW5jLlByb3RvVmVjdG9yM0gAiAEBEiQKA2VuZBgDIAEoCzISLnN5",
-            "bmMuUHJvdG9WZWN0b3IzSAGIAQFCCAoGX3N0YXJ0QgYKBF9lbmRiBnByb3Rv",
-            "Mw=="));
+            "EgkKAXkYAiABKAISCQoBehgDIAEoAiK2AQoRU3luY1RyYW5zZm9ybURhdGES",
+            "EQoJb2JqZWN0X2lkGAEgASgJEiQKCHBvc2l0aW9uGAIgASgLMhIuc3luYy5Q",
+            "cm90b1ZlY3RvcjMSKQoIcm90YXRpb24YAyABKAsyEi5zeW5jLlByb3RvVmVj",
+            "dG9yM0gAiAEBEiYKBXNjYWxlGAQgASgLMhIuc3luYy5Qcm90b1ZlY3RvcjNI",
+            "AYgBAUILCglfcm90YXRpb25CCAoGX3NjYWxlIisKClN5bmNIUERhdGESEQoJ",
+            "b2JqZWN0X2lkGAEgASgJEgoKAmhwGAIgASgCIpsBChJTeW5jUHJvamVjdGls",
+            "ZURhdGESEQoJb2JqZWN0X2lkGAEgASgJEhIKCmlzUmV0dXJuZWQYAiABKAgS",
+            "JgoFc3RhcnQYAyABKAsyEi5zeW5jLlByb3RvVmVjdG9yM0gAiAEBEiQKA2Vu",
+            "ZBgEIAEoCzISLnN5bmMuUHJvdG9WZWN0b3IzSAGIAQFCCAoGX3N0YXJ0QgYK",
+            "BF9lbmRiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Sync.ProtoVector3), global::Sync.ProtoVector3.Parser, new[]{ "X", "Y", "Z" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Sync.SyncTransformData), global::Sync.SyncTransformData.Parser, new[]{ "Position", "Rotation", "Scale" }, new[]{ "Rotation", "Scale" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Sync.SyncHPData), global::Sync.SyncHPData.Parser, new[]{ "Hp" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Sync.SyncProjectileData), global::Sync.SyncProjectileData.Parser, new[]{ "IsReturned", "Start", "End" }, new[]{ "Start", "End" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Sync.SyncTransformData), global::Sync.SyncTransformData.Parser, new[]{ "ObjectId", "Position", "Rotation", "Scale" }, new[]{ "Rotation", "Scale" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Sync.SyncHPData), global::Sync.SyncHPData.Parser, new[]{ "ObjectId", "Hp" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Sync.SyncProjectileData), global::Sync.SyncProjectileData.Parser, new[]{ "ObjectId", "IsReturned", "Start", "End" }, new[]{ "Start", "End" }, null, null, null)
           }));
     }
     #endregion
@@ -354,6 +355,7 @@ namespace Sync {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public SyncTransformData(SyncTransformData other) : this() {
+      objectId_ = other.objectId_;
       position_ = other.position_ != null ? other.position_.Clone() : null;
       rotation_ = other.rotation_ != null ? other.rotation_.Clone() : null;
       scale_ = other.scale_ != null ? other.scale_.Clone() : null;
@@ -366,8 +368,20 @@ namespace Sync {
       return new SyncTransformData(this);
     }
 
+    /// <summary>Field number for the "object_id" field.</summary>
+    public const int ObjectIdFieldNumber = 1;
+    private string objectId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ObjectId {
+      get { return objectId_; }
+      set {
+        objectId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "position" field.</summary>
-    public const int PositionFieldNumber = 1;
+    public const int PositionFieldNumber = 2;
     private global::Sync.ProtoVector3 position_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -379,7 +393,7 @@ namespace Sync {
     }
 
     /// <summary>Field number for the "rotation" field.</summary>
-    public const int RotationFieldNumber = 2;
+    public const int RotationFieldNumber = 3;
     private global::Sync.ProtoVector3 rotation_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -391,7 +405,7 @@ namespace Sync {
     }
 
     /// <summary>Field number for the "scale" field.</summary>
-    public const int ScaleFieldNumber = 3;
+    public const int ScaleFieldNumber = 4;
     private global::Sync.ProtoVector3 scale_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -417,6 +431,7 @@ namespace Sync {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (ObjectId != other.ObjectId) return false;
       if (!object.Equals(Position, other.Position)) return false;
       if (!object.Equals(Rotation, other.Rotation)) return false;
       if (!object.Equals(Scale, other.Scale)) return false;
@@ -427,6 +442,7 @@ namespace Sync {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
+      if (ObjectId.Length != 0) hash ^= ObjectId.GetHashCode();
       if (position_ != null) hash ^= Position.GetHashCode();
       if (rotation_ != null) hash ^= Rotation.GetHashCode();
       if (scale_ != null) hash ^= Scale.GetHashCode();
@@ -448,16 +464,20 @@ namespace Sync {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (position_ != null) {
+      if (ObjectId.Length != 0) {
         output.WriteRawTag(10);
+        output.WriteString(ObjectId);
+      }
+      if (position_ != null) {
+        output.WriteRawTag(18);
         output.WriteMessage(Position);
       }
       if (rotation_ != null) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(26);
         output.WriteMessage(Rotation);
       }
       if (scale_ != null) {
-        output.WriteRawTag(26);
+        output.WriteRawTag(34);
         output.WriteMessage(Scale);
       }
       if (_unknownFields != null) {
@@ -470,16 +490,20 @@ namespace Sync {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (position_ != null) {
+      if (ObjectId.Length != 0) {
         output.WriteRawTag(10);
+        output.WriteString(ObjectId);
+      }
+      if (position_ != null) {
+        output.WriteRawTag(18);
         output.WriteMessage(Position);
       }
       if (rotation_ != null) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(26);
         output.WriteMessage(Rotation);
       }
       if (scale_ != null) {
-        output.WriteRawTag(26);
+        output.WriteRawTag(34);
         output.WriteMessage(Scale);
       }
       if (_unknownFields != null) {
@@ -492,6 +516,9 @@ namespace Sync {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
+      if (ObjectId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ObjectId);
+      }
       if (position_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Position);
       }
@@ -512,6 +539,9 @@ namespace Sync {
     public void MergeFrom(SyncTransformData other) {
       if (other == null) {
         return;
+      }
+      if (other.ObjectId.Length != 0) {
+        ObjectId = other.ObjectId;
       }
       if (other.position_ != null) {
         if (position_ == null) {
@@ -551,20 +581,24 @@ namespace Sync {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
+            ObjectId = input.ReadString();
+            break;
+          }
+          case 18: {
             if (position_ == null) {
               Position = new global::Sync.ProtoVector3();
             }
             input.ReadMessage(Position);
             break;
           }
-          case 18: {
+          case 26: {
             if (rotation_ == null) {
               Rotation = new global::Sync.ProtoVector3();
             }
             input.ReadMessage(Rotation);
             break;
           }
-          case 26: {
+          case 34: {
             if (scale_ == null) {
               Scale = new global::Sync.ProtoVector3();
             }
@@ -591,20 +625,24 @@ namespace Sync {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
+            ObjectId = input.ReadString();
+            break;
+          }
+          case 18: {
             if (position_ == null) {
               Position = new global::Sync.ProtoVector3();
             }
             input.ReadMessage(Position);
             break;
           }
-          case 18: {
+          case 26: {
             if (rotation_ == null) {
               Rotation = new global::Sync.ProtoVector3();
             }
             input.ReadMessage(Rotation);
             break;
           }
-          case 26: {
+          case 34: {
             if (scale_ == null) {
               Scale = new global::Sync.ProtoVector3();
             }
@@ -653,6 +691,7 @@ namespace Sync {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public SyncHPData(SyncHPData other) : this() {
+      objectId_ = other.objectId_;
       hp_ = other.hp_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -663,8 +702,20 @@ namespace Sync {
       return new SyncHPData(this);
     }
 
+    /// <summary>Field number for the "object_id" field.</summary>
+    public const int ObjectIdFieldNumber = 1;
+    private string objectId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ObjectId {
+      get { return objectId_; }
+      set {
+        objectId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "hp" field.</summary>
-    public const int HpFieldNumber = 1;
+    public const int HpFieldNumber = 2;
     private float hp_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -690,6 +741,7 @@ namespace Sync {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (ObjectId != other.ObjectId) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Hp, other.Hp)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -698,6 +750,7 @@ namespace Sync {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
+      if (ObjectId.Length != 0) hash ^= ObjectId.GetHashCode();
       if (Hp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Hp);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -717,8 +770,12 @@ namespace Sync {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
+      if (ObjectId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ObjectId);
+      }
       if (Hp != 0F) {
-        output.WriteRawTag(13);
+        output.WriteRawTag(21);
         output.WriteFloat(Hp);
       }
       if (_unknownFields != null) {
@@ -731,8 +788,12 @@ namespace Sync {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (ObjectId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ObjectId);
+      }
       if (Hp != 0F) {
-        output.WriteRawTag(13);
+        output.WriteRawTag(21);
         output.WriteFloat(Hp);
       }
       if (_unknownFields != null) {
@@ -745,6 +806,9 @@ namespace Sync {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
+      if (ObjectId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ObjectId);
+      }
       if (Hp != 0F) {
         size += 1 + 4;
       }
@@ -759,6 +823,9 @@ namespace Sync {
     public void MergeFrom(SyncHPData other) {
       if (other == null) {
         return;
+      }
+      if (other.ObjectId.Length != 0) {
+        ObjectId = other.ObjectId;
       }
       if (other.Hp != 0F) {
         Hp = other.Hp;
@@ -782,7 +849,11 @@ namespace Sync {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 13: {
+          case 10: {
+            ObjectId = input.ReadString();
+            break;
+          }
+          case 21: {
             Hp = input.ReadFloat();
             break;
           }
@@ -805,7 +876,11 @@ namespace Sync {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
-          case 13: {
+          case 10: {
+            ObjectId = input.ReadString();
+            break;
+          }
+          case 21: {
             Hp = input.ReadFloat();
             break;
           }
@@ -851,6 +926,7 @@ namespace Sync {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public SyncProjectileData(SyncProjectileData other) : this() {
+      objectId_ = other.objectId_;
       isReturned_ = other.isReturned_;
       start_ = other.start_ != null ? other.start_.Clone() : null;
       end_ = other.end_ != null ? other.end_.Clone() : null;
@@ -863,8 +939,20 @@ namespace Sync {
       return new SyncProjectileData(this);
     }
 
+    /// <summary>Field number for the "object_id" field.</summary>
+    public const int ObjectIdFieldNumber = 1;
+    private string objectId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ObjectId {
+      get { return objectId_; }
+      set {
+        objectId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "isReturned" field.</summary>
-    public const int IsReturnedFieldNumber = 1;
+    public const int IsReturnedFieldNumber = 2;
     private bool isReturned_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -876,7 +964,7 @@ namespace Sync {
     }
 
     /// <summary>Field number for the "start" field.</summary>
-    public const int StartFieldNumber = 2;
+    public const int StartFieldNumber = 3;
     private global::Sync.ProtoVector3 start_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -888,7 +976,7 @@ namespace Sync {
     }
 
     /// <summary>Field number for the "end" field.</summary>
-    public const int EndFieldNumber = 3;
+    public const int EndFieldNumber = 4;
     private global::Sync.ProtoVector3 end_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -914,6 +1002,7 @@ namespace Sync {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (ObjectId != other.ObjectId) return false;
       if (IsReturned != other.IsReturned) return false;
       if (!object.Equals(Start, other.Start)) return false;
       if (!object.Equals(End, other.End)) return false;
@@ -924,6 +1013,7 @@ namespace Sync {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
+      if (ObjectId.Length != 0) hash ^= ObjectId.GetHashCode();
       if (IsReturned != false) hash ^= IsReturned.GetHashCode();
       if (start_ != null) hash ^= Start.GetHashCode();
       if (end_ != null) hash ^= End.GetHashCode();
@@ -945,16 +1035,20 @@ namespace Sync {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
+      if (ObjectId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ObjectId);
+      }
       if (IsReturned != false) {
-        output.WriteRawTag(8);
+        output.WriteRawTag(16);
         output.WriteBool(IsReturned);
       }
       if (start_ != null) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(26);
         output.WriteMessage(Start);
       }
       if (end_ != null) {
-        output.WriteRawTag(26);
+        output.WriteRawTag(34);
         output.WriteMessage(End);
       }
       if (_unknownFields != null) {
@@ -967,16 +1061,20 @@ namespace Sync {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (ObjectId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ObjectId);
+      }
       if (IsReturned != false) {
-        output.WriteRawTag(8);
+        output.WriteRawTag(16);
         output.WriteBool(IsReturned);
       }
       if (start_ != null) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(26);
         output.WriteMessage(Start);
       }
       if (end_ != null) {
-        output.WriteRawTag(26);
+        output.WriteRawTag(34);
         output.WriteMessage(End);
       }
       if (_unknownFields != null) {
@@ -989,6 +1087,9 @@ namespace Sync {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
+      if (ObjectId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ObjectId);
+      }
       if (IsReturned != false) {
         size += 1 + 1;
       }
@@ -1009,6 +1110,9 @@ namespace Sync {
     public void MergeFrom(SyncProjectileData other) {
       if (other == null) {
         return;
+      }
+      if (other.ObjectId.Length != 0) {
+        ObjectId = other.ObjectId;
       }
       if (other.IsReturned != false) {
         IsReturned = other.IsReturned;
@@ -1044,18 +1148,22 @@ namespace Sync {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 8: {
+          case 10: {
+            ObjectId = input.ReadString();
+            break;
+          }
+          case 16: {
             IsReturned = input.ReadBool();
             break;
           }
-          case 18: {
+          case 26: {
             if (start_ == null) {
               Start = new global::Sync.ProtoVector3();
             }
             input.ReadMessage(Start);
             break;
           }
-          case 26: {
+          case 34: {
             if (end_ == null) {
               End = new global::Sync.ProtoVector3();
             }
@@ -1081,18 +1189,22 @@ namespace Sync {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
-          case 8: {
+          case 10: {
+            ObjectId = input.ReadString();
+            break;
+          }
+          case 16: {
             IsReturned = input.ReadBool();
             break;
           }
-          case 18: {
+          case 26: {
             if (start_ == null) {
               Start = new global::Sync.ProtoVector3();
             }
             input.ReadMessage(Start);
             break;
           }
-          case 26: {
+          case 34: {
             if (end_ == null) {
               End = new global::Sync.ProtoVector3();
             }

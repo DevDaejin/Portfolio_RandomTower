@@ -26,6 +26,7 @@ message RoomJoined {
   string room_id = 1;
   string name = 2;
   string client_id = 3;
+  string owner_id = 4;
 }
 
 message RoomList {

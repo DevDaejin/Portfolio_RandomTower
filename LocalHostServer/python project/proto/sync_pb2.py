@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nsync.proto\x12\x04sync\"/\n\x0cProtoVector3\x12\t\n\x01x\x18\x01 \x01(\x02\x12\t\n\x01y\x18\x02 \x01(\x02\x12\t\n\x01z\x18\x03 \x01(\x02\"\xa3\x01\n\x11SyncTransformData\x12$\n\x08position\x18\x01 \x01(\x0b\x32\x12.sync.ProtoVector3\x12)\n\x08rotation\x18\x02 \x01(\x0b\x32\x12.sync.ProtoVector3H\x00\x88\x01\x01\x12&\n\x05scale\x18\x03 \x01(\x0b\x32\x12.sync.ProtoVector3H\x01\x88\x01\x01\x42\x0b\n\t_rotationB\x08\n\x06_scale\"\x18\n\nSyncHPData\x12\n\n\x02hp\x18\x01 \x01(\x02\"\x88\x01\n\x12SyncProjectileData\x12\x12\n\nisReturned\x18\x01 \x01(\x08\x12&\n\x05start\x18\x02 \x01(\x0b\x32\x12.sync.ProtoVector3H\x00\x88\x01\x01\x12$\n\x03\x65nd\x18\x03 \x01(\x0b\x32\x12.sync.ProtoVector3H\x01\x88\x01\x01\x42\x08\n\x06_startB\x06\n\x04_endb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nsync.proto\x12\x04sync\"/\n\x0cProtoVector3\x12\t\n\x01x\x18\x01 \x01(\x02\x12\t\n\x01y\x18\x02 \x01(\x02\x12\t\n\x01z\x18\x03 \x01(\x02\"\xb6\x01\n\x11SyncTransformData\x12\x11\n\tobject_id\x18\x01 \x01(\t\x12$\n\x08position\x18\x02 \x01(\x0b\x32\x12.sync.ProtoVector3\x12)\n\x08rotation\x18\x03 \x01(\x0b\x32\x12.sync.ProtoVector3H\x00\x88\x01\x01\x12&\n\x05scale\x18\x04 \x01(\x0b\x32\x12.sync.ProtoVector3H\x01\x88\x01\x01\x42\x0b\n\t_rotationB\x08\n\x06_scale\"+\n\nSyncHPData\x12\x11\n\tobject_id\x18\x01 \x01(\t\x12\n\n\x02hp\x18\x02 \x01(\x02\"\x9b\x01\n\x12SyncProjectileData\x12\x11\n\tobject_id\x18\x01 \x01(\t\x12\x12\n\nisReturned\x18\x02 \x01(\x08\x12&\n\x05start\x18\x03 \x01(\x0b\x32\x12.sync.ProtoVector3H\x00\x88\x01\x01\x12$\n\x03\x65nd\x18\x04 \x01(\x0b\x32\x12.sync.ProtoVector3H\x01\x88\x01\x01\x42\x08\n\x06_startB\x06\n\x04_endb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,9 +34,9 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_PROTOVECTOR3']._serialized_start=20
   _globals['_PROTOVECTOR3']._serialized_end=67
   _globals['_SYNCTRANSFORMDATA']._serialized_start=70
-  _globals['_SYNCTRANSFORMDATA']._serialized_end=233
-  _globals['_SYNCHPDATA']._serialized_start=235
-  _globals['_SYNCHPDATA']._serialized_end=259
-  _globals['_SYNCPROJECTILEDATA']._serialized_start=262
-  _globals['_SYNCPROJECTILEDATA']._serialized_end=398
+  _globals['_SYNCTRANSFORMDATA']._serialized_end=252
+  _globals['_SYNCHPDATA']._serialized_start=254
+  _globals['_SYNCHPDATA']._serialized_end=297
+  _globals['_SYNCPROJECTILEDATA']._serialized_start=300
+  _globals['_SYNCPROJECTILEDATA']._serialized_end=455
 # @@protoc_insertion_point(module_scope)
