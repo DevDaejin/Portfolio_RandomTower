@@ -13,6 +13,7 @@ public class NetworkClient
     private readonly string _url;
     private readonly Dictionary<string, Action<byte[]>> _envelopeHandlers = new();
 
+    public string RoomOwnerID { get; set; }
     public string ClientID { get; set; }
     public string RoomID { get; set; }
 

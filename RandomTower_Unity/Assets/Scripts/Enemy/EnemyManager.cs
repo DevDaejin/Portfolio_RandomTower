@@ -26,6 +26,11 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         _enemyFactory = new EnemyFactory();
     }
 
+    public void SetRouteGroup(Transform routeGroup)
+    {
+        _routeGroup = routeGroup;
+    }
+
     public void SpawnWave(StageConfig config, int waveIndex)
     {
         List<SpawnInfo> wave = config.WaveData.SpawnList;

@@ -25,6 +25,7 @@ public class RoomService
             case RoomPacket.PayloadOneofCase.RoomJoined:
                 _client.RoomID = packet.RoomJoined.RoomId;
                 _client.ClientID = packet.RoomJoined.ClientId;
+                _client.RoomOwnerID = packet.RoomJoined.OwnerId;
                 break;
 
             case RoomPacket.PayloadOneofCase.RoomList:

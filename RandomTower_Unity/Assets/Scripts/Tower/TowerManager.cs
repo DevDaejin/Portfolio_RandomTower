@@ -25,6 +25,13 @@ public class TowerManager : MonoBehaviour
         _gridController = new TowerGridController(tree);
         _towerFactory = new TowerFactory(TowerDatabase);
     }
+    
+    public void SetInstallPoints(Transform points)
+    {
+        _installationGrid = points;
+        Transform[] tree = GetChildrenTransformArray(_installationGrid);
+        _gridController = new TowerGridController(tree);
+    }
 
     //TODO : 타워 강화 로직 파라미터로 전달 받기
     public void Initialize(IEnemyProvider enemyProvider, int installableCount)

@@ -3,11 +3,13 @@ using Net;
 using Spawn;
 using Sync;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using UnityEngine;
 
 public class InGame : MonoBehaviour
 {
     [SerializeField] private List<StageConfig> _stageConfigs;
+    [SerializeField] private NavMeshSurface navMeshSurface;
 
     private TowerManager _towerManager;
     private EnemyManager _enemyManager;
@@ -44,6 +46,22 @@ public class InGame : MonoBehaviour
 
     private void Start()
     {
+        _networkManager = GameManager.Instance.Network;
+
+        if (_networkManager.IsConnect)
+        {
+            GetComponent<MultiEnviromentHandler>().Initialize(_networkManager.IsHost);
+
+            _idGenerator = new(_networkManager.ClientID);
+
+            _networkManager.SpawnService.OnEnemySpawned += packet => OnReceivedEnemyPacket(packet.SpawnId, packet);
+            _networkManager.SpawnService.OnTowerSpawned += packet => OnReceivedTowerPacket(packet.SpawnId, packet);
+            _networkManager.SpawnService.OnProjectileSpawned += packet => OnReceivedProjectilePacket(packet.SpawnId, packet);
+
+            _globalUI.Set(GlobalUI.GlobalUIOption.Watting);
+        }
+        navMeshSurface.BuildNavMesh();
+
         _ui.Initialize(maxWave, MaxEnemy, MaxTower, WaveDuration, 0);
 
         _towerManager.OnTowerUpdated += _ui.SetTowerCount;
@@ -67,18 +85,6 @@ public class InGame : MonoBehaviour
         _ui.SetSpawnButton(SpawnTower);
         _ui.SetResultButtons(Retry, GoToLobby);
 
-        _networkManager = GameManager.Instance.Network;
-
-        if (_networkManager.IsConnect)
-        {
-            _idGenerator = new(_networkManager.ClientID);
-
-            _networkManager.SpawnService.OnEnemySpawned += packet => OnReceivedEnemyPacket(packet.SpawnId, packet);
-            _networkManager.SpawnService.OnTowerSpawned += packet => OnReceivedTowerPacket(packet.SpawnId, packet);
-            _networkManager.SpawnService.OnProjectileSpawned += packet => OnReceivedProjectilePacket(packet.SpawnId, packet);
-
-            _globalUI.Set(GlobalUI.GlobalUIOption.Watting);
-        }
         GetEnemyCount();
     }
 

@@ -129,7 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 67961295}
   m_Layer: 0
-  m_Name: InstallPoint (1)
+  m_Name: Host_InstallPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -753,50 +753,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 0.01, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &232468275
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 232468276}
-  - component: {fileID: 232468277}
-  m_Layer: 0
-  m_Name: SyncScene
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &232468276
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 232468275}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &232468277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 232468275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d861b89e17e3804d802e9b6dcede947, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &242984646
 GameObject:
   m_ObjectHideFlags: 0
@@ -1489,7 +1445,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &669691336
 Transform:
   m_ObjectHideFlags: 0
@@ -2305,6 +2261,7 @@ GameObject:
   - component: {fileID: 1195791140}
   - component: {fileID: 1195791142}
   - component: {fileID: 1195791143}
+  - component: {fileID: 1195791144}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -2357,6 +2314,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stageConfigs:
   - {fileID: 11400000, guid: fd2e73c5244c0c445bc25efb35669be6, type: 2}
+  navMeshSurface: {fileID: 1235937571}
 --- !u!114 &1195791142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2388,6 +2346,26 @@ MonoBehaviour:
   _canvas: {fileID: 164772221}
   _enemyUIPrefab: {fileID: 6416691861095763587, guid: 8383087927e92d7408bae0a8b913aa1a, type: 3}
   _damageUIPrefab: {fileID: 6752932195000079862, guid: 8ca9d5abd83b25249b1e304663b3735e, type: 3}
+--- !u!114 &1195791144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1195791137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ecdb514b647f604798a740ed46127b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hostEnviroment:
+    InstallPoints: {fileID: 67961295}
+    Routes: {fileID: 2057341576}
+  _guestEnviroment:
+    InstallPoints: {fileID: 1948412313}
+    Routes: {fileID: 1921283634}
+  _singleMap: {fileID: 2060399569}
+  _multiMap: {fileID: 669691335}
 --- !u!1 &1206602222
 GameObject:
   m_ObjectHideFlags: 0
@@ -2429,7 +2407,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1233512425}
   m_Layer: 0
-  m_Name: Map (1)
+  m_Name: Host_Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2556,7 +2534,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.1
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 57abb6644587da34f90cea243ebec217, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 5cae0a34c8afd634d811292957c338d0, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &1235937572
 Transform:
@@ -3002,7 +2980,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1577442677}
   m_Layer: 0
-  m_Name: Map (2)
+  m_Name: Guest_Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4265,7 +4243,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1921283634}
   m_Layer: 0
-  m_Name: Route Group (2)
+  m_Name: Guest_Route Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4300,7 +4278,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1948412313}
   m_Layer: 0
-  m_Name: InstallPoint (2)
+  m_Name: Guest_InstallPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4498,7 +4476,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2057341576}
   m_Layer: 0
-  m_Name: Route Group (1)
+  m_Name: Host_Route Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4538,7 +4516,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2060399570
 Transform:
   m_ObjectHideFlags: 0
@@ -4599,4 +4577,3 @@ SceneRoots:
   - {fileID: 2060399570}
   - {fileID: 669691336}
   - {fileID: 92161794}
-  - {fileID: 232468276}
