@@ -1,3 +1,4 @@
+using Game;
 using Google.Protobuf;
 using Net;
 using Spawn;
@@ -34,7 +35,7 @@ public class InGame : MonoBehaviour
         _towerManager.Initialize(_enemyManager, MaxTower);
 
         GameManager.Instance.UI.Initialize(UIManager.UIType.InGame);
-        
+
         _ui = GameManager.Instance.UI.InGame;
         _globalUI = GameManager.Instance.UI.Global;
 
@@ -45,6 +46,19 @@ public class InGame : MonoBehaviour
     }
 
     private void Start()
+    {
+        InitNetwork();
+        navMeshSurface.BuildNavMesh();
+
+        InitTowerManager();
+        InitEnemyManager();
+        InitWave();
+        InitUI();
+
+        GetEnemyCount();
+    }
+
+    private void InitNetwork()
     {
         _networkManager = GameManager.Instance.Network;
 
@@ -58,21 +72,29 @@ public class InGame : MonoBehaviour
             _networkManager.SpawnService.OnTowerSpawned += packet => OnReceivedTowerPacket(packet.SpawnId, packet);
             _networkManager.SpawnService.OnProjectileSpawned += packet => OnReceivedProjectilePacket(packet.SpawnId, packet);
 
+            _networkManager.GameStateService.OnWaveStart += () =>
+            {
+                if (!_networkManager.IsHost) _waveController.StartWave();
+            };
+
             _globalUI.Set(GlobalUI.GlobalUIOption.Watting);
         }
-        navMeshSurface.BuildNavMesh();
-
-        _ui.Initialize(maxWave, MaxEnemy, MaxTower, WaveDuration, 0);
-
+    }
+    private void InitTowerManager()
+    {
         _towerManager.OnTowerUpdated += _ui.SetTowerCount;
-        _towerManager.OnSendSpawnTowerPacket += (id, syncObject) => OnSendSpawnPacket<SpawnTowerPacket>("spawn_tower", id, syncObject);
-        _towerManager.OnSendSpawnProjectilePacket += (id, syncObject) => OnSendSpawnPacket<SpawnProjectilePacket>("spawn_projectile", id, syncObject);
+        _towerManager.OnSendSpawnTowerPacket += (id, syncObject) => OnSendSpawnPacket<SpawnTowerPacket>("tower", id, syncObject);
+        _towerManager.OnSendSpawnProjectilePacket += (id, syncObject) => OnSendSpawnPacket<SpawnProjectilePacket>("projectile", id, syncObject);
         _towerManager.OnSendProejctileReturn += ForceProjectileReturn;
-
+    }
+    private void InitEnemyManager()
+    {
         _enemyManager.OnReward += OnReward;
-        _enemyManager.OnSendSpawnPacket += (id, syncObject) => OnSendSpawnPacket<SpawnEnemyPacket>("spawn_enemy", id, syncObject);
+        _enemyManager.OnSendSpawnPacket += (id, syncObject) => OnSendSpawnPacket<SpawnEnemyPacket>("enemy", id, syncObject);
         _enemyManager.OnSendEnemyReturn += ForceEnemyReturn;
-
+    }
+    private void InitWave()
+    {
         _waveController.OnTimeChanged += _ui.SetTimer;
         _waveController.OnWaveChanged += _ui.SetWave;
         _waveController.OnEnemyCountChanged += _ui.SetEnemyCount;
@@ -80,14 +102,14 @@ public class InGame : MonoBehaviour
         _waveController.OnWaveEnded += OnWave;
         _waveController.OnWaveStarted += OnWaveStarted;
         _waveController.Initialize();
-
+    }
+    private void InitUI()
+    {
+        _ui.Initialize(maxWave, MaxEnemy, MaxTower, WaveDuration, 0);
         _ui.SetWaveButton(OnWave);
         _ui.SetSpawnButton(SpawnTower);
         _ui.SetResultButtons(Retry, GoToLobby);
-
-        GetEnemyCount();
     }
-
 
     private async void OnSendSpawnPacket<T>(string type, int id, ISyncObject syncObject)
     {
@@ -202,20 +224,6 @@ public class InGame : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-        _ui?.ReleaseSpawnButton(SpawnTower);
-
-        _enemyManager.OnReward -= OnReward;
-        _towerManager.OnTowerUpdated -= _ui.SetTowerCount;
-
-        _waveController.OnTimeChanged -= _ui.SetTimer;
-        _waveController.OnWaveChanged -= _ui.SetWave;
-        _waveController.OnStageResult -= Result;
-        _waveController.OnWaveEnded -= OnWave;
-        _waveController.OnWaveStarted -= OnWaveStarted;
-    }
-
     private int GetEnemyCount()
     {
         int count = _enemyManager.GetCurrentEnemyCount();
@@ -244,11 +252,27 @@ public class InGame : MonoBehaviour
 
         if (state == WaveController.WaveState.Idle)
         {
+            SendWaveStarting();
             _waveController.StartWave();
         }
         else if (state == WaveController.WaveState.InProgress && !isSpawning && alive == 0)
         {
             _waveController.ForceTimeUp();
+        }
+    }
+
+    private async void SendWaveStarting()
+    {
+        if (_networkManager.IsConnect 
+            && _networkManager.IsHost)
+        {
+            var packet = new GameStatePacket
+            {
+                State = GameStateType.StartWave,
+                RoomId = _networkManager.RoomID
+            };
+
+            await _networkManager.SendEnvelope("game_state", packet);
         }
     }
 
