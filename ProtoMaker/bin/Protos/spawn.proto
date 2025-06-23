@@ -22,3 +22,9 @@ message SpawnProjectilePacket {
   string room_id = 3;
   string spawn_id = 4;
 }
+
+message SpawnPacketData{
+  string object_id = 1;
+  string spawn_type = 2;
+  bytes payload = 3;
+}

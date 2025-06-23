@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package game;
+
+enum GameStateType {
+  UNKNOWN = 0;
+  START_WAVE = 1;
+  END_WAVE = 2;
+  GAME_SUCCESS = 3;
+  GAME_FAIL = 4;
+  FORCE_TIMEUP = 5;
+}
+
+message GameStatePacket {
+  GameStateType state = 1;
+  string room_id = 2;
+}

@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bspawn.proto\x12\x05spawn\"Z\n\x10SpawnEnemyPacket\x12\x11\n\tobject_id\x18\x01 \x01(\t\x12\x10\n\x08owner_id\x18\x02 \x01(\t\x12\x0f\n\x07room_id\x18\x03 \x01(\t\x12\x10\n\x08spawn_id\x18\x04 \x01(\t\"Z\n\x10SpawnTowerPacket\x12\x11\n\tobject_id\x18\x01 \x01(\t\x12\x10\n\x08owner_id\x18\x02 \x01(\t\x12\x0f\n\x07room_id\x18\x03 \x01(\t\x12\x10\n\x08spawn_id\x18\x04 \x01(\t\"_\n\x15SpawnProjectilePacket\x12\x11\n\tobject_id\x18\x01 \x01(\t\x12\x10\n\x08owner_id\x18\x02 \x01(\t\x12\x0f\n\x07room_id\x18\x03 \x01(\t\x12\x10\n\x08spawn_id\x18\x04 \x01(\tb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bspawn.proto\x12\x05spawn\"Z\n\x10SpawnEnemyPacket\x12\x11\n\tobject_id\x18\x01 \x01(\t\x12\x10\n\x08owner_id\x18\x02 \x01(\t\x12\x0f\n\x07room_id\x18\x03 \x01(\t\x12\x10\n\x08spawn_id\x18\x04 \x01(\t\"Z\n\x10SpawnTowerPacket\x12\x11\n\tobject_id\x18\x01 \x01(\t\x12\x10\n\x08owner_id\x18\x02 \x01(\t\x12\x0f\n\x07room_id\x18\x03 \x01(\t\x12\x10\n\x08spawn_id\x18\x04 \x01(\t\"_\n\x15SpawnProjectilePacket\x12\x11\n\tobject_id\x18\x01 \x01(\t\x12\x10\n\x08owner_id\x18\x02 \x01(\t\x12\x0f\n\x07room_id\x18\x03 \x01(\t\x12\x10\n\x08spawn_id\x18\x04 \x01(\t\"I\n\x0fSpawnPacketData\x12\x11\n\tobject_id\x18\x01 \x01(\t\x12\x12\n\nspawn_type\x18\x02 \x01(\t\x12\x0f\n\x07payload\x18\x03 \x01(\x0c\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -37,4 +37,6 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_SPAWNTOWERPACKET']._serialized_end=204
   _globals['_SPAWNPROJECTILEPACKET']._serialized_start=206
   _globals['_SPAWNPROJECTILEPACKET']._serialized_end=301
+  _globals['_SPAWNPACKETDATA']._serialized_start=303
+  _globals['_SPAWNPACKETDATA']._serialized_end=376
 # @@protoc_insertion_point(module_scope)

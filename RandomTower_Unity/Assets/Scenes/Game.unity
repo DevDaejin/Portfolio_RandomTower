@@ -1409,7 +1409,7 @@ GameObject:
   m_Component:
   - component: {fileID: 616175288}
   m_Layer: 0
-  m_Name: Turnning Point 4
+  m_Name: Turnning Point 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3233,7 +3233,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1643519225}
   m_Layer: 0
-  m_Name: Turnning Point 2
+  m_Name: Turnning Point 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4263,9 +4263,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 117426168}
-  - {fileID: 1643519225}
-  - {fileID: 803432046}
   - {fileID: 616175288}
+  - {fileID: 803432046}
+  - {fileID: 1643519225}
   m_Father: {fileID: 669691336}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1948412312

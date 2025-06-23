@@ -12,8 +12,6 @@ class SyncManager:
             print(f"[Sync] Invalid room for client {sender.client_id}")
             return
 
-        print(f"[Sync] Relaying {sync_packet.sync_type} from {sender.client_id} for object {sync_packet.object_id}")
-
         if sync_packet.sync_type == "transform":
             msg = SyncTransformData()
         elif sync_packet.sync_type == "hp":

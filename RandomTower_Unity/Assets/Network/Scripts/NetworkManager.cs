@@ -1,3 +1,4 @@
+using Game;
 using Google.Protobuf;
 using Net;
 using Room;
@@ -12,6 +13,7 @@ public class NetworkManager : MonoBehaviour
     public RoomService RoomService { get; private set; }
     public SpawnService SpawnService { get; private set; }
     public SyncService SyncService { get; private set; }
+    public GameStateService GameStateService { get; private set; }
     public bool IsConnect { get; private set; } = false;
 
     public bool IsHost => _client.ClientID == _client.RoomOwnerID;
@@ -39,12 +41,12 @@ public class NetworkManager : MonoBehaviour
         RoomService = new RoomService(_client);
         SpawnService = new SpawnService(_client);
         SyncService = new SyncService();
+        GameStateService = new GameStateService();
 
         _client.RegisterEnvelopeHandler("room", HandleRoomEnvelope);
-        _client.RegisterEnvelopeHandler("spawn_enemy", HandleSpawnEnemy);
-        _client.RegisterEnvelopeHandler("spawn_tower", HandleSpawnTower);
-        _client.RegisterEnvelopeHandler("spawn_projectile", HandleSpawnProjectile);
+        _client.RegisterEnvelopeHandler("spawn", HandleSpawn);
         _client.RegisterEnvelopeHandler("sync", HandleSync);
+        _client.RegisterEnvelopeHandler("game_state", HandleGameState);
 
         _client.OnError = () => OnError?.Invoke();
         _client.OnClose = () => OnClose?.Invoke();
@@ -66,14 +68,22 @@ public class NetworkManager : MonoBehaviour
         RoomService.HandleRoomPacket(packet);
     }
 
-    private void HandleSpawnEnemy(byte[] bytes) => SpawnService.OnReceiveEnemy(SpawnEnemyPacket.Parser.ParseFrom(bytes));
-    private void HandleSpawnTower(byte[] bytes) => SpawnService.OnReceiveTower(SpawnTowerPacket.Parser.ParseFrom(bytes));
-    private void HandleSpawnProjectile(byte[] bytes) => SpawnService.OnReceiveProjectile(SpawnProjectilePacket.Parser.ParseFrom(bytes));
-
     private void HandleSync(byte[] bytes)
     {
         var packet = SyncPacketData.Parser.ParseFrom(bytes);
         SyncService.HandleSync(packet);
+    }
+
+    private void HandleSpawn(byte[] bytes)
+    {
+        var packet = SpawnPacketData.Parser.ParseFrom(bytes);
+        SpawnService.OnReceive(packet);
+    }
+
+    private void HandleGameState(byte[] bytes)
+    {
+        var packet = GameStatePacket.Parser.ParseFrom(bytes);
+        GameStateService.OnReceive(packet);
     }
 
     public async Task SendEnvelope(string type, IMessage payload) => await _client.SendEnvelope(type, payload);

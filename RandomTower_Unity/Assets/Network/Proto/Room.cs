@@ -27,21 +27,22 @@ namespace Room {
             "Cgpyb29tLnByb3RvEgRyb29tIiEKEUNyZWF0ZVJvb21SZXF1ZXN0EgwKBG5h",
             "bWUYASABKAkiIgoPSm9pblJvb21SZXF1ZXN0Eg8KB3Jvb21faWQYASABKAki",
             "IwoQTGVhdmVSb29tUmVxdWVzdBIPCgdyb29tX2lkGAEgASgJIhEKD0xpc3RS",
-            "b29tUmVxdWVzdCI/CgtSb29tQ3JlYXRlZBIPCgdyb29tX2lkGAEgASgJEgwK",
-            "BG5hbWUYAiABKAkSEQoJY2xpZW50X2lkGAMgASgJIlAKClJvb21Kb2luZWQS",
-            "DwoHcm9vbV9pZBgBIAEoCRIMCgRuYW1lGAIgASgJEhEKCWNsaWVudF9pZBgD",
-            "IAEoCRIQCghvd25lcl9pZBgEIAEoCSIpCghSb29tTGlzdBIdCgVyb29tcxgB",
-            "IAMoCzIOLnJvb20uUm9vbUluZm8iGwoIUm9vbUxlZnQSDwoHcm9vbV9pZBgB",
-            "IAEoCSI/CghSb29tSW5mbxIPCgdyb29tX2lkGAEgASgJEgwKBG5hbWUYAiAB",
-            "KAkSFAoMY2xpZW50X2NvdW50GAMgASgFIusCCgpSb29tUGFja2V0Ei4KC2Ny",
-            "ZWF0ZV9yb29tGAEgASgLMhcucm9vbS5DcmVhdGVSb29tUmVxdWVzdEgAEioK",
-            "CWpvaW5fcm9vbRgCIAEoCzIVLnJvb20uSm9pblJvb21SZXF1ZXN0SAASLAoK",
-            "bGVhdmVfcm9vbRgDIAEoCzIWLnJvb20uTGVhdmVSb29tUmVxdWVzdEgAEioK",
-            "CWxpc3Rfcm9vbRgEIAEoCzIVLnJvb20uTGlzdFJvb21SZXF1ZXN0SAASKQoM",
-            "cm9vbV9jcmVhdGVkGAUgASgLMhEucm9vbS5Sb29tQ3JlYXRlZEgAEicKC3Jv",
-            "b21fam9pbmVkGAYgASgLMhAucm9vbS5Sb29tSm9pbmVkSAASIwoJcm9vbV9s",
-            "aXN0GAcgASgLMg4ucm9vbS5Sb29tTGlzdEgAEiMKCXJvb21fbGVmdBgIIAEo",
-            "CzIOLnJvb20uUm9vbUxlZnRIAEIJCgdwYXlsb2FkYgZwcm90bzM="));
+            "b29tUmVxdWVzdCJRCgtSb29tQ3JlYXRlZBIPCgdyb29tX2lkGAEgASgJEgwK",
+            "BG5hbWUYAiABKAkSEQoJY2xpZW50X2lkGAMgASgJEhAKCG93bmVyX2lkGAQg",
+            "ASgJIlAKClJvb21Kb2luZWQSDwoHcm9vbV9pZBgBIAEoCRIMCgRuYW1lGAIg",
+            "ASgJEhEKCWNsaWVudF9pZBgDIAEoCRIQCghvd25lcl9pZBgEIAEoCSIpCghS",
+            "b29tTGlzdBIdCgVyb29tcxgBIAMoCzIOLnJvb20uUm9vbUluZm8iGwoIUm9v",
+            "bUxlZnQSDwoHcm9vbV9pZBgBIAEoCSI/CghSb29tSW5mbxIPCgdyb29tX2lk",
+            "GAEgASgJEgwKBG5hbWUYAiABKAkSFAoMY2xpZW50X2NvdW50GAMgASgFIusC",
+            "CgpSb29tUGFja2V0Ei4KC2NyZWF0ZV9yb29tGAEgASgLMhcucm9vbS5DcmVh",
+            "dGVSb29tUmVxdWVzdEgAEioKCWpvaW5fcm9vbRgCIAEoCzIVLnJvb20uSm9p",
+            "blJvb21SZXF1ZXN0SAASLAoKbGVhdmVfcm9vbRgDIAEoCzIWLnJvb20uTGVh",
+            "dmVSb29tUmVxdWVzdEgAEioKCWxpc3Rfcm9vbRgEIAEoCzIVLnJvb20uTGlz",
+            "dFJvb21SZXF1ZXN0SAASKQoMcm9vbV9jcmVhdGVkGAUgASgLMhEucm9vbS5S",
+            "b29tQ3JlYXRlZEgAEicKC3Jvb21fam9pbmVkGAYgASgLMhAucm9vbS5Sb29t",
+            "Sm9pbmVkSAASIwoJcm9vbV9saXN0GAcgASgLMg4ucm9vbS5Sb29tTGlzdEgA",
+            "EiMKCXJvb21fbGVmdBgIIAEoCzIOLnJvb20uUm9vbUxlZnRIAEIJCgdwYXls",
+            "b2FkYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -49,7 +50,7 @@ namespace Room {
             new pbr::GeneratedClrTypeInfo(typeof(global::Room.JoinRoomRequest), global::Room.JoinRoomRequest.Parser, new[]{ "RoomId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Room.LeaveRoomRequest), global::Room.LeaveRoomRequest.Parser, new[]{ "RoomId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Room.ListRoomRequest), global::Room.ListRoomRequest.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Room.RoomCreated), global::Room.RoomCreated.Parser, new[]{ "RoomId", "Name", "ClientId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Room.RoomCreated), global::Room.RoomCreated.Parser, new[]{ "RoomId", "Name", "ClientId", "OwnerId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Room.RoomJoined), global::Room.RoomJoined.Parser, new[]{ "RoomId", "Name", "ClientId", "OwnerId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Room.RoomList), global::Room.RoomList.Parser, new[]{ "Rooms" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Room.RoomLeft), global::Room.RoomLeft.Parser, new[]{ "RoomId" }, null, null, null, null),
@@ -854,6 +855,7 @@ namespace Room {
       roomId_ = other.roomId_;
       name_ = other.name_;
       clientId_ = other.clientId_;
+      ownerId_ = other.ownerId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -899,6 +901,18 @@ namespace Room {
       }
     }
 
+    /// <summary>Field number for the "owner_id" field.</summary>
+    public const int OwnerIdFieldNumber = 4;
+    private string ownerId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string OwnerId {
+      get { return ownerId_; }
+      set {
+        ownerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -917,6 +931,7 @@ namespace Room {
       if (RoomId != other.RoomId) return false;
       if (Name != other.Name) return false;
       if (ClientId != other.ClientId) return false;
+      if (OwnerId != other.OwnerId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -927,6 +942,7 @@ namespace Room {
       if (RoomId.Length != 0) hash ^= RoomId.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (ClientId.Length != 0) hash ^= ClientId.GetHashCode();
+      if (OwnerId.Length != 0) hash ^= OwnerId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -957,6 +973,10 @@ namespace Room {
         output.WriteRawTag(26);
         output.WriteString(ClientId);
       }
+      if (OwnerId.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(OwnerId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -979,6 +999,10 @@ namespace Room {
         output.WriteRawTag(26);
         output.WriteString(ClientId);
       }
+      if (OwnerId.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(OwnerId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -997,6 +1021,9 @@ namespace Room {
       }
       if (ClientId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ClientId);
+      }
+      if (OwnerId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OwnerId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1018,6 +1045,9 @@ namespace Room {
       }
       if (other.ClientId.Length != 0) {
         ClientId = other.ClientId;
+      }
+      if (other.OwnerId.Length != 0) {
+        OwnerId = other.OwnerId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1050,6 +1080,10 @@ namespace Room {
             ClientId = input.ReadString();
             break;
           }
+          case 34: {
+            OwnerId = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -1079,6 +1113,10 @@ namespace Room {
           }
           case 26: {
             ClientId = input.ReadString();
+            break;
+          }
+          case 34: {
+            OwnerId = input.ReadString();
             break;
           }
         }

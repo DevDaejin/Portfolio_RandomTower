@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nroom.proto\x12\x04room\"!\n\x11\x43reateRoomRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\"\n\x0fJoinRoomRequest\x12\x0f\n\x07room_id\x18\x01 \x01(\t\"#\n\x10LeaveRoomRequest\x12\x0f\n\x07room_id\x18\x01 \x01(\t\"\x11\n\x0fListRoomRequest\"?\n\x0bRoomCreated\x12\x0f\n\x07room_id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x11\n\tclient_id\x18\x03 \x01(\t\"P\n\nRoomJoined\x12\x0f\n\x07room_id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x11\n\tclient_id\x18\x03 \x01(\t\x12\x10\n\x08owner_id\x18\x04 \x01(\t\")\n\x08RoomList\x12\x1d\n\x05rooms\x18\x01 \x03(\x0b\x32\x0e.room.RoomInfo\"\x1b\n\x08RoomLeft\x12\x0f\n\x07room_id\x18\x01 \x01(\t\"?\n\x08RoomInfo\x12\x0f\n\x07room_id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x14\n\x0c\x63lient_count\x18\x03 \x01(\x05\"\xeb\x02\n\nRoomPacket\x12.\n\x0b\x63reate_room\x18\x01 \x01(\x0b\x32\x17.room.CreateRoomRequestH\x00\x12*\n\tjoin_room\x18\x02 \x01(\x0b\x32\x15.room.JoinRoomRequestH\x00\x12,\n\nleave_room\x18\x03 \x01(\x0b\x32\x16.room.LeaveRoomRequestH\x00\x12*\n\tlist_room\x18\x04 \x01(\x0b\x32\x15.room.ListRoomRequestH\x00\x12)\n\x0croom_created\x18\x05 \x01(\x0b\x32\x11.room.RoomCreatedH\x00\x12\'\n\x0broom_joined\x18\x06 \x01(\x0b\x32\x10.room.RoomJoinedH\x00\x12#\n\troom_list\x18\x07 \x01(\x0b\x32\x0e.room.RoomListH\x00\x12#\n\troom_left\x18\x08 \x01(\x0b\x32\x0e.room.RoomLeftH\x00\x42\t\n\x07payloadb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nroom.proto\x12\x04room\"!\n\x11\x43reateRoomRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\"\n\x0fJoinRoomRequest\x12\x0f\n\x07room_id\x18\x01 \x01(\t\"#\n\x10LeaveRoomRequest\x12\x0f\n\x07room_id\x18\x01 \x01(\t\"\x11\n\x0fListRoomRequest\"Q\n\x0bRoomCreated\x12\x0f\n\x07room_id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x11\n\tclient_id\x18\x03 \x01(\t\x12\x10\n\x08owner_id\x18\x04 \x01(\t\"P\n\nRoomJoined\x12\x0f\n\x07room_id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x11\n\tclient_id\x18\x03 \x01(\t\x12\x10\n\x08owner_id\x18\x04 \x01(\t\")\n\x08RoomList\x12\x1d\n\x05rooms\x18\x01 \x03(\x0b\x32\x0e.room.RoomInfo\"\x1b\n\x08RoomLeft\x12\x0f\n\x07room_id\x18\x01 \x01(\t\"?\n\x08RoomInfo\x12\x0f\n\x07room_id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x14\n\x0c\x63lient_count\x18\x03 \x01(\x05\"\xeb\x02\n\nRoomPacket\x12.\n\x0b\x63reate_room\x18\x01 \x01(\x0b\x32\x17.room.CreateRoomRequestH\x00\x12*\n\tjoin_room\x18\x02 \x01(\x0b\x32\x15.room.JoinRoomRequestH\x00\x12,\n\nleave_room\x18\x03 \x01(\x0b\x32\x16.room.LeaveRoomRequestH\x00\x12*\n\tlist_room\x18\x04 \x01(\x0b\x32\x15.room.ListRoomRequestH\x00\x12)\n\x0croom_created\x18\x05 \x01(\x0b\x32\x11.room.RoomCreatedH\x00\x12\'\n\x0broom_joined\x18\x06 \x01(\x0b\x32\x10.room.RoomJoinedH\x00\x12#\n\troom_list\x18\x07 \x01(\x0b\x32\x0e.room.RoomListH\x00\x12#\n\troom_left\x18\x08 \x01(\x0b\x32\x0e.room.RoomLeftH\x00\x42\t\n\x07payloadb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -40,15 +40,15 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_LISTROOMREQUEST']._serialized_start=128
   _globals['_LISTROOMREQUEST']._serialized_end=145
   _globals['_ROOMCREATED']._serialized_start=147
-  _globals['_ROOMCREATED']._serialized_end=210
-  _globals['_ROOMJOINED']._serialized_start=212
-  _globals['_ROOMJOINED']._serialized_end=292
-  _globals['_ROOMLIST']._serialized_start=294
-  _globals['_ROOMLIST']._serialized_end=335
-  _globals['_ROOMLEFT']._serialized_start=337
-  _globals['_ROOMLEFT']._serialized_end=364
-  _globals['_ROOMINFO']._serialized_start=366
-  _globals['_ROOMINFO']._serialized_end=429
-  _globals['_ROOMPACKET']._serialized_start=432
-  _globals['_ROOMPACKET']._serialized_end=795
+  _globals['_ROOMCREATED']._serialized_end=228
+  _globals['_ROOMJOINED']._serialized_start=230
+  _globals['_ROOMJOINED']._serialized_end=310
+  _globals['_ROOMLIST']._serialized_start=312
+  _globals['_ROOMLIST']._serialized_end=353
+  _globals['_ROOMLEFT']._serialized_start=355
+  _globals['_ROOMLEFT']._serialized_end=382
+  _globals['_ROOMINFO']._serialized_start=384
+  _globals['_ROOMINFO']._serialized_end=447
+  _globals['_ROOMPACKET']._serialized_start=450
+  _globals['_ROOMPACKET']._serialized_end=813
 # @@protoc_insertion_point(module_scope)

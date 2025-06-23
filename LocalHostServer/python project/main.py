@@ -9,13 +9,17 @@ from client_context import ClientContext
 from room_manager import RoomManager
 from spawn_manager import SpawnManager
 from sync_manager import SyncManager
+from game_state_manager import GameStateManager
 
 from proto.net_pb2 import SyncPacketData, Envelope
+from proto.spawn_pb2 import SpawnPacketData
+from proto.game_pb2 import GameStatePacket
 from proto.room_pb2 import RoomPacket
 
 room_manager = RoomManager()
 spawn_manager = SpawnManager(room_manager)
 sync_manager = SyncManager(room_manager)
+game_state_manager = GameStateManager(room_manager)
 
 ADDR = "127.0.0.1"
 PORT = 8765
@@ -55,18 +59,20 @@ async def handle_message(context, message: bytes):
             sync_packet = SyncPacketData()
             sync_packet.ParseFromString(envelope.payload)
             await sync_manager.handle_sync(context, sync_packet)
+        
+        elif envelope.type == "spawn":
+            spawn_packet = SpawnPacketData()
+            spawn_packet.ParseFromString(envelope.payload)
+            await spawn_manager.handle_spawn(context, spawn_packet)
 
-        elif envelope.type == "spawn_enemy":
-            await spawn_manager.handle_spawn_enemy(context, envelope.payload)
-
-        elif envelope.type == "spawn_tower":
-            await spawn_manager.handle_spawn_tower(context, envelope.payload)
-
-        elif envelope.type == "spawn_projectile":
-            await spawn_manager.handle_spawn_projectile(context, envelope.payload)
+        elif envelope.type == "game_state":
+            packet = GameStatePacket()
+            packet.ParseFromString(envelope.payload)
+            await game_state_manager.handle_game_state(context, packet)
 
         else:
             print(f"[Warn] Unknown envelope type: {envelope.type}")
+
     except Exception as e:
         print(f"[Error] Failed to parse envelope: {e}")
 

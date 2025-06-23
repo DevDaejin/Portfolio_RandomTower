@@ -1,50 +1,38 @@
 from proto.net_pb2 import Envelope
-from proto.spawn_pb2 import SpawnEnemyPacket, SpawnTowerPacket, SpawnProjectilePacket
+from proto.spawn_pb2 import SpawnPacketData, SpawnEnemyPacket, SpawnTowerPacket, SpawnProjectilePacket
 
 class SpawnManager:
     def __init__(self, room_manager):
         self.room_manager = room_manager
 
-    async def handle_spawn_enemy(self, sender, payload_bytes):
-        packet = SpawnEnemyPacket()
-        packet.ParseFromString(payload_bytes)
-
+    async def handle_spawn(self, sender, spawn_packet: SpawnPacketData):
         room = self.room_manager.get_room(sender)
+        
         if not room:
             print(f"[Spawn] Invalid room for client {sender.client_id}")
             return
+        
+        spawn_type = spawn_packet.spawn_type.lower()
 
-        print(f"[Spawn] Relaying enemy spawn from {sender.client_id} to room {room.room_id}")
-
-        envelope = Envelope()
-        envelope.type = "spawn_enemy"
-        envelope.payload = packet.SerializeToString()
-
-        for client in room.clients:
-            if client != sender:
-                await client.websocket.send(envelope.SerializeToString())
-
-    async def handle_spawn_tower(self, sender, payload_bytes):
-        packet = SpawnTowerPacket()
-        packet.ParseFromString(payload_bytes)
-        await self._relay(sender, packet, "spawn_tower")
-
-    async def handle_spawn_projectile(self, sender, payload_bytes):
-        packet = SpawnProjectilePacket()
-        packet.ParseFromString(payload_bytes)
-        await self._relay(sender, packet, "spawn_projectile")
-
-    async def _relay(self, sender, packet, packet_type):
-        room = self.room_manager.get_room(sender)
-        if not room:
-            print(f"[Spawn] Invalid room for client {sender.client_id}")
+        if spawn_type == "enemy":
+            packet = SpawnEnemyPacket()
+        elif spawn_type == "tower":
+            packet = SpawnTowerPacket()
+        elif spawn_type == "projectile":
+            packet = SpawnProjectilePacket()
+        else:
+            print(f"[Spawn] Unknown spawn_type: {spawn_type}")
             return
 
-        print(f"[Spawn] Relaying {packet_type} from {sender.client_id} to room {room.room_id}")
-
+        try:
+            packet.ParseFromString(spawn_packet.payload)
+        except Exception as e:
+            print(f"[SpawnError] Failed to parse payload: {e}")
+            return
+        
         envelope = Envelope()
-        envelope.type = packet_type
-        envelope.payload = packet.SerializeToString()
+        envelope.type = "spawn"
+        envelope.payload = spawn_packet.SerializeToString()
 
         for client in room.clients:
             if client != sender:

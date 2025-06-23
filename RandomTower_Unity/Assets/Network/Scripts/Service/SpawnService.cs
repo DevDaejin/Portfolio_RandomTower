@@ -1,9 +1,7 @@
 using Google.Protobuf;
 using Net;
 using Spawn;
-using UnityEngine;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 public class SpawnService
@@ -19,43 +17,53 @@ public class SpawnService
         _client = client;
     }
 
-    public void OnReceiveEnemy(SpawnEnemyPacket packet)
+    public void OnReceive(SpawnPacketData packet)
     {
-        if (packet.OwnerId == _client.ClientID) return;
-        OnEnemySpawned?.Invoke(packet);
-    }
+        switch(packet.SpawnType.ToLower())
+        {
+            case "enemy":
+                var enemy = SpawnEnemyPacket.Parser.ParseFrom(packet.Payload);
+                if (enemy.OwnerId == _client.ClientID) return;
+                OnEnemySpawned?.Invoke(enemy);
+                break;
 
-    public void OnReceiveTower(SpawnTowerPacket packet)
-    {
-        if (packet.OwnerId == _client.ClientID) return;
-        OnTowerSpawned?.Invoke(packet);
-    }
+            case "tower":
+                var tower = SpawnTowerPacket.Parser.ParseFrom(packet.Payload);
+                if (tower.OwnerId == _client.ClientID) return;
+                OnTowerSpawned?.Invoke(tower);
+                break;
 
-    public void OnReceiveProjectile(SpawnProjectilePacket packet)
-    {
-        if (packet.OwnerId == _client.ClientID) return;
-        OnProjectileSpawned?.Invoke(packet);
+            case "projectile":
+                var projectile = SpawnProjectilePacket.Parser.ParseFrom(packet.Payload);
+                if (projectile.OwnerId == _client.ClientID) return;
+                OnProjectileSpawned?.Invoke(projectile);
+                break;
+
+            default:
+                UnityEngine.Debug.LogWarning($"[Spawn] Unknown spawn type: {packet.SpawnType}");
+                break;
+        }
     }
 
     public async Task SendSpawn(string type, string spawnId, ISyncObject syncObject)
     {
-        IMessage packet = type switch
+        IMessage payload = type switch
         {
-            "spawn_enemy" => new SpawnEnemyPacket
+            "enemy" => new SpawnEnemyPacket
             {
                 ObjectId = syncObject.ObjectID,
                 OwnerId = syncObject.OwnerID,
                 RoomId = syncObject.RoomID,
                 SpawnId = spawnId
             },
-            "spawn_tower" => new SpawnTowerPacket
+            "tower" => new SpawnTowerPacket
             {
                 ObjectId = syncObject.ObjectID,
                 OwnerId = syncObject.OwnerID,
                 RoomId = syncObject.RoomID,
                 SpawnId = spawnId
             },
-            "spawn_projectile" => new SpawnProjectilePacket
+            "projectile" => new SpawnProjectilePacket
             {
                 ObjectId = syncObject.ObjectID,
                 OwnerId = syncObject.OwnerID,
@@ -65,6 +73,15 @@ public class SpawnService
             _ => null
         };
 
-        if (packet != null) await _client.Send(type, packet);
+        if (payload == null) return;
+
+        var packet = new SpawnPacketData
+        {
+            ObjectId = syncObject.ObjectID,
+            SpawnType = type,
+            Payload = payload.ToByteString()
+        };
+
+        await _client.Send("spawn", packet);
     }
 }
