@@ -105,7 +105,7 @@ public class InGame : MonoBehaviour
     }
     private void InitUI()
     {
-        _ui.Initialize(maxWave, MaxEnemy, MaxTower, WaveDuration, 0);
+        _ui.Initialize(maxWave, MaxEnemy, MaxTower, WaveDuration, 0, _networkManager.IsHost);
         _ui.SetWaveButton(OnWave);
         _ui.SetSpawnButton(SpawnTower);
         _ui.SetResultButtons(Retry, GoToLobby);
@@ -321,6 +321,6 @@ public class InGame : MonoBehaviour
         _towerManager.ReleaseAll();
         _resourceManager.Initialize();
         _waveController.Initialize();
-        _ui.Initialize(maxWave, MaxEnemy, MaxTower, WaveDuration, 0);
+        _ui.Initialize(maxWave, MaxEnemy, MaxTower, WaveDuration, 0, _networkManager.IsHost);
     }
 }

@@ -32,7 +32,7 @@ public class InGameUI : MonoBehaviour
         Time, Wave, Enemy, Gold, TowerCount, Success
     }
 
-    public void Initialize(int maxWave, int maxEnemy, int maxTower, float time, int gold)
+    public void Initialize(int maxWave, int maxEnemy, int maxTower, float time, int gold, bool isHost)
     {
         _resultPanel.SetActive(false);
         SetWave(0, maxWave);
@@ -40,6 +40,7 @@ public class InGameUI : MonoBehaviour
         SetTimer(time);
         SetGoldCount(gold);
         SetTowerCount(0, maxTower);
+        _waveButton.gameObject.SetActive(isHost);
     }
 
     private StringBuilder GetStringBuilder(StringBuilderKey key)
