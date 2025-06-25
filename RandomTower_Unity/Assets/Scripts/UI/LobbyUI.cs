@@ -15,9 +15,12 @@ public class LobbyUI : MonoBehaviour
 
     public Action OnPlay;
 
-    [Header("RoomList")]
+    [Header("Upgrade")]
+    
+
+    [Header("Room")]
     [SerializeField] private GameObject _roomListPanel;
-    [SerializeField] private Transform _container;
+    [SerializeField] private Transform _roomContainer;
     [SerializeField] private Button _roomListCancelButton;
     [SerializeField] private Button _createRoomButton;
     [SerializeField] private TMP_InputField _createRoomNameInput;
@@ -30,7 +33,7 @@ public class LobbyUI : MonoBehaviour
 
     private void Awake()
     {
-        _roomButtons = new(_roomButton, _container);
+        _roomButtons = new(_roomButton, _roomContainer);
     }
 
     private void Start()

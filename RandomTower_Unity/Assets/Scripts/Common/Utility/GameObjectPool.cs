@@ -53,16 +53,6 @@ public class GameObjectPool<T> where T : Component
 
     public int CountActived()
     {
-        int count = 0;
-
-        foreach(T element in _pooled)
-        {
-            if(element.gameObject.activeInHierarchy)
-            {
-                count++;
-            }
-        }
-
-        return count;
+        return _actived.Count;
     }
 }

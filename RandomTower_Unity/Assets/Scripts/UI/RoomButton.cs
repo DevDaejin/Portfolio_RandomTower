@@ -29,6 +29,7 @@ public class RoomButton : MonoBehaviour
         _button.interactable = count != MaxUser;
 
         _onClicked = buttonCallback;
+
         transform.localScale = Vector3.one;
         gameObject.SetActive(true);
     }
