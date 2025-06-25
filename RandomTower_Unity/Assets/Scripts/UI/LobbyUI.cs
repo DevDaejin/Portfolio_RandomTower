@@ -27,14 +27,10 @@ public class LobbyUI : MonoBehaviour
     public Action OnBack;
 
     private GameObjectPool<RoomButton> _roomButtons;
-    private Transform _roomButtonGroup;
-
-    private const string RoomButtonGroupName = "RoomButtons";
 
     private void Awake()
     {
-        _roomButtonGroup = new GameObject(RoomButtonGroupName).transform;
-        _roomButtons = new(_roomButton, _roomButtonGroup);
+        _roomButtons = new(_roomButton, _container);
     }
 
     private void Start()
@@ -52,7 +48,6 @@ public class LobbyUI : MonoBehaviour
         for (int index = 0; index < roomList.Count; index++)
         {
             RoomButton target = _roomButtons.Get();
-            target.transform.SetParent(_container, false);
 
             target.transform.SetSiblingIndex(index);
             target.Set(
