@@ -16,6 +16,9 @@ public class TowerData
     public GameObject TowerPrefab => towerPrefab;
     [SerializeField] private GameObject towerPrefab;
 
+    public Sprite TowerSprite => towerSprite;
+    [SerializeField] private Sprite towerSprite;
+
     public GameObject ProjectilePrefab => projectilePrefab;
     [SerializeField] private GameObject projectilePrefab;
 

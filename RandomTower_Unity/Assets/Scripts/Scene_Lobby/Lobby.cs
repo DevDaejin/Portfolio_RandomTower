@@ -1,9 +1,11 @@
 using Room;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Lobby : MonoBehaviour
 {
+    [SerializeField] private TowerDatabase _towerDB;
     private LobbyUI _ui;
     private NetworkManager _network;
     private List<RoomInfo> _roomList = null;
@@ -23,6 +25,7 @@ public class Lobby : MonoBehaviour
         _ui.OnCreate = OnCreate;
         _ui.OnPlay = OnPlay;
         _ui.OnBack = OnBack;
+        _ui.CreateTowerButtons(_towerDB);
     }
 
     private async void Update()
