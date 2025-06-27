@@ -14,10 +14,14 @@ public class LobbyUI : MonoBehaviour
     [Header("Tower")]
     [SerializeField] private GameObject _towerButtonPrefab;
     [SerializeField] private Transform _towerContainer;
-    [SerializeField] private Button _selectedTowerUpgradeButton;
 
-    [Header("Selected info")]
-    [SerializeField] private GameObject _towerInfoGameObject;
+    [Header("Tower buying")]
+    [SerializeField] private GameObject _towerBuyingPanel;
+    [SerializeField] private TMP_Text _sekectedTowerBuyingPrice;
+    [SerializeField] private Button _selectedTowerBuyingButton;
+
+    [Header("Tower info")]
+    [SerializeField] private GameObject _towerInfoPanel;
     [SerializeField] private Image _selectedTowerPicture;
     [SerializeField] private TMP_Text _selectedTowerName;
     [SerializeField] private TMP_Text _selectedTowerGrade;
@@ -26,7 +30,9 @@ public class LobbyUI : MonoBehaviour
 
     [SerializeField] private TMP_Text _selectedTowerRange;
     [SerializeField] private TMP_Text _selectedTowerFirerate;
-    [SerializeField] private TMP_Text _selectedTowerInfo;
+    [SerializeField] private TMP_Text _selectedTowerDescription;
+
+    [SerializeField] private Button _selectedTowerUpgradeButton;
 
     [Header("Room")]
     [SerializeField] private GameObject _roomButton;
@@ -54,7 +60,8 @@ public class LobbyUI : MonoBehaviour
         _createRoomButton.onClick.AddListener(OnCreateButton);
         _roomListCancelButton.onClick.AddListener(() => _roomListPanel.SetActive(false));
 
-        _towerInfoGameObject.SetActive(false);
+        _towerInfoPanel.SetActive(false);
+        _towerBuyingPanel.SetActive(false);
 
         _playButton.onClick.AddListener(OnPlayButton);
         _backButton.onClick.AddListener(OnBack.Invoke);
@@ -66,21 +73,23 @@ public class LobbyUI : MonoBehaviour
         foreach(var tower in database._towers)
         {
             var towerButton = Instantiate(_towerButtonPrefab, _towerContainer).GetComponent<TowerButton>();
-            towerButton.Initialize(tower.Data, UpdateCurrentTowerPanel, ActiveLockPanel);
+            towerButton.Initialize(tower.Data, ActiveTowerInfoPanel, ActiveTowerBuyingPanel);
             towers.Add(towerButton);
         }
 
         _towerButtonArray = towers.ToArray();
     }
 
-    private void UpdateCurrentTowerPanel(TowerData data)
+    private void ActiveTowerInfoPanel(TowerData data)
     {
-        _towerInfoGameObject.SetActive(true);
+        _towerInfoPanel.SetActive(true);
+        _towerBuyingPanel.SetActive(false);
     }
 
-    private void ActiveLockPanel(TowerData data)
+    private void ActiveTowerBuyingPanel(TowerData data)
     {
-        
+        _towerInfoPanel.SetActive(false);
+        _towerBuyingPanel.SetActive(true);
     }
 
     public void CreateRoomButtons(List<RoomInfo> roomList, Action<string> onEnter)

@@ -36,6 +36,8 @@ public class GameManager : MonoBehaviour
     public Dispatcher Dispatcher => _dispatcher ??= GetComponent<Dispatcher>();
     private Dispatcher _dispatcher;
 
+    public LocalDataManager DataManager => dataManager ??= new();
+    private LocalDataManager dataManager;
 
     public enum Scenes { Main, Lobby, Game };
 

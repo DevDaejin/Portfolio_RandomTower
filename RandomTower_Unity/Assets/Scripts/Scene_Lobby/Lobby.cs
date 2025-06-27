@@ -8,6 +8,7 @@ public class Lobby : MonoBehaviour
     [SerializeField] private TowerDatabase _towerDB;
     private LobbyUI _ui;
     private NetworkManager _network;
+    private LocalDataManager _dataManager;
     private List<RoomInfo> _roomList = null;
 
     private float _time = 0;
@@ -18,6 +19,7 @@ public class Lobby : MonoBehaviour
         GameManager.Instance.UI.Initialize(UIManager.UIType.Lobby);
         _ui = GameManager.Instance.UI.Lobby;
         _network = GameManager.Instance.Network;
+        _dataManager = GameManager.Instance.DataManager;
     }
 
     private void Start()
@@ -26,6 +28,8 @@ public class Lobby : MonoBehaviour
         _ui.OnPlay = OnPlay;
         _ui.OnBack = OnBack;
         _ui.CreateTowerButtons(_towerDB);
+
+        _dataManager.Load();
     }
 
     private async void Update()
