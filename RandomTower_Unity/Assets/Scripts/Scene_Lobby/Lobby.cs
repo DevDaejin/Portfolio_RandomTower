@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Lobby : MonoBehaviour
 {
-    [SerializeField] private TowerDatabase _towerDB;
     private LobbyUI _ui;
+    private TowerDatabase _towerDB;
     private NetworkManager _network;
     private LocalDataManager _dataManager;
     private List<RoomInfo> _roomList = null;
@@ -27,7 +27,7 @@ public class Lobby : MonoBehaviour
         _ui.OnCreate = OnCreate;
         _ui.OnPlay = OnPlay;
         _ui.OnBack = OnBack;
-        _ui.CreateTowerButtons(_towerDB);
+        _ui.CreateTowerButtons(GameManager.Instance.TowerDB, GameManager.Instance.ActivedTowers);
 
         _dataManager.Load();
     }

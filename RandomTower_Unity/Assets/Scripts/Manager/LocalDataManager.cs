@@ -12,8 +12,10 @@ public class LocalDataManager
         public int Gem = 0;
         public int ReachedStage = 1;
     }
+
     public SaveData Data { get; private set; }
 
+    private const string BasicTower = "1_Grade_Archer";
     private const string Key = "LocalProgress";
 
     public SaveData Load()
@@ -26,6 +28,10 @@ public class LocalDataManager
         else
         {
             Data = new();
+
+            Data.Gem = 3;
+            Data.ReachedStage = 1;
+            Data.GainedTowerNames.Add(BasicTower);
         }
 
         return Data;
@@ -38,3 +44,4 @@ public class LocalDataManager
         PlayerPrefs.Save();
     }
 }
+ 

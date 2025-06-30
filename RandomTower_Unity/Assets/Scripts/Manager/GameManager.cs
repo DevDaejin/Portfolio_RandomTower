@@ -1,11 +1,14 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private GameObject _uiManagerPrefab;
-
     public static GameManager Instance { get; private set; }
+
+    [SerializeField] private GameObject _uiManagerPrefab;
+    [SerializeField] private TowerDatabase _towerDB;
 
     private const string Main = "Main";
     private const string Lobby = "Lobby";
@@ -36,10 +39,13 @@ public class GameManager : MonoBehaviour
     public Dispatcher Dispatcher => _dispatcher ??= GetComponent<Dispatcher>();
     private Dispatcher _dispatcher;
 
-    public LocalDataManager DataManager => dataManager ??= new();
-    private LocalDataManager dataManager;
+    public LocalDataManager DataManager => _dataManager ??= new();
+    private LocalDataManager _dataManager;
 
     public enum Scenes { Main, Lobby, Game };
+
+    public TowerDatabase TowerDB => _towerDB;
+    public Dictionary<string, TowerDataConfig> ActivedTowers { get; private set; } = new();
 
     private void Awake()
     {
@@ -61,6 +67,8 @@ public class GameManager : MonoBehaviour
 
         UI.Global.OnNetworkConfirmClicked = () => LoadScene(Scenes.Main);
         UI.Global.OnNetworkWaittingClicked = () => LoadScene(Scenes.Lobby);
+
+        DataManager.Load();
     }
 
     private void ActiveNetowrkPanel()
@@ -92,5 +100,16 @@ public class GameManager : MonoBehaviour
         }
 
         SceneLoader.LoadSceneAsync(sceneName);
+    }
+
+    public void LoadActivedTowers()
+    {
+        var data = DataManager.Load();
+
+        ActivedTowers.Clear();
+        foreach(var towerName in data.GainedTowerNames)
+        {
+            ActivedTowers[towerName] = _towerDB.GetTowersByName(towerName);
+        }
     }
 }

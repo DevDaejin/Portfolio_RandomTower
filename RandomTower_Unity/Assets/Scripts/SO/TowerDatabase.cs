@@ -1,47 +1,55 @@
 using System.Collections.Generic;
-using System.Linq;
+using System.Data;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TowerDatabase", menuName = "Random TD/TowerDatabase")]
 public class TowerDatabase : ScriptableObject
 {
-    public List<TowerDataConfig> _towers;
+    public List<TowerDataConfig> Towers;
 
-    public TowerData GetTowerByID(int id)
+    private Dictionary<int, TowerDataConfig> _idDict = null;
+    private Dictionary<string, TowerDataConfig> _nameDict = null;
+
+
+    private void Initialize()
     {
-        for (int i = 0; i < _towers.Count; i++)
+        if (_idDict != null && _nameDict != null) return;
+
+        _idDict = new();
+        _nameDict = new();
+
+        foreach (var tower in Towers)
         {
-            TowerData data = _towers[i].Data;
-            if (data.ID == id)
-            {
-                return data;
-            }
+            _idDict[tower.Data.ID] = tower;
+            _nameDict[tower.Data.TowerName] = tower;
         }
-        return null;
     }
 
-    public TowerData[] GetTowersByGrade(int grade)
+    public TowerDataConfig GetTowerByID(int id)
     {
-        int count = 0;
-        for (int i = 0; i < _towers.Count; i++)
+        Initialize();
+        return _idDict.TryGetValue(id, out var data) ? data : null;
+    }
+
+    public TowerDataConfig[] GetTowersByGrade(int grade)
+    {
+        Initialize();
+        List<TowerDataConfig> result = new();
+
+        foreach (var tower in Towers)
         {
-            if (_towers[i].Data.Grade == grade)
+            if (tower.Data.Grade == grade)
             {
-                count++;
+                result.Add(tower);
             }
         }
 
-        TowerData[] result = new TowerData[count];
-        int index = 0;
+        return result.ToArray();
+    }
 
-        for (int i = 0; i < _towers.Count; i++)
-        {
-            if (_towers[i].Data.Grade == grade)
-            {
-                result[index++] = _towers[i].Data;
-            }
-        }
-
-        return result;
+    public TowerDataConfig GetTowersByName(string name)
+    {
+        Initialize();
+        return _nameDict.TryGetValue(name, out var data) ? data : null;
     }
 }

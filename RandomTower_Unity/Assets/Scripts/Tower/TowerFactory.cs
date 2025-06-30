@@ -24,9 +24,9 @@ public class TowerFactory
 
     public TowerData GetTowerRandomData(int grade)
     {
-        TowerData[] candidates = _database.GetTowersByGrade(grade);
+        TowerDataConfig[] candidates = _database.GetTowersByGrade(grade);
         if (candidates.Length == 0) return null;
-        return candidates[Random.Range(0, candidates.Length)];
+        return candidates[Random.Range(0, candidates.Length)].Data;
     }
 
     public ITower CreateTower(TowerData data, Vector3 gridPosition, IEnemyProvider enemyProvider, Action<int, ISyncObject> onAttack, Action<Projectile, ISyncObject> onSendProjectileReturn, int level = 1)

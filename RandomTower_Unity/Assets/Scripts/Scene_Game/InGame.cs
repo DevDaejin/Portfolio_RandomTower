@@ -133,7 +133,7 @@ public class InGame : MonoBehaviour
 
     private void OnReceivedTowerPacket(string id, SpawnTowerPacket packet)
     {
-        TowerData data = _towerManager.TowerDatabase.GetTowerByID(int.Parse(id));
+        TowerData data = _towerManager.TowerDatabase.GetTowerByID(int.Parse(id)).Data;
         ITower tower = _towerManager.CreateTower(data, Vector3.down, null, null, 1);
 
         ISyncObject syncObject = tower.Transform.GetComponent<ISyncObject>();
@@ -144,7 +144,7 @@ public class InGame : MonoBehaviour
 
     private void OnReceivedProjectilePacket(string id, SpawnProjectilePacket packet)
     {
-        TowerData data = _towerManager.TowerDatabase.GetTowerByID(int.Parse(id));
+        TowerData data = _towerManager.TowerDatabase.GetTowerByID(int.Parse(id)).Data;
 
         IProjectilePool pool = _towerManager.GetProjectilePool(data);
         Projectile projectile = pool.Get(null, Vector3.down, 0, data.ProjectileSpeed, null);

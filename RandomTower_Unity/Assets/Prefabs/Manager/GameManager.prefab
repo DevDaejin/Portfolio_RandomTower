@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uiManagerPrefab: {fileID: 409916451957105729, guid: b72885ebe06227644973679e2f3b342f, type: 3}
+  _towerDB: {fileID: 11400000, guid: 591c47ce350bccb448e5639e03007e4b, type: 2}
 --- !u!114 &164838637693003066
 MonoBehaviour:
   m_ObjectHideFlags: 0

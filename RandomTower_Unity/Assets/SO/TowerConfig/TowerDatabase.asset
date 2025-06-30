@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df1ef7618194c74479f5e47e2e15d74e, type: 3}
   m_Name: TowerDatabase
   m_EditorClassIdentifier: 
-  _towers:
+  Towers:
   - {fileID: 11400000, guid: 3761a15b70e1e86419bf437e899ade5c, type: 2}
   - {fileID: 11400000, guid: d91a147e8469c7b4d9b515abff6e31af, type: 2}
   - {fileID: 11400000, guid: 0bad5e314792e6c40abdaa1e37fc446c, type: 2}

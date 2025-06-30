@@ -67,14 +67,16 @@ public class LobbyUI : MonoBehaviour
         _backButton.onClick.AddListener(OnBack.Invoke);
     }
 
-    public void CreateTowerButtons(TowerDatabase database)
+    public void CreateTowerButtons(TowerDatabase database, Dictionary<string, TowerDataConfig> actived)
     {
         List<TowerButton> towers = new();
-        foreach(var tower in database._towers)
+        foreach(var tower in database.Towers)
         {
             var towerButton = Instantiate(_towerButtonPrefab, _towerContainer).GetComponent<TowerButton>();
-            towerButton.Initialize(tower.Data, ActiveTowerInfoPanel, ActiveTowerBuyingPanel);
-            towers.Add(towerButton);
+            Action<TowerData> unlockCallback = actived.ContainsKey(tower.Data.TowerName) ? null : ActiveTowerBuyingPanel;
+
+            towerButton.Initialize(tower.Data, ActiveTowerInfoPanel, unlockCallback);
+            towers.Add(towerButton); 
         }
 
         _towerButtonArray = towers.ToArray();
