@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     private const string Main = "Main";
     private const string Lobby = "Lobby";
     private const string Game = "Game";
+    private const int BasicGrade = 1;
 
     public UIManager UI
     {
@@ -33,14 +34,27 @@ public class GameManager : MonoBehaviour
     public NetworkManager Network => _networkManager ??= GetComponent<NetworkManager>();
     private NetworkManager _networkManager;
 
-    public SceneLoader SceneLoader => _sceneLoader ??= GetComponentInChildren<SceneLoader>();
+    public SceneLoader Scene => _sceneLoader ??= GetComponentInChildren<SceneLoader>();
     private SceneLoader _sceneLoader;
 
     public Dispatcher Dispatcher => _dispatcher ??= GetComponent<Dispatcher>();
     private Dispatcher _dispatcher;
 
-    public LocalDataManager DataManager => _dataManager ??= new();
+    public LocalDataManager Data
+    {
+        get
+        {
+            if (_dataManager == null)
+            {
+                _dataManager = GetDataManager();
+            }
+            return _dataManager;
+        }
+    }
     private LocalDataManager _dataManager;
+
+    public ResourceManager Resource=> _rescoureManager ??= new ResourceManager();
+    private ResourceManager _rescoureManager;
 
     public enum Scenes { Main, Lobby, Game };
 
@@ -68,7 +82,10 @@ public class GameManager : MonoBehaviour
         UI.Global.OnNetworkConfirmClicked = () => LoadScene(Scenes.Main);
         UI.Global.OnNetworkWaittingClicked = () => LoadScene(Scenes.Lobby);
 
-        DataManager.Load();
+        LoadActivedTowers();
+
+        var loadedGem = new KeyValuePair<ResourceManager.ResourceType, int>(ResourceManager.ResourceType.Gem, Data.Loaded.Gem);
+        Resource.Initialize(loadedGem);
     }
 
     private void ActiveNetowrkPanel()
@@ -99,15 +116,31 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        SceneLoader.LoadSceneAsync(sceneName);
+        Scene.LoadSceneAsync(sceneName);
     }
 
-    public void LoadActivedTowers()
+    private LocalDataManager GetDataManager()
     {
-        var data = DataManager.Load();
+        if (_dataManager == null)
+        {
+            List<string> towerNames = new();
+            foreach (var tower in _towerDB.Towers)
+            {
+                if (tower.Data.Grade == BasicGrade
+                    && !towerNames.Contains(tower.Data.TowerName))
+                {
+                    towerNames.Add(tower.Data.TowerName);
+                }
+            }
+            return new LocalDataManager(towerNames);
+        }
+        return _dataManager;
+    }
 
+    private void LoadActivedTowers()
+    {
         ActivedTowers.Clear();
-        foreach(var towerName in data.GainedTowerNames)
+        foreach (var towerName in Data.Loaded.GainedTowerNames)
         {
             ActivedTowers[towerName] = _towerDB.GetTowersByName(towerName);
         }

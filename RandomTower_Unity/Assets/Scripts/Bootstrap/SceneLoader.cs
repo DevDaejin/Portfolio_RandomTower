@@ -37,10 +37,11 @@ public class SceneLoader : MonoBehaviour
             {
                 yield return waitting;
                 operation.allowSceneActivation = true;
-                LoadingUI.Hide();
             }
 
             yield return null;
         }
+
+        LoadingUI.Hide();
     }
 }

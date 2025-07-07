@@ -4,38 +4,41 @@ using UnityEngine;
 [Serializable]
 public class TowerData
 {
-    public int Grade => grade;
-    [SerializeField] private int grade;
+    public int Grade => _grade;
+    [SerializeField] private int _grade;
 
-    public int ID => id;
-    [SerializeField] private int id;
+    public int ID => _id;
+    [SerializeField] private int _id;
 
-    public string TowerName => towerName;
-    [SerializeField] private string towerName;
+    public string TowerName => _towerName;
+    [SerializeField] private string _towerName;
 
-    public GameObject TowerPrefab => towerPrefab;
-    [SerializeField] private GameObject towerPrefab;
+    public GameObject TowerPrefab => _towerPrefab;
+    [SerializeField] private GameObject _towerPrefab;
 
-    public Sprite TowerSprite => towerSprite;
-    [SerializeField] private Sprite towerSprite;
+    public Sprite TowerSprite => _towerSprite;
+    [SerializeField] private Sprite _towerSprite;
 
-    public GameObject ProjectilePrefab => projectilePrefab;
-    [SerializeField] private GameObject projectilePrefab;
+    public GameObject ProjectilePrefab => _projectilePrefab;
+    [SerializeField] private GameObject _projectilePrefab;
 
-    public float ProjectileSpeed => projectileSpeed;
-    [SerializeField] private float projectileSpeed;
+    public float ProjectileSpeed => _projectileSpeed;
+    [SerializeField] private float _projectileSpeed;
 
-    public float Damage => damage;
-    [SerializeField] private float damage;
+    public float Damage => _damage;
+    [SerializeField] private float _damage;
 
-    public float Range => range;
-    [SerializeField] private float range;
+    public float Range => _range;
+    [SerializeField] private float _range;
 
-    public float FireRate => fireRate;
-    [SerializeField] private float fireRate;
+    public float FireRate => _fireRate;
+    [SerializeField] private float _fireRate;
 
-    public int TargetCount => targetCount;
-    [SerializeField] private int targetCount;
+    public int TargetCount => _targetCount;
+    [SerializeField] private int _targetCount;
+
+    public int GemCoast => _gemCoast;
+    [SerializeField] private int _gemCoast;
 
     public bool IsSpecial => Grade == MaxGrade;
     private const int MaxGrade = 4;

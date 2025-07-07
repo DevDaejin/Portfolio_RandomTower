@@ -11,13 +11,17 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _backButton;
 
+    [Header("Topbar")]
+    [SerializeField] private TMP_Text _gemTxt;
+    [SerializeField] private Button _optionButton;
+
     [Header("Tower")]
     [SerializeField] private GameObject _towerButtonPrefab;
     [SerializeField] private Transform _towerContainer;
 
     [Header("Tower buying")]
     [SerializeField] private GameObject _towerBuyingPanel;
-    [SerializeField] private TMP_Text _sekectedTowerBuyingPrice;
+    [SerializeField] private TMP_Text _selectedTowerBuyingPrice;
     [SerializeField] private Button _selectedTowerBuyingButton;
 
     [Header("Tower info")]
@@ -41,13 +45,16 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private Button _roomListCancelButton;
     [SerializeField] private Button _createRoomButton;
     [SerializeField] private TMP_InputField _createRoomNameInput;
+    
     public string InputedRoomName => _createRoomNameInput.text;
 
     public Action OnPlay;
     public Action OnCreate;
     public Action OnBack;
 
-    private TowerButton[] _towerButtonArray;
+    public Action OnBuyingTower;
+
+    private List<TowerButton> _towerButtons;
     private GameObjectPool<RoomButton> _roomButtons;
 
     private void Awake()
@@ -60,6 +67,8 @@ public class LobbyUI : MonoBehaviour
         _createRoomButton.onClick.AddListener(OnCreateButton);
         _roomListCancelButton.onClick.AddListener(() => _roomListPanel.SetActive(false));
 
+        _selectedTowerBuyingButton.onClick.AddListener(() => OnBuyingTower?.Invoke());
+
         _towerInfoPanel.SetActive(false);
         _towerBuyingPanel.SetActive(false);
 
@@ -69,21 +78,35 @@ public class LobbyUI : MonoBehaviour
 
     public void CreateTowerButtons(TowerDatabase database, Dictionary<string, TowerDataConfig> actived)
     {
-        List<TowerButton> towers = new();
-        foreach(var tower in database.Towers)
+        while(_towerContainer.childCount > 0)
         {
-            var towerButton = Instantiate(_towerButtonPrefab, _towerContainer).GetComponent<TowerButton>();
-            Action<TowerData> unlockCallback = actived.ContainsKey(tower.Data.TowerName) ? null : ActiveTowerBuyingPanel;
-
-            towerButton.Initialize(tower.Data, ActiveTowerInfoPanel, unlockCallback);
-            towers.Add(towerButton); 
+            Destroy(_towerContainer.GetChild(0).gameObject);
         }
 
-        _towerButtonArray = towers.ToArray();
+        List<TowerButton> towers = new();
+        foreach (var tower in database.Towers)
+        {
+            var towerButton = CreateTowerButton(
+                actived.ContainsKey(tower.Data.TowerName),
+                tower.Data
+            );
+
+            towers.Add(towerButton);
+        }
+        _towerButtons = towers;
+    }
+
+    private TowerButton CreateTowerButton(bool isUnlock, TowerData data)
+    {
+        var towerButton = Instantiate(_towerButtonPrefab, _towerContainer).GetComponent<TowerButton>();
+        Action<TowerData> unlockCallback = isUnlock ? null : ActiveTowerBuyingPanel;
+        towerButton.Initialize(data, ActiveTowerInfoPanel, unlockCallback);
+        return towerButton;
     }
 
     private void ActiveTowerInfoPanel(TowerData data)
     {
+        
         _towerInfoPanel.SetActive(true);
         _towerBuyingPanel.SetActive(false);
     }
@@ -92,6 +115,8 @@ public class LobbyUI : MonoBehaviour
     {
         _towerInfoPanel.SetActive(false);
         _towerBuyingPanel.SetActive(true);
+
+        _selectedTowerBuyingPrice.text = data.GemCoast.ToString();
     }
 
     public void CreateRoomButtons(List<RoomInfo> roomList, Action<string> onEnter)
@@ -110,6 +135,11 @@ public class LobbyUI : MonoBehaviour
                 onEnter
             );
         }
+    }
+
+    public void UpdateGem(int amount)
+    {
+        _gemTxt.text = amount.ToString();
     }
 
     public void ActiveRoomListPanel(bool isAct)

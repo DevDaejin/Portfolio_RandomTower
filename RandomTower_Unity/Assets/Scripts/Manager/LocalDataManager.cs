@@ -1,45 +1,46 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 public class LocalDataManager
 {
+    public LocalDataManager(List<string> names)
+    {
+        if (!PlayerPrefs.HasKey(Key))
+        { 
+            Loaded = new();
+            Loaded.GainedTowerNames.AddRange(names);
+            //TODO : 추 후 업데이트
+            //Save();
+        }
+    }
+
     [Serializable]
     public class SaveData
     {
         public List<string> GainedTowerNames = new();
-        public int Gem = 0;
-        public int ReachedStage = 1;
+        public int Gem = BasicGem;
+        public int ReachedStage = BasicReachedStage;
     }
 
-    public SaveData Data { get; private set; }
+    public SaveData Loaded { get; private set; }
 
-    private const string BasicTower = "1_Grade_Archer";
+    private const int BasicGem = 3;
+    private const int BasicReachedStage = 1; 
     private const string Key = "LocalProgress";
 
-    public SaveData Load()
+    public SaveData Load(string[] basicTowers)
     {
-        if(PlayerPrefs.HasKey(Key))
-        {
-            string json = PlayerPrefs.GetString(Key);
-            Data = JsonUtility.DeserializeObject<SaveData>(json);
-        }
-        else
-        {
-            Data = new();
-
-            Data.Gem = 3;
-            Data.ReachedStage = 1;
-            Data.GainedTowerNames.Add(BasicTower);
-        }
-
-        return Data;
+        string json = PlayerPrefs.GetString(Key);
+        Loaded = JsonUtility.DeserializeObject<SaveData>(json);
+        return Loaded;
     }
 
     public void Save( )
     {
-        string json = JsonUtility.SerializeObject(Data);
+        string json = JsonUtility.SerializeObject(Loaded);
         PlayerPrefs.SetString(Key, json);
         PlayerPrefs.Save();
     }

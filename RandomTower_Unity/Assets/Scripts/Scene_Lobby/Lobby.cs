@@ -1,14 +1,12 @@
 using Room;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Lobby : MonoBehaviour
 {
-    private LobbyUI _ui;
-    private TowerDatabase _towerDB;
-    private NetworkManager _network;
-    private LocalDataManager _dataManager;
+    private LobbyUI _ui => GameManager.Instance.UI.Lobby;
+    private ResourceManager _resource => GameManager.Instance.Resource;
+    private NetworkManager _network => GameManager.Instance.Network;
     private List<RoomInfo> _roomList = null;
 
     private float _time = 0;
@@ -17,9 +15,6 @@ public class Lobby : MonoBehaviour
     void Awake()
     {
         GameManager.Instance.UI.Initialize(UIManager.UIType.Lobby);
-        _ui = GameManager.Instance.UI.Lobby;
-        _network = GameManager.Instance.Network;
-        _dataManager = GameManager.Instance.DataManager;
     }
 
     private void Start()
@@ -27,9 +22,11 @@ public class Lobby : MonoBehaviour
         _ui.OnCreate = OnCreate;
         _ui.OnPlay = OnPlay;
         _ui.OnBack = OnBack;
+
         _ui.CreateTowerButtons(GameManager.Instance.TowerDB, GameManager.Instance.ActivedTowers);
 
-        _dataManager.Load();
+        _ui.UpdateGem(GameManager.Instance.Data.Loaded.Gem);
+        _resource.SetCallback(ResourceManager.ResourceType.Gem, _ui.UpdateGem);
     }
 
     private async void Update()

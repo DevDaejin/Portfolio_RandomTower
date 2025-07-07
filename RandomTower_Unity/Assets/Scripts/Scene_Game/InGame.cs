@@ -15,18 +15,20 @@ public class InGame : MonoBehaviour
     private TowerManager _towerManager;
     private EnemyManager _enemyManager;
     private WaveController _waveController;
-    private ResourceManager _resourceManager;
     private NetworkManager _networkManager;
+    private ResourceManager _resource;
     private IDGenerator _idGenerator;
     private InGameUI _ui;
     private GlobalUI _globalUI;
 
+    private KeyValuePair<ResourceManager.ResourceType, int> _initialGold;
     private int _currentStage = 0;
 
     private int maxWave = 0;
     private const int MaxTower = 20;
     private const int MaxEnemy = 20;
     private const float WaveDuration = 40;
+    private const int InitialGoldAmount = 10;
 
     private void Awake()
     {
@@ -38,9 +40,7 @@ public class InGame : MonoBehaviour
 
         _ui = GameManager.Instance.UI.InGame;
         _globalUI = GameManager.Instance.UI.Global;
-
-        _resourceManager = new ResourceManager();
-
+        _resource = GameManager.Instance.Resource;
         maxWave = _stageConfigs[_currentStage].WaveData.SpawnList.Count;
         _waveController = new WaveController(maxWave, MaxEnemy, WaveDuration, GetSpawningState, GetEnemyCount);
     }
@@ -54,6 +54,9 @@ public class InGame : MonoBehaviour
         InitEnemyManager();
         InitWave();
         InitUI();
+
+        _initialGold = new KeyValuePair<ResourceManager.ResourceType, int>(ResourceManager.ResourceType.Gold, InitialGoldAmount);
+        _resource.Initialize(_initialGold);
 
         GetEnemyCount();
     }
@@ -278,8 +281,9 @@ public class InGame : MonoBehaviour
 
     private void OnReward(int gold)
     {
-        _resourceManager.EarnGold(gold);
-        _ui.SetGoldCount(_resourceManager.Gold);
+        ResourceManager.ResourceType type = ResourceManager.ResourceType.Gold;
+        _resource.Earn(type, gold);
+        _ui.SetGoldCount(_resource.Get(type));
     }
 
 
@@ -319,7 +323,7 @@ public class InGame : MonoBehaviour
     {
         _enemyManager.ReleaseAll();
         _towerManager.ReleaseAll();
-        _resourceManager.Initialize();
+        _resource.Initialize(_initialGold);
         _waveController.Initialize();
         _ui.Initialize(maxWave, MaxEnemy, MaxTower, WaveDuration, 0, _networkManager.IsHost);
     }
