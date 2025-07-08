@@ -19,6 +19,8 @@ public class Lobby : MonoBehaviour
 
     private void Start()
     {
+        _ui.Initialize();
+
         _ui.OnCreate = OnCreate;
         _ui.OnPlay = OnPlay;
         _ui.OnBack = OnBack;

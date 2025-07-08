@@ -272,8 +272,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5598019129364732146}
   m_HandleRect: {fileID: 52049256364656590}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.7665715
+  m_Value: 1.0000029
+  m_Size: 0.9220756
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1012,9 +1012,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3586063064393422158}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -345.84}
   m_SizeDelta: {x: 400, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3530274815121532816
@@ -1634,41 +1634,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 166.3962, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &1589970007743581747
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7496901637286796954}
-  m_Layer: 5
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &7496901637286796954
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1589970007743581747}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5111436313447021956}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 216.5, y: -582.2549}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1598286069826657226
 GameObject:
   m_ObjectHideFlags: 0
@@ -1832,7 +1797,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.00008392334}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 435.84}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8977898050332090296
 MonoBehaviour:
@@ -2419,7 +2384,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8858249363643444899
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2580,7 +2545,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6195989769057178085}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.23342848}
+  m_AnchorMin: {x: 0, y: 0.07792437}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -3195,10 +3160,10 @@ RectTransform:
   - {fileID: 584937174078655527}
   m_Father: {fileID: 5469809860500715747}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 216.5, y: -217.92}
+  m_SizeDelta: {x: 400, y: 395.84}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8151001295356038603
 MonoBehaviour:
@@ -3568,13 +3533,12 @@ RectTransform:
   - {fileID: 6306054682105634299}
   - {fileID: 3737082006946360671}
   - {fileID: 6189970196906126340}
-  - {fileID: 7496901637286796954}
   m_Father: {fileID: 4911293580395713457}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.00008392334}
-  m_SizeDelta: {x: 0, y: 652.2549}
+  m_SizeDelta: {x: 0, y: 542.2549}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &9064719143697729380
 MonoBehaviour:
@@ -4404,9 +4368,9 @@ RectTransform:
   m_Father: {fileID: 8858249363643444899}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -17, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &7027879253768910417
 CanvasRenderer:
@@ -4581,9 +4545,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3586063064393422158}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -150}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7429054579909841431
@@ -5446,7 +5410,7 @@ RectTransform:
   m_Father: {fileID: 1021556831804439410}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -6702,6 +6666,18 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6253115837753912392, guid: 9ceca4a83533bab4388b4c6ce390c6b5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4476134306054537531}
+    - targetCorrespondingSourceObject: {fileID: 6253115837753912392, guid: 9ceca4a83533bab4388b4c6ce390c6b5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6656613106360882661}
+    - targetCorrespondingSourceObject: {fileID: 6253115837753912392, guid: 9ceca4a83533bab4388b4c6ce390c6b5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8056978666147752941}
+    - targetCorrespondingSourceObject: {fileID: 6253115837753912392, guid: 9ceca4a83533bab4388b4c6ce390c6b5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1162308398955429816}
+    - targetCorrespondingSourceObject: {fileID: 6253115837753912392, guid: 9ceca4a83533bab4388b4c6ce390c6b5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3431922394705435844}
   m_SourcePrefab: {fileID: 100100000, guid: 9ceca4a83533bab4388b4c6ce390c6b5, type: 3}
 --- !u!224 &5243077786971565072 stripped
 RectTransform:
@@ -6729,24 +6705,75 @@ MonoBehaviour:
   _backButton: {fileID: 4406491063279565632}
   _gemTxt: {fileID: 3603322553017105055}
   _optionButton: {fileID: 2452578937785272329}
-  _towerButtonPrefab: {fileID: 4053128688589987742, guid: c81324d7ed1709747b7d557b83e9ef0b, type: 3}
-  _towerContainer: {fileID: 9010059105086815282}
-  _towerBuyingPanel: {fileID: 3043794340741541425}
-  _selectedTowerBuyingPrice: {fileID: 170944945596392925}
-  _selectedTowerBuyingButton: {fileID: 361003719866265924}
-  _towerInfoPanel: {fileID: 1108457871558935250}
-  _selectedTowerPicture: {fileID: 3470061316591427100}
-  _selectedTowerName: {fileID: 8908177739459849295}
-  _selectedTowerGrade: {fileID: 3986618611333384384}
-  _selectedTowerLevel: {fileID: 2232479117328893326}
-  _selectedTowerDamage: {fileID: 2254837248127314704}
-  _selectedTowerRange: {fileID: 1738441575014697320}
-  _selectedTowerFirerate: {fileID: 2615896914151876835}
-  _selectedTowerDescription: {fileID: 0}
-  _selectedTowerUpgradeButton: {fileID: 3377585962917175523}
+  _roomList: {fileID: 6656613106360882661}
+  _towerList: {fileID: 8056978666147752941}
+  _towerInfo: {fileID: 1162308398955429816}
+  _towerBuying: {fileID: 3431922394705435844}
+--- !u!114 &6656613106360882661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6540522062163212341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05b13d21a0bf15b419dc9974505041d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _roomButton: {fileID: 9019759547050234682, guid: fdad45f384f3c1043bf3ebc7ac4b9026, type: 3}
   _roomListPanel: {fileID: 1598286069826657226}
   _roomContainer: {fileID: 498027148327053797}
   _roomListCancelButton: {fileID: 2066520105912716479}
   _createRoomButton: {fileID: 1564106762661981502}
   _createRoomNameInput: {fileID: 7256254048925864306}
+--- !u!114 &8056978666147752941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6540522062163212341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02f5cdad331b8d4428d07be24bf7718d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _towerButtonPrefab: {fileID: 4053128688589987742, guid: c81324d7ed1709747b7d557b83e9ef0b, type: 3}
+  _towerContainer: {fileID: 9010059105086815282}
+--- !u!114 &1162308398955429816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6540522062163212341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bfbd6c60b053224b938159c035d5e59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _towerInfoPanel: {fileID: 1108457871558935250}
+  _selectedTowerPicture: {fileID: 1736199876758375698}
+  _selectedTowerName: {fileID: 8908177739459849295}
+  _selectedTowerGrade: {fileID: 3986618611333384384}
+  _selectedTowerLevel: {fileID: 2232479117328893326}
+  _selectedTowerDamage: {fileID: 2254837248127314704}
+  _selectedTowerRange: {fileID: 1738441575014697320}
+  _selectedTowerFirerate: {fileID: 2615896914151876835}
+  _selectedTowerUpgradeButton: {fileID: 3377585962917175523}
+--- !u!114 &3431922394705435844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6540522062163212341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f78799e828b7e6a4486307b3269854b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _towerBuyingPanel: {fileID: 3043794340741541425}
+  _towerBuyingPrice: {fileID: 170944945596392925}
+  _towerBuyingButton: {fileID: 361003719866265924}

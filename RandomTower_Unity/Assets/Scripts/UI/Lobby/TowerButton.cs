@@ -24,13 +24,13 @@ public class TowerButton : MonoBehaviour
         _picture.sprite = _data.TowerSprite;
 
         _onButton = onButton;
-        _button.onClick.AddListener(() => _onButton.Invoke(_data));
+        _button.onClick.AddListener(() => _onButton?.Invoke(_data));
 
         _onLockButton = onLockButton;
         _isLocked = _onLockButton != null; 
         if (_isLocked)
         {
-            _lockerButton.onClick.AddListener(() => _onLockButton.Invoke(_data));
+            _lockerButton.onClick.AddListener(() => _onLockButton?.Invoke(_data));
         }
 
         _lockerButton.transform.gameObject.SetActive(_isLocked);
