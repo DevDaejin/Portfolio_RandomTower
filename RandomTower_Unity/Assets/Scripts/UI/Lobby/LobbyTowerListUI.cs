@@ -7,6 +7,7 @@ public class LobbyTowerListUI : MonoBehaviour
     [SerializeField] private GameObject _towerButtonPrefab;
     [SerializeField] private Transform _towerContainer;
 
+    private List<TowerButton> createdButtons = new();
     private event Action<TowerData> _onUnlockTowerClicked;
     private event Action<TowerData> _onLockTowerClicked;
 
@@ -16,32 +17,42 @@ public class LobbyTowerListUI : MonoBehaviour
         _onLockTowerClicked = onLockTowerClicked;
     }
 
-    public List<TowerButton> CreateTowerButtons(TowerDatabase database, Dictionary<string, TowerDataConfig> actived)
+    public void CreateTowerButtons(TowerDatabase database, Dictionary<int, TowerDataConfig> actived)
     {
         while (_towerContainer.childCount > 0)
         {
             Destroy(_towerContainer.GetChild(0).gameObject);
         }
 
-        List<TowerButton> towerButtons = new();
+        createdButtons.Clear();
         foreach (var tower in database.Towers)
         {
             var towerButton = CreateTowerButton(
-                actived.ContainsKey(tower.Data.TowerName),
+                actived.ContainsKey(tower.Data.ID),
                 tower.Data
             );
 
-            towerButtons.Add(towerButton);
+            createdButtons.Add(towerButton);
         }
-        return towerButtons;
     }
 
     private TowerButton CreateTowerButton(bool isUnlock, TowerData data)
     {
         var towerButton = Instantiate(_towerButtonPrefab, _towerContainer).GetComponent<TowerButton>();
         Action<TowerData> unlockCallback = isUnlock ? null : _onLockTowerClicked;
-        Debug.Log($"{data.TowerName} = {isUnlock},{_onLockTowerClicked == null},{unlockCallback == null}");
         towerButton.Initialize(data, _onUnlockTowerClicked, unlockCallback);
         return towerButton;
+    }
+
+    public void RefreshUnlockedTowerButton(TowerData data)
+    {
+        foreach (var button in createdButtons)
+        {
+            if(button.Data.TowerName == data.TowerName)
+            {
+                button.Initialize(data, _onUnlockTowerClicked, null);
+                return;
+            }
+        }
     }
 }

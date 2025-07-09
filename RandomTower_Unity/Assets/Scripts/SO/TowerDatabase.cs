@@ -47,9 +47,15 @@ public class TowerDatabase : ScriptableObject
         return result.ToArray();
     }
 
-    public TowerDataConfig GetTowersByName(string name)
+    public TowerDataConfig GetTowerByName(string name)
     {
         Initialize();
         return _nameDict.TryGetValue(name, out var data) ? data : null;
+    }
+
+    public TowerDataConfig GetToweByID(int id)
+    {
+        Initialize();
+        return _idDict.TryGetValue(id, out var data) ? data : null;
     }
 }

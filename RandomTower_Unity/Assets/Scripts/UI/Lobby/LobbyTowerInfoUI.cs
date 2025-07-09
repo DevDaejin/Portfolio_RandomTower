@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,20 +6,33 @@ using UnityEngine.UI;
 public class LobbyTowerInfoUI : MonoBehaviour
 {
     [SerializeField] private GameObject _towerInfoPanel;
-    [SerializeField] private Image _selectedTowerPicture;
-    [SerializeField] private TMP_Text _selectedTowerName;
-    [SerializeField] private TMP_Text _selectedTowerGrade;
-    [SerializeField] private TMP_Text _selectedTowerLevel;
-    [SerializeField] private TMP_Text _selectedTowerDamage;
+    [SerializeField] private Image _picture;
+    [SerializeField] private TMP_Text _name;
+    [SerializeField] private TMP_Text _grade;
+    [SerializeField] private TMP_Text _level;
+    [SerializeField] private TMP_Text _damage;
 
-    [SerializeField] private TMP_Text _selectedTowerRange;
-    [SerializeField] private TMP_Text _selectedTowerFirerate;
+    [SerializeField] private TMP_Text _range;
+    [SerializeField] private TMP_Text _firerate;
 
-    [SerializeField] private Button _selectedTowerUpgradeButton;
+    [SerializeField] private Button _upgradeButton;
 
-    public void Initialize()
+    public void Initialize(Action OnUpgradeClicked)
     {
         _towerInfoPanel.SetActive(false);
+        _upgradeButton.onClick.AddListener(() => OnUpgradeClicked.Invoke());
+    }
+
+    public void UpdatePanel(TowerData data)
+    {
+        _picture.sprite = data.TowerSprite;
+        _name.text = data.TowerName;
+        _grade.text = $"Grade: {data.Grade}";
+        _level.text = $"Level: {data.Level}";
+        _damage.text = $"Damage: {data.Damage}";
+        _range.text = $"Range: {data.Range}";
+        _firerate.text = $"Firerate: {data.FireRate}";
+        _upgradeButton.interactable = data.IsUpgradeable;
     }
 
     public void ActiveUI(bool isAct)

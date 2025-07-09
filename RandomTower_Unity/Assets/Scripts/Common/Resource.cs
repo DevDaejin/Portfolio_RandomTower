@@ -26,6 +26,7 @@ public class Resource
         if(_value - amount >= 0)
         {
             _value -= amount;
+            ValueChanged?.Invoke(_value);
             return true;
         }
 

@@ -25,55 +25,44 @@ public class LobbyUI : MonoBehaviour
     public string InputedRoomName => _roomList.InputedRoomName;
 
     public Action OnPlay;
-    public Action OnCreate;
+    public Action OnCreated;
     public Action OnBack;
+    public Action OnBought;
 
-    private Func<TowerData> _onBuyingTower;
-    private List<TowerButton> _towerButtons;
+    public TowerData CurrentTowerData { get; private set; }
+
     public void Initialize()
     {
-        _roomList.Initialize(OnCreate);
-        
+        _roomList.Initialize(OnCreated);
+
         _towerList.Initialize(UnlockTowerClicked, LockTowerClicked);
         _towerInfo.Initialize();
-        _towerBuying.Initialize(_onBuyingTower);
+        _towerBuying.Initialize(() => OnBought?.Invoke());
 
-        _playButton.onClick.AddListener(()=> OnPlay?.Invoke());
+        _playButton.onClick.AddListener(() => OnPlay?.Invoke());
         _backButton.onClick.AddListener(() => OnBack?.Invoke());
     }
 
-    public void CreateRoomButtons(List<RoomInfo> roomList, Action<string> onEnter)
+    
+    public void UnlockTowerClicked(TowerData data)
     {
-        _roomList.CreateRoomButtons(roomList, onEnter);
-    }
-
-    public void CreateTowerButtons(TowerDatabase database, Dictionary<string, TowerDataConfig> actived)
-    {
-        _towerButtons = _towerList.CreateTowerButtons(database, actived);
-    }
-
-    private void UnlockTowerClicked(TowerData data)
-    {
-        _onBuyingTower = () => data;
-        _towerInfo.ActiveUI(true);
+        CurrentTowerData = data;
         _towerBuying.ActiveUI(false);
+        _towerInfo.ActiveUI(true);
+        _towerInfo.UpdatePanel(data);
     }
 
     private void LockTowerClicked(TowerData data)
     {
+        CurrentTowerData = data;
         _towerInfo.ActiveUI(false);
         _towerBuying.ActiveUI(true);
         _towerBuying.UpdateBuyingPrice(data.GemCoast.ToString());
     }
 
-    public void UpdateGem(int amount)
-    {
-        _gemTxt.text = amount.ToString();
-    }
-
-    public void ActiveRoomListPanel(bool isAct)
-    {
-        _roomList.ActiveUI(isAct);
-    }
+    public void CreateRoomButtons(List<RoomInfo> roomList, Action<string> onEnter) => _roomList.CreateRoomButtons(roomList, onEnter);
+    public void CreateTowerButtons(TowerDatabase database, Dictionary<int, TowerDataConfig> actived) => _towerList.CreateTowerButtons(database, actived);
+    public void UpdateOwnedGem(int amount) => _gemTxt.text = amount.ToString();
+    public void ActiveRoomListPanel(bool isAct) => _roomList.ActiveUI(isAct);
+    public void RefreshUnlockedButton(TowerData data) => _towerList.RefreshUnlockedTowerButton(data);
 }
- 

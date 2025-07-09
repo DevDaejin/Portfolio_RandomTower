@@ -1,7 +1,5 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -40,17 +38,7 @@ public class GameManager : MonoBehaviour
     public Dispatcher Dispatcher => _dispatcher ??= GetComponent<Dispatcher>();
     private Dispatcher _dispatcher;
 
-    public LocalDataManager Data
-    {
-        get
-        {
-            if (_dataManager == null)
-            {
-                _dataManager = GetDataManager();
-            }
-            return _dataManager;
-        }
-    }
+    public LocalDataManager Data => _dataManager ??= GetDataManager();
     private LocalDataManager _dataManager;
 
     public ResourceManager Resource=> _rescoureManager ??= new ResourceManager();
@@ -59,7 +47,7 @@ public class GameManager : MonoBehaviour
     public enum Scenes { Main, Lobby, Game };
 
     public TowerDatabase TowerDB => _towerDB;
-    public Dictionary<string, TowerDataConfig> ActivedTowers { get; private set; } = new();
+    public Dictionary<int, TowerDataConfig> ActivedTowers { get; private set; } = new();
 
     private void Awake()
     {
@@ -123,26 +111,18 @@ public class GameManager : MonoBehaviour
     {
         if (_dataManager == null)
         {
-            List<string> towerNames = new();
-            foreach (var tower in _towerDB.Towers)
-            {
-                if (tower.Data.Grade == BasicGrade
-                    && !towerNames.Contains(tower.Data.TowerName))
-                {
-                    towerNames.Add(tower.Data.TowerName);
-                }
-            }
-            return new LocalDataManager(towerNames);
+            return new LocalDataManager(TowerDB);
         }
+
         return _dataManager;
     }
 
     private void LoadActivedTowers()
     {
         ActivedTowers.Clear();
-        foreach (var towerName in Data.Loaded.GainedTowerNames)
+        foreach (var towerID in Data.Loaded.GainedTowerID)
         {
-            ActivedTowers[towerName] = _towerDB.GetTowersByName(towerName);
+            ActivedTowers[towerID] = _towerDB.GetTowerByID(towerID);
         }
     }
 }

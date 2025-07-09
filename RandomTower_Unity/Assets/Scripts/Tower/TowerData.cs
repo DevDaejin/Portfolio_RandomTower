@@ -40,6 +40,10 @@ public class TowerData
     public int GemCoast => _gemCoast;
     [SerializeField] private int _gemCoast;
 
+    public int Level { get; set; } = 1;
+    private int TowerMaxLevel = 5;
+    public bool IsUpgradeable => Level < TowerMaxLevel;
+
     public bool IsSpecial => Grade == MaxGrade;
     private const int MaxGrade = 4;
 }

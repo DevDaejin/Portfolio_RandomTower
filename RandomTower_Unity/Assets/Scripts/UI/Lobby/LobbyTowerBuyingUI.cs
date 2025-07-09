@@ -9,13 +9,20 @@ public class LobbyTowerBuyingUI : MonoBehaviour
     [SerializeField] private TMP_Text _towerBuyingPrice;
     [SerializeField] private Button _towerBuyingButton;
     
-    private TowerData currentData;
+    public TowerData CurrentData { get; private set; }
+    private Action _onBought;
     private const string CoastText = "Coast : ";
 
-    public void Initialize(Func<TowerData> OnBuyingTower)
+    public void Initialize(Action OnBought)
     {
-        _towerBuyingButton.onClick.AddListener(() => currentData = OnBuyingTower?.Invoke());
+        _onBought = OnBought;
+        _towerBuyingButton.onClick.AddListener(Buy);
         _towerBuyingPanel.SetActive(false);
+    }
+
+    private void Buy()
+    {
+        _onBought?.Invoke();
     }
 
     public void UpdateBuyingPrice(string coast)

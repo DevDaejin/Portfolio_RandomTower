@@ -12,25 +12,24 @@ public class TowerButton : MonoBehaviour
 
     public Action<TowerData> _onButton;
     public Action<TowerData> _onLockButton;
-
-    private TowerData _data;
+    public TowerData Data { get; private set; }
     private bool _isLocked = false;
 
     public void Initialize(TowerData data, Action<TowerData> onButton, Action<TowerData> onLockButton = null)
     {
-        _data = data;
+        Data = data;
 
-        _name.text = _data.TowerName;
-        _picture.sprite = _data.TowerSprite;
+        _name.text = Data.TowerName;
+        _picture.sprite = Data.TowerSprite;
 
         _onButton = onButton;
-        _button.onClick.AddListener(() => _onButton?.Invoke(_data));
+        _button.onClick.AddListener(() => _onButton?.Invoke(Data));
 
         _onLockButton = onLockButton;
         _isLocked = _onLockButton != null; 
         if (_isLocked)
         {
-            _lockerButton.onClick.AddListener(() => _onLockButton?.Invoke(_data));
+            _lockerButton.onClick.AddListener(() => _onLockButton?.Invoke(Data));
         }
 
         _lockerButton.transform.gameObject.SetActive(_isLocked);

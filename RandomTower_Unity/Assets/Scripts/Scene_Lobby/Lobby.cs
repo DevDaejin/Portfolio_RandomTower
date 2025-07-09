@@ -7,6 +7,7 @@ public class Lobby : MonoBehaviour
     private LobbyUI _ui => GameManager.Instance.UI.Lobby;
     private ResourceManager _resource => GameManager.Instance.Resource;
     private NetworkManager _network => GameManager.Instance.Network;
+    private LocalDataManager _data => GameManager.Instance.Data;
     private List<RoomInfo> _roomList = null;
 
     private float _time = 0;
@@ -19,16 +20,10 @@ public class Lobby : MonoBehaviour
 
     private void Start()
     {
-        _ui.Initialize();
+        InitializeUI();
+        InitializeUICallbacks();
 
-        _ui.OnCreate = OnCreate;
-        _ui.OnPlay = OnPlay;
-        _ui.OnBack = OnBack;
-
-        _ui.CreateTowerButtons(GameManager.Instance.TowerDB, GameManager.Instance.ActivedTowers);
-
-        _ui.UpdateGem(GameManager.Instance.Data.Loaded.Gem); 
-        _resource.SetCallback(ResourceManager.ResourceType.Gem, _ui.UpdateGem);
+        _resource.SetCallback(ResourceManager.ResourceType.Gem, GemChangedCallback);
     }
 
     private async void Update()
@@ -42,6 +37,22 @@ public class Lobby : MonoBehaviour
             _time = 0;
             await _network.RoomService.RequestRoomList();
         }
+    }
+
+    private void InitializeUI()
+    {
+        _ui.Initialize();
+        _ui.UpdateOwnedGem(GameManager.Instance.Data.Loaded.Gem);
+        _ui.CreateTowerButtons(GameManager.Instance.TowerDB, GameManager.Instance.ActivedTowers);
+        InitializeUICallbacks();
+    }
+
+    private void InitializeUICallbacks()
+    {
+        _ui.OnCreated = OnCreated;
+        _ui.OnPlay = OnPlay;
+        _ui.OnBack = OnBack;
+        _ui.OnBought = OnBought;
     }
 
     private async void OnPlay()
@@ -58,16 +69,35 @@ public class Lobby : MonoBehaviour
         }
     }
 
-    private async void OnCreate()
+    private async void OnCreated()
     {
         await _network.RoomService.CreateRoom(_ui.InputedRoomName);
         GameManager.Instance.LoadScene(GameManager.Scenes.Game);
     }
 
-
     private void OnBack()
     {
         GameManager.Instance.LoadScene(GameManager.Scenes.Main);
+    }
+
+    private void OnBought()
+    {
+        var data = _ui.CurrentTowerData;
+        var gem = _resource.Get(ResourceManager.ResourceType.Gem);
+        if (data.GemCoast <= gem)
+        {
+            _ui.UnlockTowerClicked(data);
+            _ui.RefreshUnlockedButton(data);
+            _resource.Spend(ResourceManager.ResourceType.Gem, data.GemCoast);
+            _data.AddGainedTowerID(data.ID);
+            _data.Save();
+        }
+    }
+
+    private void GemChangedCallback(int gem)
+    {
+        _ui.UpdateOwnedGem(gem);
+        _data.UpdateGem(gem);
     }
 
     private void UpdateRoomList(List<RoomInfo> roomList)
