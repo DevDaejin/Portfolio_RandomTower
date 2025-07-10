@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
 public class LobbyUI : MonoBehaviour
@@ -27,6 +26,8 @@ public class LobbyUI : MonoBehaviour
     public Action OnPlay;
     public Action OnCreated;
     public Action OnBack;
+
+    public Action OnUpgrade;
     public Action OnBought;
 
     public TowerData CurrentTowerData { get; private set; }
@@ -36,7 +37,7 @@ public class LobbyUI : MonoBehaviour
         _roomList.Initialize(OnCreated);
 
         _towerList.Initialize(UnlockTowerClicked, LockTowerClicked);
-        _towerInfo.Initialize();
+        _towerInfo.Initialize(()=> OnUpgrade?.Invoke());
         _towerBuying.Initialize(() => OnBought?.Invoke());
 
         _playButton.onClick.AddListener(() => OnPlay?.Invoke());
@@ -49,7 +50,7 @@ public class LobbyUI : MonoBehaviour
         CurrentTowerData = data;
         _towerBuying.ActiveUI(false);
         _towerInfo.ActiveUI(true);
-        _towerInfo.UpdatePanel(data);
+        UpdateTowerInfoPanel(data);
     }
 
     private void LockTowerClicked(TowerData data)
@@ -57,9 +58,10 @@ public class LobbyUI : MonoBehaviour
         CurrentTowerData = data;
         _towerInfo.ActiveUI(false);
         _towerBuying.ActiveUI(true);
-        _towerBuying.UpdateBuyingPrice(data.GemCoast.ToString());
+        _towerBuying.UpdateBuyingPrice(data.BuyingCoast.ToString());
     }
 
+    public void UpdateTowerInfoPanel(TowerData data) => _towerInfo.UpdatePanel(data);
     public void CreateRoomButtons(List<RoomInfo> roomList, Action<string> onEnter) => _roomList.CreateRoomButtons(roomList, onEnter);
     public void CreateTowerButtons(TowerDatabase database, Dictionary<int, TowerDataConfig> actived) => _towerList.CreateTowerButtons(database, actived);
     public void UpdateOwnedGem(int amount) => _gemTxt.text = amount.ToString();

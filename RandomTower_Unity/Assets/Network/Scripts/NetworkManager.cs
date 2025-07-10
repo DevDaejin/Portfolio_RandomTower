@@ -16,7 +16,7 @@ public class NetworkManager : MonoBehaviour
     public GameStateService GameStateService { get; private set; }
     public bool IsConnect { get; private set; } = false;
 
-    public bool IsHost => _client.ClientID == _client.RoomOwnerID;
+    public bool IsHost => _client?.ClientID == _client?.RoomOwnerID;
 
     public string ClientID => _client?.ClientID ?? string.Empty;
     public string RoomID => _client?.RoomID ?? string.Empty;

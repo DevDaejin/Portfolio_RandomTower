@@ -25,24 +25,39 @@ public class TowerData
     public float ProjectileSpeed => _projectileSpeed;
     [SerializeField] private float _projectileSpeed;
 
-    public float Damage => _damage;
+    public float Damage => _damage * (1 + (0.1f * (Level - 1)));
     [SerializeField] private float _damage;
 
-    public float Range => _range;
+    public float Range => _range * (1 + (0.1f * (Level - 1)));
     [SerializeField] private float _range;
 
-    public float FireRate => _fireRate;
+    public float FireRate => _fireRate * (1 + (0.1f * (Level - 1)));
     [SerializeField] private float _fireRate;
 
     public int TargetCount => _targetCount;
     [SerializeField] private int _targetCount;
 
-    public int GemCoast => _gemCoast;
-    [SerializeField] private int _gemCoast;
+    public int BuyingCoast => _buyingCoast;
+    [SerializeField] private int _buyingCoast;
+
+    public int UpgradeCost => _upgradeCost * Level;
+    [SerializeField] private int _upgradeCost;
 
     public int Level { get; set; } = 1;
-    private int TowerMaxLevel = 5;
-    public bool IsUpgradeable => Level < TowerMaxLevel;
+
+    public bool LevelUp()
+    {
+        if(Level < MaxLevel)
+        {
+            Level++;
+            return true;
+        }
+
+        return false;
+    }
+
+    private int MaxLevel = 5;
+    public bool IsUpgradeable => Level < MaxLevel;
 
     public bool IsSpecial => Grade == MaxGrade;
     private const int MaxGrade = 4;

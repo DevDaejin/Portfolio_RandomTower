@@ -6754,14 +6754,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _towerInfoPanel: {fileID: 1108457871558935250}
-  _selectedTowerPicture: {fileID: 1736199876758375698}
-  _selectedTowerName: {fileID: 8908177739459849295}
-  _selectedTowerGrade: {fileID: 3986618611333384384}
-  _selectedTowerLevel: {fileID: 2232479117328893326}
-  _selectedTowerDamage: {fileID: 2254837248127314704}
-  _selectedTowerRange: {fileID: 1738441575014697320}
-  _selectedTowerFirerate: {fileID: 2615896914151876835}
-  _selectedTowerUpgradeButton: {fileID: 3377585962917175523}
+  _picture: {fileID: 1736199876758375698}
+  _name: {fileID: 8908177739459849295}
+  _grade: {fileID: 3986618611333384384}
+  _level: {fileID: 2232479117328893326}
+  _damage: {fileID: 2254837248127314704}
+  _range: {fileID: 1738441575014697320}
+  _firerate: {fileID: 2615896914151876835}
+  _upgradeButton: {fileID: 3377585962917175523}
 --- !u!114 &3431922394705435844
 MonoBehaviour:
   m_ObjectHideFlags: 0

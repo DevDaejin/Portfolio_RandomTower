@@ -88,13 +88,13 @@ public class InGame : MonoBehaviour
         _towerManager.OnTowerUpdated += _ui.SetTowerCount;
         _towerManager.OnSendSpawnTowerPacket += (id, syncObject) => OnSendSpawnPacket<SpawnTowerPacket>("tower", id, syncObject);
         _towerManager.OnSendSpawnProjectilePacket += (id, syncObject) => OnSendSpawnPacket<SpawnProjectilePacket>("projectile", id, syncObject);
-        _towerManager.OnSendProejctileReturn += ForceProjectileReturn;
+        if(_networkManager.IsConnect) _towerManager.OnSendProejctileReturn += ForceProjectileReturn;
     }
     private void InitEnemyManager()
     {
         _enemyManager.OnReward += OnReward;
         _enemyManager.OnSendSpawnPacket += (id, syncObject) => OnSendSpawnPacket<SpawnEnemyPacket>("enemy", id, syncObject);
-        _enemyManager.OnSendEnemyReturn += ForceEnemyReturn;
+        if (_networkManager.IsConnect) _enemyManager.OnSendEnemyReturn += ForceEnemyReturn;
     }
     private void InitWave()
     {

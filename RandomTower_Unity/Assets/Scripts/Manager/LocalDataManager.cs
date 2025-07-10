@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 
 public class LocalDataManager
@@ -29,6 +27,7 @@ public class LocalDataManager
                 }
 
                 Loaded.TowerLevelDict[towerData.Data.ID] = 1;
+                towerData.Data.Level = 1;
             }
 
             Loaded.GainedTowerID.AddRange(basicTowers);

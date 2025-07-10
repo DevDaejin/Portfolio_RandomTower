@@ -21,7 +21,8 @@ MonoBehaviour:
     _projectilePrefab: {fileID: 8195383268220158610, guid: 3e8196170e91dea4eb8af4675b82bc6a, type: 3}
     _projectileSpeed: 3
     _damage: 3
-    _range: 3
+    _range: 10
     _fireRate: 3
     _targetCount: 1
-    _gemCoast: 5
+    _buyingCoast: 5
+    _upgradeCost: 1

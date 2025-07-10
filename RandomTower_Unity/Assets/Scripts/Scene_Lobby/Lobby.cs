@@ -53,6 +53,7 @@ public class Lobby : MonoBehaviour
         _ui.OnPlay = OnPlay;
         _ui.OnBack = OnBack;
         _ui.OnBought = OnBought;
+        _ui.OnUpgrade = OnUpgrade;
     }
 
     private async void OnPlay()
@@ -84,13 +85,24 @@ public class Lobby : MonoBehaviour
     {
         var data = _ui.CurrentTowerData;
         var gem = _resource.Get(ResourceManager.ResourceType.Gem);
-        if (data.GemCoast <= gem)
+        if (data.BuyingCoast <= gem)
         {
             _ui.UnlockTowerClicked(data);
             _ui.RefreshUnlockedButton(data);
-            _resource.Spend(ResourceManager.ResourceType.Gem, data.GemCoast);
+            _resource.Spend(ResourceManager.ResourceType.Gem, data.BuyingCoast);
             _data.AddGainedTowerID(data.ID);
             _data.Save();
+        }
+    }
+
+    private void OnUpgrade()
+    {
+        if(_ui.CurrentTowerData.LevelUp())
+        {
+            if (_resource.Spend(ResourceManager.ResourceType.Gem, _ui.CurrentTowerData.UpgradeCost))
+            {
+                _ui.UpdateTowerInfoPanel(_ui.CurrentTowerData);
+            }
         }
     }
 
