@@ -25,13 +25,6 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private Button _retryButton;
     [SerializeField] private Button _lobbyButton;
 
-    private Dictionary<StringBuilderKey, StringBuilder> stringBuilderDict = new();
-
-    private enum StringBuilderKey
-    {
-        Time, Wave, Enemy, Gold, TowerCount, Success
-    }
-
     public void Initialize(int maxWave, int maxEnemy, int maxTower, float time, int gold, bool isHost)
     {
         _resultPanel.SetActive(false);
@@ -43,69 +36,37 @@ public class InGameUI : MonoBehaviour
         _waveButton.gameObject.SetActive(isHost);
     }
 
-    private StringBuilder GetStringBuilder(StringBuilderKey key)
-    {
-        if (!stringBuilderDict.ContainsKey(key))
-        {
-            stringBuilderDict.Add(key, new StringBuilder());
-        }
-
-        StringBuilder stringBuilder = stringBuilderDict[key];
-        stringBuilder.Clear();
-
-        return stringBuilder;
-    }
-
     public void SetWave(int current, int max)
     {
-        StringBuilder stringBuilder = GetStringBuilder(StringBuilderKey.Wave);
-        stringBuilder.Append(current).Append(" / ").Append(max);
-        _waveText.text = stringBuilder.ToString();
+        _waveText.text = $"{current} / {max}";
     }
 
     public void SetTimer(float time)
     {
         int second = Mathf.CeilToInt(time);
-        StringBuilder stringBuilder = GetStringBuilder(StringBuilderKey.Time);
-        stringBuilder.Append("Time\n").Append($"{second:00}");
-        _timerText.text = stringBuilder.ToString();
+        _timerText.text = $"Time\n{second:00}";
     }
 
     public void SetEnemyCount(int current, int max)
     {
-        StringBuilder stringBuilder = GetStringBuilder(StringBuilderKey.Enemy);
-        stringBuilder.Append(current).Append(" / ").Append(max);
-        _enemyCountText.text = stringBuilder.ToString();
+        _enemyCountText.text = $"{current} / {max}";
     }
 
     public void SetGoldCount(int current)
     {
-        StringBuilder stringBuilder = GetStringBuilder(StringBuilderKey.Gold);
-        stringBuilder.Append(current.ToString("N0"));
-        _goldText.text = stringBuilder.ToString();
+        _goldText.text = current.ToString("N0");
     }
 
     public void SetTowerCount(int current, int max)
     {
-        StringBuilder stringBuilder = GetStringBuilder(StringBuilderKey.TowerCount);
-        stringBuilder.Append(current).Append(" / ").Append(max);
-        _towerCountText.text = stringBuilder.ToString();
+        _towerCountText.text = $"{current} / {max}";
     }
 
-    public void SetResult(bool isSuceess)
+    public void SetResult(bool isSuccess)
     {
         _resultPanel.SetActive(true);
-
-        StringBuilder stringBuilder = GetStringBuilder(StringBuilderKey.Success);
-        if (isSuceess)
-        {
-            stringBuilder.Append("<color=#F6CA3D>Success</color>");
-        }
-        else
-        {
-            stringBuilder.Append("<color=#FF0000>Failed</color>");
-        }
-        _resultTitleText.text = stringBuilder.ToString();
+        _resultPanel.SetActive(true);
+        _resultTitleText.text = isSuccess ? "<color=#F6CA3D>Success</color>" : "<color=#FF0000>Failed</color>";
     }
 
     public void ActiveWaveButton(bool isAct)
@@ -115,22 +76,22 @@ public class InGameUI : MonoBehaviour
 
     public void SetWaveButton(UnityAction callback)
     {
-        SetButton(_waveButton, callback);
+        _waveButton.onClick.AddListener(callback);
     }
 
     public void ReleaseWaveButton(UnityAction callback)
     {
-        ReleaseButton(_waveButton, callback);
+        _waveButton.onClick.RemoveListener(callback);
     }
 
     public void SetSpawnButton(UnityAction callback)
     {
-        SetButton(_spawnButton, callback);
+        _spawnButton.onClick.AddListener(callback);
     }
 
     public void ReleaseSpawnButton(UnityAction callback)
     {
-        ReleaseButton(_spawnButton, callback);
+        _spawnButton.onClick.RemoveListener(callback);
     }
 
     public void SetResultButtons(UnityAction onRetry, UnityAction onLobby)
@@ -143,15 +104,5 @@ public class InGameUI : MonoBehaviour
     {
         _retryButton?.onClick.RemoveListener(onRetry);
         _lobbyButton?.onClick.RemoveListener(onLobby);
-    }
-
-    private void SetButton(Button button, UnityAction callback)
-    {
-        button.onClick.AddListener(callback);
-    }
-
-    private void ReleaseButton(Button button, UnityAction callback)
-    {
-        button.onClick.RemoveListener(callback);
     }
 }
