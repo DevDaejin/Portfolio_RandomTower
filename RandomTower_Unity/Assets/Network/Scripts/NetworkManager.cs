@@ -62,6 +62,14 @@ public class NetworkManager : MonoBehaviour
         OnSceneLoad?.Invoke();
     }
 
+    public async void OnSendSpawnPacket<T>(string type, int senderId, string objectId, ISyncObject syncObject)
+    {
+        if (!IsConnect) return;
+
+        syncObject.Initialize(objectId, ClientID, RoomID);
+        await SpawnService.SendSpawn(type, senderId.ToString(), syncObject);
+    }
+
     private void HandleRoomEnvelope(byte[] bytes)
     {
         var packet = RoomPacket.Parser.ParseFrom(bytes);

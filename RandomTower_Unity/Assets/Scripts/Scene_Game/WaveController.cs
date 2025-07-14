@@ -6,9 +6,17 @@ public class WaveController
     public enum WaveState { Idle, InProgress, Waiting, Failed, Cleared }
     public WaveState CurrentState { get; private set; } = WaveState.Idle;
     public int CurrentWaveIndex { get; private set; }
+    public bool IsFinalWave => (CurrentWaveIndex + 1) == _maxWave;
 
     private Timer _timer;
+
+    public float WaveDuration => _waveDuration;
+    private float _waveDuration;
+
+    public int MaxWave => _maxWave;
     private int _maxWave;
+
+    public int MaxEnemies => _maxEnemies;
     private int _maxEnemies;
     private Func<bool> _getSpawningState;
     private Func<int> _getAliveEnemyCount;
@@ -28,7 +36,8 @@ public class WaveController
         _getSpawningState = getSpawningState;
         _getAliveEnemyCount = getAliveEnemyCount;
 
-        _timer = new Timer(waveDuration);
+        _waveDuration = waveDuration;
+        _timer = new Timer(WaveDuration);
         _timer.OnTick += time => OnTimeChanged?.Invoke(time);
         _timer.OnTimeUp += OnTimeUp;
     }
@@ -99,7 +108,7 @@ public class WaveController
             return;
         }
 
-        if (IsFinalWave() && alive == 0 && !_getSpawningState.Invoke())
+        if (IsFinalWave && alive == 0 && !_getSpawningState.Invoke())
         {
             ClearStage();
         }
@@ -110,7 +119,7 @@ public class WaveController
         int alive = _getAliveEnemyCount.Invoke();
         OnEnemyCountChanged?.Invoke(alive, _maxEnemies);
 
-        if (IsFinalWave() && alive > 0)
+        if (IsFinalWave && alive > 0)
         {
             FailStage();
         }
@@ -131,11 +140,6 @@ public class WaveController
     {
         CurrentState = WaveState.Failed;
         OnStageResult?.Invoke(false);
-    }
-
-    private bool IsFinalWave()
-    {
-        return _maxWave == CurrentWaveIndex + 1;
     }
 }
 

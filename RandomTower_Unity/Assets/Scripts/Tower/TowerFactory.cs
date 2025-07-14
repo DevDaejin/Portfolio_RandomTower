@@ -29,7 +29,7 @@ public class TowerFactory
         return candidates[Random.Range(0, candidates.Length)].Data;
     }
 
-    public ITower CreateTower(TowerData data, Vector3 gridPosition, IEnemyProvider enemyProvider, Action<int, ISyncObject> onAttack, Action<Projectile, ISyncObject> onSendProjectileReturn, int level = 1)
+    public ITower CreateTower(TowerData data, Vector3 gridPosition, IEnemyProvider enemyProvider, Action<int, ISyncObject> onAttack, Action<string> onSendProjectileReturn, int level = 1)
     {
         GameObjectPool<BaseTower> towerPool = GetTowerPool(data);
         BaseTower tower = towerPool.Get();

@@ -15,7 +15,7 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
     public float FireRate => Data.FireRate + ((Level - 1) * 0.1f);
     
     public Action<int, ISyncObject> OnAttack;
-    public Action<Projectile, ISyncObject> OnSendProjectileReturn;
+    public Action<string> OnSendProjectileReturn;
 
     public ISelectable Selectable => this;
 
@@ -27,7 +27,7 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
     private IProjectilePool _projectilePool;
 
 
-    public void Initialize(TowerData data, Vector3 gridPosition, IProjectilePool pool, IEnemyProvider enemyProvider, Action<int, ISyncObject> onActtack, Action<Projectile, ISyncObject> onSendProjectileReturn, int level = 1)
+    public void Initialize(TowerData data, Vector3 gridPosition, IProjectilePool pool, IEnemyProvider enemyProvider, Action<int, ISyncObject> onActtack, Action<string> onSendProjectileReturn, int level = 1)
     {
         Data = data;
         _gridPosition = gridPosition;

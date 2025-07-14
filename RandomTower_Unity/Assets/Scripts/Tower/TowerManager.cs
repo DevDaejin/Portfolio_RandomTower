@@ -12,11 +12,12 @@ public class TowerManager : MonoBehaviour
     private TowerGridController _gridController;
     private TowerFactory _towerFactory;
 
+    public int MaxTower => _installableCount;
     private int _installableCount;
 
     public Action<int, ISyncObject> OnSendSpawnTowerPacket;
     public Action<int, ISyncObject> OnSendSpawnProjectilePacket;
-    public Action<Projectile, ISyncObject> OnSendProejctileReturn;
+    public Action<string> OnSendReturnProejctile;
     public Action<int, int> OnTowerUpdated;
 
     private void Awake()
@@ -66,7 +67,7 @@ public class TowerManager : MonoBehaviour
             data = grid.GetTower().Data;
         }
 
-        ITower tower = CreateTower(data, grid.transform.position, _enemyProvider, OnSendProejctileReturn, 1);
+        ITower tower = CreateTower(data, grid.transform.position, _enemyProvider, OnSendReturnProejctile, 1);
 
         if (!grid.TryAddTower(tower))
         {
@@ -81,7 +82,7 @@ public class TowerManager : MonoBehaviour
         }
     }
 
-    public ITower CreateTower(TowerData data, Vector3 position, IEnemyProvider enemyProvider, Action<Projectile, ISyncObject> onSendProjectileReturn, int level)
+    public ITower CreateTower(TowerData data, Vector3 position, IEnemyProvider enemyProvider, Action<string> onSendProjectileReturn, int level)
     {
         return _towerFactory.CreateTower(data, position, enemyProvider, OnTowerAttack, onSendProjectileReturn, level);
     }

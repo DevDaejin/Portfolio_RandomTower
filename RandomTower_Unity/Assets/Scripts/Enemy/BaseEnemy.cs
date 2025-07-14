@@ -17,7 +17,7 @@ public class BaseEnemy : MonoBehaviour
 
     public float CurrentHP;
 
-    private Action<BaseEnemy, ISyncObject> _onReturn;
+    private Action<string> _onReturn;
     public Action<int> OnReward;
     public Action<BaseEnemy> OnDie;
     public event Action<BaseEnemy, float> OnTakeDamage;
@@ -30,7 +30,7 @@ public class BaseEnemy : MonoBehaviour
         }
     }
 
-    public void Initialize(EnemyData data, Transform routeGroup, Action<BaseEnemy, ISyncObject> onReturn)
+    public void Initialize(EnemyData data, Transform routeGroup, Action<string> onReturn)
     {
         if (!_isInitailized)
         {
@@ -95,7 +95,7 @@ public class BaseEnemy : MonoBehaviour
 
         if(CurrentHP <= 0)
         {
-            _onReturn?.Invoke(this, _syncObject);
+            _onReturn?.Invoke(_syncObject.ObjectID);
             Die();
         }
     }

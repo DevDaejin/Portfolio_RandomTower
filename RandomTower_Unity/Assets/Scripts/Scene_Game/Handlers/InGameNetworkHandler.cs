@@ -1,11 +1,10 @@
 using Spawn;
 using UnityEngine;
 
-public class InGameNetworkHandler : IInGameHandler
+public class InGameNetworkHandler
 {
-    private InGameContext _context;
+    private readonly InGameContext _context;
     private readonly MultiEnviromentHandler _multiEnviromentHandler;
-    private IDGenerator _idGenerator;
 
     public InGameNetworkHandler(InGameContext context, MultiEnviromentHandler multiEnviromentHandler)
     {
@@ -19,42 +18,18 @@ public class InGameNetworkHandler : IInGameHandler
         {
             _multiEnviromentHandler.Initialize(_context.Network.IsHost);
 
-            _idGenerator = new(_context.Network.ClientID);
-
-            _context.Network.SpawnService.OnEnemySpawned += packet => OnReceivedEnemyPacket(packet.SpawnId, packet);
-            _context.Network.SpawnService.OnTowerSpawned += packet => OnReceivedTowerPacket(packet.SpawnId, packet);
-            _context.Network.SpawnService.OnProjectileSpawned += packet => OnReceivedProjectilePacket(packet.SpawnId, packet);
-
-            _context.Network.GameStateService.OnWaveStart += () =>
-            {
-                if (!_context.Network.IsHost) _context.Wave.StartWave();
-            };
+            _context.Network.SpawnService.OnEnemySpawned = OnReceivedEnemyPacket;
+            _context.Network.SpawnService.OnTowerSpawned = OnReceivedTowerPacket;
+            _context.Network.SpawnService.OnProjectileSpawned =  OnReceivedProjectilePacket;
+            _context.Network.GameStateService.OnWaveStart += OnWaveStart;
 
             _context.GlobalUI.Set(GlobalUI.GlobalUIOption.Watting);
         }
     }
 
-    public void Update()
+    private void OnReceivedEnemyPacket(SpawnEnemyPacket packet)
     {
-        throw new System.NotImplementedException();
-    }
-
-    public void Reset()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public async void OnSendSpawnPacket<T>(string type, int id, ISyncObject syncObject)
-    {
-        if (!_context.Network.IsConnect) return;
-
-        syncObject.Initialize(_idGenerator.Get(), _context.Network.ClientID, _context.Network.RoomID);
-        await _context.Network.SpawnService.SendSpawn(type, id.ToString(), syncObject);
-    }
-
-    private void OnReceivedEnemyPacket(string id, SpawnEnemyPacket packet)
-    {
-        EnemyData data = _context.Enemy.GetEnemyDataWithID(int.Parse(id));
+        EnemyData data = _context.Enemy.GetEnemyDataWithID(int.Parse(packet.SpawnId));
         BaseEnemy enemy = _context.Enemy.GetEnemy(data);
 
         ISyncObject syncObject = enemy.GetComponent<ISyncObject>();
@@ -64,9 +39,9 @@ public class InGameNetworkHandler : IInGameHandler
         _context.Network.SyncService.OnSyncObjectSpawned(syncObject);
     }
 
-    private void OnReceivedTowerPacket(string id, SpawnTowerPacket packet)
+    private void OnReceivedTowerPacket(SpawnTowerPacket packet)
     {
-        TowerData data = _context.Tower.TowerDatabase.GetTowerByID(int.Parse(id)).Data;
+        TowerData data = _context.Tower.TowerDatabase.GetTowerByID(int.Parse(packet.SpawnId)).Data;
         ITower tower = _context.Tower.CreateTower(data, Vector3.down, null, null, 1);
 
         ISyncObject syncObject = tower.Transform.GetComponent<ISyncObject>();
@@ -75,9 +50,9 @@ public class InGameNetworkHandler : IInGameHandler
         _context.Network.SyncService.OnSyncObjectSpawned(syncObject);
     }
 
-    private void OnReceivedProjectilePacket(string id, SpawnProjectilePacket packet)
+    private void OnReceivedProjectilePacket(SpawnProjectilePacket packet)
     {
-        TowerData data = _context.Tower.TowerDatabase.GetTowerByID(int.Parse(id)).Data;
+        TowerData data = _context.Tower.TowerDatabase.GetTowerByID(int.Parse(packet.SpawnId)).Data;
 
         IProjectilePool pool = _context.Tower.GetProjectilePool(data);
         Projectile projectile = pool.Get(null, Vector3.down, 0, data.ProjectileSpeed, null);
@@ -86,6 +61,11 @@ public class InGameNetworkHandler : IInGameHandler
         syncObject.Initialize(packet.ObjectId, packet.OwnerId, packet.RoomId);
 
         _context.Network.SyncService.OnSyncObjectSpawned(syncObject);
+    }
+
+    private void OnWaveStart()
+    {
+        if (!_context.Network.IsHost) _context.Wave.StartWave();
     }
 
 }

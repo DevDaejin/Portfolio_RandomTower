@@ -3,6 +3,7 @@ using Google.Protobuf;
 using Net;
 using Spawn;
 using Sync;
+using System;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
@@ -11,16 +12,10 @@ public class InGame : MonoBehaviour
 {
     [SerializeField] private List<StageConfig> _stageConfigs;
     [SerializeField] private NavMeshSurface navMeshSurface;
+    [SerializeField] private MultiEnviromentHandler _multiEnviromentHandler;
 
     private InGameContext _context;
-    //private TowerManager _tower;
-    //private EnemyManager _enemy;
-    //private WaveController _wave;
-    //private NetworkManager _network => GameManager.Instance.Network;
-    //private InGameUI _ui => GameManager.Instance.UI.InGame;
-    //private GlobalUI _globalUI => GameManager.Instance.UI.Global;
-    //private ResourceManager _resource;
-
+    
     private InGameTowerHandler _towerHandler;
     private InGameEnemyHandler _enemyHandler;
     private InGameWaveHandler _waveHandler;
@@ -29,8 +24,8 @@ public class InGame : MonoBehaviour
 
     private KeyValuePair<ResourceManager.ResourceType, int> _initialGold;
     private int _currentStage = 0;
-
     private int maxWave = 0;
+
     private const int MaxTower = 20;
     private const int MaxEnemy = 20;
     private const float WaveDuration = 40;
@@ -38,6 +33,8 @@ public class InGame : MonoBehaviour
 
     private void Awake()
     {
+        GameManager.Instance.UI.Initialize(UIManager.UIType.InGame);
+
         maxWave = _stageConfigs[_currentStage].WaveData.SpawnList.Count;
 
         _context = new InGameContext(
@@ -46,24 +43,30 @@ public class InGame : MonoBehaviour
             new WaveController(maxWave, MaxEnemy, WaveDuration, GetSpawningState, GetEnemyCount)
         );
 
-
-        GameManager.Instance.UI.Initialize(UIManager.UIType.InGame);
-
-        
-       
+        _networkHandler = new(_context, _multiEnviromentHandler);
+        _towerHandler = new(_context, MaxTower, ForceReturnProjectile);
+        _enemyHandler = new(_context, ForceReturnEnemy);
+        _waveHandler = new(_context, _stageConfigs[_currentStage], OnWave);
+        _uiHandler = new(_context, OnWave, OnSpawnTower);
     }
 
     private void Start()
     {
-        //InitNetwork();
+        _towerHandler.Initialize();
+        _enemyHandler.Initialize();
+        _networkHandler.Initialize();
+        _waveHandler.Initialize();
+        _uiHandler.Initialize();
+
         navMeshSurface.BuildNavMesh();
-        InitTowerManager();
-        InitEnemyManager();
-        InitWave();
-        InitUI();
+        //InitNetwork();
+        //InitTowerManager();
+        //InitEnemyManager();
+        //InitWave();
+        //InitUI();
 
         _initialGold = new KeyValuePair<ResourceManager.ResourceType, int>(ResourceManager.ResourceType.Gold, InitialGoldAmount);
-        _resource.Initialize(_initialGold);
+        _context.Resource.Initialize(_initialGold);
 
         GetEnemyCount();
     }
@@ -91,38 +94,46 @@ public class InGame : MonoBehaviour
     //    }
     //}
 
-    private void InitTowerManager()
-    {
-        _tower.Initialize(_enemy, MaxTower);
+    //private void InitTowerManager()
+    //{
+    //    _tower.Initialize(_enemy, MaxTower);
 
-        _tower.OnTowerUpdated += _ui.SetTowerCount;
-        _tower.OnSendSpawnTowerPacket += (id, syncObject) => OnSendSpawnPacket<SpawnTowerPacket>("tower", id, syncObject);
-        _tower.OnSendSpawnProjectilePacket += (id, syncObject) => OnSendSpawnPacket<SpawnProjectilePacket>("projectile", id, syncObject);
-        if(_network.IsConnect) _tower.OnSendProejctileReturn += ForceProjectileReturn;
-    }
-    private void InitEnemyManager()
-    {
-        _enemy.OnReward += OnReward;
-        _enemy.OnSendSpawnPacket += (id, syncObject) => OnSendSpawnPacket<SpawnEnemyPacket>("enemy", id, syncObject);
-        if (_network.IsConnect) _enemy.OnSendEnemyReturn += ForceEnemyReturn;
-    }
-    private void InitWave()
-    {
-        _wave.OnTimeChanged += _ui.SetTimer;
-        _wave.OnWaveChanged += _ui.SetWave;
-        _wave.OnEnemyCountChanged += _ui.SetEnemyCount;
-        _wave.OnStageResult += Result;
-        _wave.OnWaveEnded += OnWave;
-        _wave.OnWaveStarted += OnWaveStarted;
-        _wave.Initialize();
-    }
-    private void InitUI()
-    {
-        _ui.Initialize(maxWave, MaxEnemy, MaxTower, WaveDuration, 0, _network.IsHost);
-        _ui.SetWaveButton(OnWave);
-        _ui.SetSpawnButton(SpawnTower);
-        _ui.SetResultButtons(Retry, GoToLobby);
-    }
+    //    _tower.OnTowerUpdated += _ui.SetTowerCount;
+    //    _tower._onSendSpawnTowerPacket += (id, syncObject) => OnSendSpawnPacket<SpawnTowerPacket>("tower", id, syncObject);
+    //    _tower._onSendSpawnProjectilePacket += (id, syncObject) => OnSendSpawnPacket<SpawnProjectilePacket>("projectile", id, syncObject);
+    //    if(_network.IsConnect) _tower._onSendReturnProejctile += ForceReturnProjectile;
+    //}
+    //private void InitEnemyManager()
+    //{
+    //    _enemy.OnReward += OnReward;
+    //    _enemy.OnSendSpawnPacket += (id, syncObject) => OnSendSpawnPacket<SpawnEnemyPacket>("enemy", id, syncObject);
+    //    if (_network.IsConnect) _enemy.OnSendEnemyReturn += ForceReturnEnemy;
+    //}
+    //private void InitWave()
+    //{
+    //    _wave.OnTimeChanged += _ui.SetTimer;
+    //    _wave.OnWaveChanged += _ui.SetWave;
+    //    _wave.OnEnemyCountChanged += _ui.SetEnemyCount;
+    //    _wave.OnStageResult += Result;
+    //    _wave.OnWaveEnded += OnWave;
+    //    _wave.OnWaveStarted += OnWaveStarted;
+    //    _wave.Initialize();
+    //}
+    //private void InitUI()
+    //{
+    //    _ui.Initialize(maxWave, MaxEnemy, MaxTower, WaveDuration, 0, _network.IsHost);
+    //    _ui.SetWaveButton(OnWave);
+    //    _ui.SetSpawnButton(OnSpawnTower);
+    //    _ui.SetResultButtons(Retry, GoToLobby);
+    //}
+
+    //public async void OnSendSpawnPacket<T>(string type, int id, ISyncObject syncObject)
+    //{
+    //    if (!_context.Network.IsConnect) return;
+
+    //    syncObject.Initialize(_idGenerator.Get(), _context.Network.ClientID, _context.Network.RoomID);
+    //    await _context.Network.SpawnService.SendSpawn(type, id.ToString(), syncObject);
+    //}
 
     //private async void OnSendSpawnPacket<T>(string type, int id, ISyncObject syncObject)
     //{
@@ -168,7 +179,42 @@ public class InGame : MonoBehaviour
     //    _network.SyncService.OnSyncObjectSpawned(syncObject);
     //}
 
-    private void ForceProjectileReturn(Projectile projectile, ISyncObject syncObject)
+    private void OnWave()
+    {
+        WaveController.WaveState state = _context.Wave.CurrentState;
+        int alive = _context.Enemy.GetAlivedEnemyCount;
+        bool isSpawning = _context.Enemy.IsSpawningState();
+        bool isFinal = _context.Wave.IsFinalWave;
+
+        if (isFinal) return;
+
+        if (state == WaveController.WaveState.Idle)
+        {
+            SendWaveStarting();
+            _context.Wave.StartWave();
+        }
+        else if (state == WaveController.WaveState.InProgress && !isSpawning && alive == 0)
+        {
+            _context.Wave.ForceTimeUp();
+        }
+    }
+
+    private async void SendWaveStarting()
+    {
+        if (_context.Network.IsConnect
+            && _context.Network.IsHost)
+        {
+            var packet = new GameStatePacket
+            {
+                State = GameStateType.StartWave,
+                RoomId = _context.Network.RoomID
+            };
+
+            await _context.Network.SendEnvelope("game_state", packet);
+        }
+    }
+
+    private void ForceReturnProjectile(string objectId)
     {
         var data = new SyncProjectileData
         {
@@ -177,15 +223,15 @@ public class InGame : MonoBehaviour
 
         var packet = new SyncPacketData
         {
-            ObjectId = syncObject.ObjectID,
+            ObjectId = objectId,
             SyncType = "projectile",
             Payload = data.ToByteString()
         };
 
-        _ = _network.SendEnvelope("sync", packet);
+        _ = _context.Network.SendEnvelope("sync", packet);
     }
 
-    private void ForceEnemyReturn(BaseEnemy enemy, ISyncObject syncObject)
+    private void ForceReturnEnemy(string objectId)
     {
         var data = new SyncHPData
         {
@@ -194,12 +240,12 @@ public class InGame : MonoBehaviour
 
         var packet = new SyncPacketData
         {
-            ObjectId = syncObject.ObjectID,
+            ObjectId = objectId,
             SyncType = "hp",
             Payload = data.ToByteString()
         };
 
-        _ = _network.SendEnvelope("sync", packet);
+        _ = _context.Network.SendEnvelope("sync", packet);
     }
 
     private void Update()
@@ -249,81 +295,20 @@ public class InGame : MonoBehaviour
         return _enemy.IsSpawningState();
     }
 
-    private void OnWaveStarted()
-    {
-        _enemy.SpawnWave(_stageConfigs[_currentStage], _wave.CurrentWaveIndex);
-    }
-
-    private void OnWave()
-    {
-        WaveController.WaveState state = _wave.CurrentState;
-        int alive = _enemy.GetCurrentEnemyCount();
-        bool isSpawning = _enemy.IsSpawningState();
-        bool isFinal = _wave.CurrentWaveIndex == maxWave;
-
-        if (isFinal) return;
-
-        if (state == WaveController.WaveState.Idle)
-        {
-            SendWaveStarting();
-            _wave.StartWave();
-        }
-        else if (state == WaveController.WaveState.InProgress && !isSpawning && alive == 0)
-        {
-            _wave.ForceTimeUp();
-        }
-    }
-
-    private async void SendWaveStarting()
-    {
-        if (_network.IsConnect 
-            && _network.IsHost)
-        {
-            var packet = new GameStatePacket
-            {
-                State = GameStateType.StartWave,
-                RoomId = _network.RoomID
-            };
-
-            await _network.SendEnvelope("game_state", packet);
-        }
-    }
-
-    private void OnReward(int gold)
-    {
-        ResourceManager.ResourceType type = ResourceManager.ResourceType.Gold;
-        _resource.Earn(type, gold);
-        _ui.SetGoldCount(_resource.Get(type));
-    }
+    
 
 
-    private void SpawnTower()
+
+
+
+
+    private void OnSpawnTower()
     {
         //TODO: 임시코드
-        _tower.SpawnTower(1);
+        _context.Tower.SpawnTower(1);
     }
 
-    private void Result(bool isSuccess)
-    {
-        if (isSuccess)
-        {
-            StageSuccess();
-        }
-        else
-        {
-            StageFailed();
-        }
-    }
-    private void StageFailed()
-    {
-        _ui.SetResult(false);
-    }
-
-    private void StageSuccess()
-    {
-        _ui.SetResult(true);
-    }
-
+    
     private void GoToLobby()
     {
         GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);

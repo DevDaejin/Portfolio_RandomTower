@@ -15,8 +15,10 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     private readonly List<BaseEnemy> _cachingSortedList = new();
     private Dictionary<int, Coroutine> _spawnCoroutine = new();
 
+    public int GetAlivedEnemyCount => _spawnedEnemies.Count;
+
     public Action<int, ISyncObject> OnSendSpawnPacket;
-    public Action<BaseEnemy, ISyncObject> OnSendEnemyReturn; 
+    public Action<string> OnSendEnemyReturn; 
     public Action<int> OnReward;
 
     private const float SpawnInterval = 0.5f;
@@ -150,8 +152,6 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
 
         return _cachingSortedList;
     }
-
-    public int GetSpawnedEnemyCount() => _spawnedEnemies.Count;
 
     public bool IsSpawningState()
     {
