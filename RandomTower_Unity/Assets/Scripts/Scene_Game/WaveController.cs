@@ -10,7 +10,7 @@ public class WaveController
     private Timer _timer;
     private int _maxWave;
     private int _maxEnemies;
-    private Func<bool> _getCoroutinePlayState;
+    private Func<bool> _getSpawningState;
     private Func<int> _getAliveEnemyCount;
 
     public event Action<float> OnTimeChanged;
@@ -21,11 +21,11 @@ public class WaveController
     public event Action OnWaveEnded;
     public event Action<bool> OnStageResult;
 
-    public WaveController(int maxWave, int maxEnemies, float waveDuration, Func<bool> getCoroutinePlayState, Func<int> getAliveEnemyCount)
+    public WaveController(int maxWave, int maxEnemies, float waveDuration, Func<bool> getSpawningState, Func<int> getAliveEnemyCount)
     {
         _maxWave = maxWave;
         _maxEnemies = maxEnemies;
-        _getCoroutinePlayState = getCoroutinePlayState;
+        _getSpawningState = getSpawningState;
         _getAliveEnemyCount = getAliveEnemyCount;
 
         _timer = new Timer(waveDuration);
@@ -99,7 +99,7 @@ public class WaveController
             return;
         }
 
-        if (IsFinalWave() && alive == 0 && !_getCoroutinePlayState.Invoke())
+        if (IsFinalWave() && alive == 0 && !_getSpawningState.Invoke())
         {
             ClearStage();
         }

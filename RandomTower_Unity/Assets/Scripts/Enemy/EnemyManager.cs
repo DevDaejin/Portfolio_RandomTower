@@ -26,10 +26,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         _enemyFactory = new EnemyFactory();
     }
 
-    public void SetRouteGroup(Transform routeGroup)
-    {
-        _routeGroup = routeGroup;
-    }
+    public void SetRouteGroup(Transform routeGroup) => _routeGroup = routeGroup;
 
     public void SpawnWave(StageConfig config, int waveIndex)
     {
@@ -154,10 +151,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         return _cachingSortedList;
     }
 
-    public int GetCurrentEnemyCount()
-    {
-        return _spawnedEnemies.Count;
-    }
+    public int GetSpawnedEnemyCount() => _spawnedEnemies.Count;
 
     public bool IsSpawningState()
     {
