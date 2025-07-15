@@ -44,7 +44,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         {
             BaseEnemy enemy = GetEnemy(info.Config.Data);
             ISyncObject syncObject = enemy.GetComponent<ISyncObject>();
-            OnSendSpawnPacket.Invoke(enemy.Data.ID, syncObject);
+            OnSendSpawnPacket?.Invoke(enemy.Data.ID, syncObject);
             AddSpawnedEnemy(enemy);
             yield return new WaitForSecondsRealtime(SpawnInterval);
         }

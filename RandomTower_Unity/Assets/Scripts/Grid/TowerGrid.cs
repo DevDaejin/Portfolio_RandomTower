@@ -29,6 +29,8 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler, ISelectable
         new Vector3(RightSideX, 0, -intervalZ * 0.5f),
     };
 
+    public GameObject Selectd => gameObject;
+
     public void Initialize()
     {
         _transform = GetComponent<Transform>();

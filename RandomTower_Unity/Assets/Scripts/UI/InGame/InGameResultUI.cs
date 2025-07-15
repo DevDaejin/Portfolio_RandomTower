@@ -31,7 +31,7 @@ public class InGameResultUI : MonoBehaviour
 
     public void SetResultButtons(Action onRetry, Action onLobby)
     {
-        _retryButton?.onClick.AddListener(() => onRetry.Invoke());
-        _lobbyButton?.onClick.AddListener(() => onLobby.Invoke());
+        _retryButton?.onClick.AddListener(() => onRetry?.Invoke());
+        _lobbyButton?.onClick.AddListener(() => onLobby?.Invoke());
     }
 }

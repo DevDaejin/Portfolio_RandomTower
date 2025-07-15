@@ -1,11 +1,10 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public static class TowerGridSelectionHandler
 {
     private static ISelectable _current;
-    public static Action OnSelect;
+    public static Action<GameObject> OnSelect;
     public static Action OnDeselect;
 
     public static void Select(ISelectable newOne)
@@ -15,13 +14,13 @@ public static class TowerGridSelectionHandler
         _current?.OnDeselect();
         _current = newOne;
         _current.OnSelect();
-        OnSelect?.Invoke();
+        OnSelect?.Invoke(_current.Selectd);
     }
 
     public static void Reselect()
     {
         _current?.OnSelect();
-        OnSelect?.Invoke();
+        OnSelect?.Invoke(_current?.Selectd);
     }
 
     public static void TryDeselectOnEmptyClick(Vector3 screenPosition)

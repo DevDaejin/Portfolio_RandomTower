@@ -76,7 +76,7 @@ public class NetworkClient
         var env = Envelope.Parser.ParseFrom(bytes);
         if (_envelopeHandlers.TryGetValue(env.Type, out var handler))
         {
-            handler.Invoke(env.Payload.ToByteArray());
+            handler?.Invoke(env.Payload.ToByteArray());
         }
     }
 

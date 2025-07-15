@@ -19,6 +19,8 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
 
     public ISelectable Selectable => this;
 
+    public GameObject Selectd => gameObject;
+
     private float _fireElapsed;
     private Vector3 _gridPosition;
 
@@ -52,7 +54,7 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
         foreach (BaseEnemy target in targets)
         {
             ISyncObject syncObject = _projectilePool.Get(target, transform.position, Damage, Data.ProjectileSpeed, OnSendProjectileReturn).GetComponent<ISyncObject>();
-            OnAttack.Invoke(Data.ID, syncObject);
+            OnAttack?.Invoke(Data.ID, syncObject);
             _fireElapsed = 0f;
         }
     }

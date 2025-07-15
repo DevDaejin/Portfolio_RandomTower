@@ -2315,6 +2315,7 @@ MonoBehaviour:
   _stageConfigs:
   - {fileID: 11400000, guid: fd2e73c5244c0c445bc25efb35669be6, type: 2}
   navMeshSurface: {fileID: 1235937571}
+  _multiEnviromentHandler: {fileID: 1195791144}
 --- !u!114 &1195791142
 MonoBehaviour:
   m_ObjectHideFlags: 0

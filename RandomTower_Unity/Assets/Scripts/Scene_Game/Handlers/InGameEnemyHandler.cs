@@ -1,6 +1,5 @@
 using Spawn;
 using System;
-using UnityEngine;
 
 public class InGameEnemyHandler
 {
@@ -22,10 +21,19 @@ public class InGameEnemyHandler
         }
     }
 
+    public int GetAlivedEnemyCount => _context.Enemy.GetAlivedEnemyCount;
+
+    public bool IsSpawningState => _context.Enemy.IsSpawningState();
+
     private void OnReward(int gold)
     {
         ResourceManager.ResourceType type = ResourceManager.ResourceType.Gold;
         _context.Resource.Earn(type, gold);
         _context.UI.SetGoldCount(_context.Resource.Get(type));
+    }
+
+    public void Reset()
+    {
+        _context.Enemy.ReleaseAll();
     }
 }

@@ -8,7 +8,7 @@ public abstract class Projectile : MonoBehaviour, IProjectileMovement, IProjecti
     private float _speed;
     private ISyncObject _syncObject;
     private Action<Projectile> _onReturn;
-    private Action<Projectile, ISyncObject> _onSendProjectileReturn;
+    private Action<string> _onSendProjectileReturn;
 
     private void Awake()
     {
@@ -37,10 +37,10 @@ public abstract class Projectile : MonoBehaviour, IProjectileMovement, IProjecti
 
     private void OnDisable()
     {
-        _onSendProjectileReturn?.Invoke(this, _syncObject);
+        _onSendProjectileReturn?.Invoke(_syncObject.ObjectID);
     }
 
-    public virtual void Initialize(BaseEnemy target, Vector3 origin, float damage, float speed, Action<Projectile> onReutrn, Action<Projectile, ISyncObject> onSendProjectileReturn)
+    public virtual void Initialize(BaseEnemy target, Vector3 origin, float damage, float speed, Action<Projectile> onReutrn, Action<string> onSendProjectileReturn)
     {
         transform.position = origin;
 

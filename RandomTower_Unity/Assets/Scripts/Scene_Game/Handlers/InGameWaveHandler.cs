@@ -1,9 +1,4 @@
-using Game;
 using System;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
-
 public class InGameWaveHandler
 {
     private InGameContext _context;
@@ -27,7 +22,18 @@ public class InGameWaveHandler
         _context.Wave.Initialize();
     }
 
+    public void Update() => _context.Wave.Update();
 
+    public bool IsWaveStooped => 
+        _context.Wave.CurrentState == WaveController.WaveState.Failed 
+        || _context.Wave.CurrentState == WaveController.WaveState.Cleared;
+
+    public WaveController.WaveState GetCurrentWaveState => _context.Wave.CurrentState;
+
+    public bool IsFinalWave => _context.Wave.IsFinalWave;
+
+    public void StartWave() => _context.Wave.StartWave();
+    public void ForceTimeUp() => _context.Wave.ForceTimeUp();
 
     private void OnWaveStarted()
     {
@@ -44,5 +50,10 @@ public class InGameWaveHandler
         {
             _context.UI.SetResult(false);
         }
+    }
+
+    public void Reset()
+    {
+        _context.Wave.Initialize();
     }
 }

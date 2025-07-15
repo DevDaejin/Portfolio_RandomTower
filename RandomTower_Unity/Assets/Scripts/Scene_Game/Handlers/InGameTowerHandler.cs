@@ -26,4 +26,11 @@ public class InGameTowerHandler
             _context.Tower.OnSendReturnProejctile = _onSendReturnProejctile;
         }
     }
+
+    public void OnSpawnTower(int towerSpawnChancePassiveLevel) => _context.Tower.SpawnTower(towerSpawnChancePassiveLevel);
+
+    public void Reset()
+    {
+        _context.Tower.ReleaseAll();
+    }
 }

@@ -1,4 +1,6 @@
+using Google.Protobuf;
 using Spawn;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class InGameNetworkHandler
@@ -26,6 +28,12 @@ public class InGameNetworkHandler
             _context.GlobalUI.Set(GlobalUI.GlobalUIOption.Watting);
         }
     }
+
+    public bool IsConnected => _context.Network.IsConnect;
+    public bool IsHost => _context.Network.IsHost;
+    public string RoomID => _context.Network.RoomID;
+
+    public async Task SendEnvelope(string type, IMessage payload) => await _context.Network.SendEnvelope(type, payload);
 
     private void OnReceivedEnemyPacket(SpawnEnemyPacket packet)
     {

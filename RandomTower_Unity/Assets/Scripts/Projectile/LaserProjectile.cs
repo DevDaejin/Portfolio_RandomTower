@@ -7,7 +7,7 @@ public class LaserProjectile : Projectile
     private float _elapsed;
     private const float Duration = 0.2f;
     private Action<Projectile> _onHit;
-    public override void Initialize(BaseEnemy target, Vector3 origin, float damage, float speed, Action<Projectile> onHit, Action<Projectile, ISyncObject> onSendProjectileReturn)
+    public override void Initialize(BaseEnemy target, Vector3 origin, float damage, float speed, Action<Projectile> onHit, Action<string> onSendProjectileReturn)
     {
         base.Initialize(target, origin, damage, speed, onHit, onSendProjectileReturn);
         target?.TakeDamage(damage);
@@ -35,7 +35,7 @@ public class LaserProjectile : Projectile
         _elapsed += Time.deltaTime;
         if (_elapsed > Duration)
         {
-            _onHit.Invoke(this);
+            _onHit?.Invoke(this);
         }
     }
 }

@@ -37,12 +37,12 @@ public class InGameUI : MonoBehaviour
 
     public void InteractableWaveButton(bool isAct) => WaveButton.interactable = isAct;
     public void ActiveTowerOptionMenuUI(bool isAct) => _towerOptionUI.ActiveUI(isAct);
+    public void MoveTowerOptionMenuUI(Vector3 position) => _towerOptionUI.MoveUI(position);
     public void SetWave(int current, int max) => _statusUI.SetWave(current, max);
     public void SetGoldCount(int current) => _statusUI.SetGoldCount(current);
     public void SetTimer(float time) => _statusUI.SetTimer(time);
     public void SetEnemyCount(int current, int max) => _statusUI.SetEnemyCount(current, max);
     public void SetTowerCount(int current, int max) => _statusUI.SetTowerCount(current, max);
-
     public void SetResult(bool isSuccess) => _resultUI.SetResult(isSuccess);
     public void SetResultButtons(Action onRetry, Action onLobby) => _resultUI.SetResultButtons(onRetry, onLobby);
 }

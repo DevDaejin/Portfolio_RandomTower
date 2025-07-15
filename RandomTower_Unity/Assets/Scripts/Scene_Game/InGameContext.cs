@@ -1,7 +1,3 @@
-using NUnit.Framework;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class InGameContext
 {
     public readonly TowerManager Tower;
@@ -16,14 +12,13 @@ public class InGameContext
 
     public InGameContext(TowerManager tower, EnemyManager enemy, WaveController wave)
     {
+        Tower = tower;
+        Enemy = enemy;
+        Wave = wave;
+
         Resource = GameManager.Instance.Resource;
         Network = GameManager.Instance.Network;
         UI = GameManager.Instance.UI.InGame;
         GlobalUI = GameManager.Instance.UI.Global;
-    }
-
-    public void Initialize()
-    {
-
     }
 }

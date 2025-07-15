@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class InGameTowerOptionUI : MonoBehaviour
 {
     [SerializeField] private GameObject _towerOptionalMenuPanel;
+    private RectTransform _towerOptionMenuRectTransform;
     public Button MergeButton => _mergeButton;
     [SerializeField] private Button _mergeButton;
 
@@ -21,4 +22,10 @@ public class InGameTowerOptionUI : MonoBehaviour
     }
 
     public void ActiveUI(bool isAct) => _towerOptionalMenuPanel.SetActive(isAct);
+
+    public void MoveUI(Vector3 position)
+    {
+        var newPosition = Camera.main.WorldToScreenPoint(position);
+        _towerOptionalMenuPanel.transform.position = newPosition;
+    }
 }

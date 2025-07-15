@@ -76,7 +76,7 @@ public class TowerManager : MonoBehaviour
         else
         { 
             ISyncObject syncObject = tower.Transform.gameObject.GetComponent<ISyncObject>();
-            OnSendSpawnTowerPacket.Invoke(data.ID, syncObject);
+            OnSendSpawnTowerPacket?.Invoke(data.ID, syncObject);
             OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
             TowerGridSelectionHandler.Reselect();
         }
@@ -89,7 +89,7 @@ public class TowerManager : MonoBehaviour
 
     private void OnTowerAttack(int id, ISyncObject syncable)
     {
-        OnSendSpawnProjectilePacket.Invoke(id, syncable);
+        OnSendSpawnProjectilePacket?.Invoke(id, syncable);
     }
      
     public Transform[] GetChildrenTransformArray(Transform root)

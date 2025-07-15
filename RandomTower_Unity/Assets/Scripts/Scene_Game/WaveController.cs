@@ -48,8 +48,8 @@ public class WaveController
         CurrentState = WaveState.Idle;
         _timer.Stop();
 
-        OnWaveChanged.Invoke(CurrentWaveIndex, _maxWave);
-        OnTimeChanged.Invoke(_timer.TimeLeft);
+        OnWaveChanged?.Invoke(CurrentWaveIndex, _maxWave);
+        OnTimeChanged?.Invoke(_timer.TimeLeft);
     }
 
     //TODO: 추후 삭제 테스트용
