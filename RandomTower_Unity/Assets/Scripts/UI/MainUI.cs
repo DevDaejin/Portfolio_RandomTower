@@ -62,11 +62,11 @@ public class MainUI : MonoBehaviour
 
 
         GlobalUI global = GameManager.Instance.UI.Global;
-        global.SetQuitConfrimButton(QuitButton.Invoke);
-        global.SetQuitCancelButton(() => global.gameObject.SetActive(false));
+        //global.SetQuitConfrimButton(QuitButton.Invoke);
+        //global.SetQuitCancelButton(() => global.gameObject.SetActive(false));
 
-        _optionButton.onClick.AddListener(() => global.Set(GlobalUI.GlobalUIOption.Option));
-        _exitButton.onClick.AddListener(() => global.Set(GlobalUI.GlobalUIOption.Quit));
+        //_optionButton.onClick.AddListener(() => global.Set(GlobalUI.GlobalUIOption.Option));
+        //_exitButton.onClick.AddListener(() => global.Set(GlobalUI.GlobalUIOption.Quit));
     }
 
     private void Update()

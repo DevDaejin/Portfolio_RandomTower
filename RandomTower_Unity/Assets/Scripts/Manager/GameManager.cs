@@ -67,8 +67,8 @@ public class GameManager : MonoBehaviour
         Network.OnError += ActiveNetowrkPanel;
         Network.OnClose += ActiveNetowrkPanel;
 
-        UI.Global.OnNetworkConfirmClicked = () => LoadScene(Scenes.Main);
-        UI.Global.OnNetworkWaittingClicked = () => LoadScene(Scenes.Lobby);
+        //UI.Global.OnNetworkConfirmClicked = () => LoadScene(Scenes.Main);
+        //UI.Global.OnNetworkWaittingClicked = () => LoadScene(Scenes.Lobby);
 
         LoadActivedTowers();
 
@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
     private void ActiveNetowrkPanel()
     {
         UI.Main.DeactiveConnectPanel();
-        UI.Global.Set(GlobalUI.GlobalUIOption.Error);
+        //UI.Global.Set(GlobalUI.GlobalUIOption.Error);
     }
 
     public void Initialize()

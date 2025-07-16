@@ -24,8 +24,6 @@ public class InGameNetworkHandler
             _context.Network.SpawnService.OnTowerSpawned = OnReceivedTowerPacket;
             _context.Network.SpawnService.OnProjectileSpawned =  OnReceivedProjectilePacket;
             _context.Network.GameStateService.OnWaveStart += OnWaveStart;
-
-            _context.GlobalUI.Set(GlobalUI.GlobalUIOption.Watting);
         }
     }
 
