@@ -66,7 +66,7 @@ public class MainUI : MonoBehaviour
         //global.SetQuitCancelButton(() => global.gameObject.SetActive(false));
 
         //_optionButton.onClick.AddListener(() => global.Set(GlobalUI.GlobalUIOption.Option));
-        //_exitButton.onClick.AddListener(() => global.Set(GlobalUI.GlobalUIOption.Quit));
+        _exitButton.onClick.AddListener(() => global.ShowQuit(Application.Quit, null));
     }
 
     private void Update()

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class GlobalMessageBoxUI : MonoBehaviour
 {
+    public GameObject Panel => _meesageBoxPanel;
     [SerializeField] private GameObject _meesageBoxPanel;
     [SerializeField] private RectTransform _messageBoxArea;
     [SerializeField] private TMP_Text _titleTxt;
@@ -41,7 +42,7 @@ public class GlobalMessageBoxUI : MonoBehaviour
         });
     }
 
-    public void ShowContext(MessageBox box)
+    public void ShowContext(MessageBoxData box)
     {
         Resize(box.MessageBoxSize, box.DescriptionSize);
         SetTitle(box.Title);

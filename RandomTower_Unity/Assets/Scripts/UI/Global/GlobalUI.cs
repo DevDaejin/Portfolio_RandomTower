@@ -11,7 +11,7 @@ public class GlobalUI : MonoBehaviour
     [SerializeField] private GlobalOptionUI _optionUI;
 
     public enum MessageBoxOption { None, NetworkingWaiting, Quit};
-    private Dictionary<MessageBoxOption, MessageBox> _messageBoxes = new();
+    private Dictionary<MessageBoxOption, MessageBoxData> _messageBoxes = new();
 
 
     //[Header("Option")]
@@ -38,23 +38,25 @@ public class GlobalUI : MonoBehaviour
         //_confirmNetworkWattingButton.onClick.AddListener(OnNetworkWaittingConfirm);
     }
 
-    public void Show(Transform target)
+    public void Show(GameObject target)
     {
         gameObject.SetActive(true);
-        target.gameObject.SetActive(true);
-        _background.SetParent(target);
+        target.SetActive(true);
+        _background.SetParent(target.transform);
+        _background.SetAsFirstSibling();
     }
 
     public void ShowOption()
     {
-        Show(_optionUI);
+        Show(_optionUI.Panel);
         _messageBoxUI.ActiveUI(false);
-        _optionUI.ActiveUI(true);
     }
 
     public void ShowQuit(Action positive, Action negative)
     {
+        Show(_messageBoxUI.Panel);
         _optionUI.ActiveUI(false);
+
         if(!_messageBoxes.ContainsKey(MessageBoxOption.Quit))
         {
             _messageBoxes.Add(MessageBoxOption.Quit, new()
