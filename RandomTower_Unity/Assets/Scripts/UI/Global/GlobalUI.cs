@@ -10,51 +10,35 @@ public class GlobalUI : MonoBehaviour
     [SerializeField] private GlobalMessageBoxUI _messageBoxUI;
     [SerializeField] private GlobalOptionUI _optionUI;
 
-    public enum MessageBoxOption { None, NetworkingWaiting, Quit};
+    public enum MessageBoxOption { None, NetworkingWaiting, Quit, NetworkingError };
     private Dictionary<MessageBoxOption, MessageBoxData> _messageBoxes = new();
 
-
-    //[Header("Option")]
-    //[SerializeField] private GameObject _optionPanel;
-    //[SerializeField] private TMP_Dropdown _resolutionDropdown;
-    //[SerializeField] private Button _optionConfirmButton;
-    //[SerializeField] private Button _optionCancelButton;
-
-    //[Header("Network error")]
-    //[SerializeField] private GameObject _networkErrorPanel;
-    //[SerializeField] private Button _confirmNetworkErrorButton;
-    //public Action OnNetworkConfirmClicked;
-
-    //[Header("Network waitting")]
-    //[SerializeField] private GameObject _networkWattingPanel;
-    //[SerializeField] private Button _confirmNetworkWattingButton;
-    //public Action OnNetworkWaittingClicked;
-
-    private void Start()
+    public void Initialize(OptionData optionData)
     {
-        //_optionConfirmButton.onClick.AddListener(OnOptionConfirm);
-        //_optionCancelButton.onClick.AddListener(OnOptionCancel);
-        //_confirmNetworkErrorButton.onClick.AddListener(OnNetworkErrorConfirm);
-        //_confirmNetworkWattingButton.onClick.AddListener(OnNetworkWaittingConfirm);
+        _optionUI.Initialize(optionData);
     }
 
-    public void Show(GameObject target)
+    private void MoveBackground(GameObject target)
     {
-        gameObject.SetActive(true);
-        target.SetActive(true);
         _background.SetParent(target.transform);
         _background.SetAsFirstSibling();
     }
 
-    public void ShowOption()
+    public void ShowMessage(MessageBoxData data) => _messageBoxUI.ShowContext(data);
+
+    public void ShowOption(bool includeResetButton = false)
     {
-        Show(_optionUI.Panel);
+        gameObject.SetActive(true);
+        _optionUI.ActiveUI(true, includeResetButton);
+        MoveBackground(_optionUI.Panel);
         _messageBoxUI.ActiveUI(false);
     }
 
     public void ShowQuit(Action positive, Action negative)
     {
-        Show(_messageBoxUI.Panel);
+        gameObject.SetActive(true);
+        _messageBoxUI.ActiveUI(true);
+        MoveBackground(_messageBoxUI.Panel);
         _optionUI.ActiveUI(false);
 
         if(!_messageBoxes.ContainsKey(MessageBoxOption.Quit))
@@ -88,36 +72,19 @@ public class GlobalUI : MonoBehaviour
 
         _messageBoxUI.ShowContext(_messageBoxes[MessageBoxOption.NetworkingWaiting]);
     }
+    public void ShowNetworkError()
+    {
+        _optionUI.ActiveUI(false);
+        if (!_messageBoxes.ContainsKey(MessageBoxOption.NetworkingError))
+        {
+            _messageBoxes.Add(MessageBoxOption.NetworkingError, new()
+            {
+                Title = "네트워크 에러",
+                Description = "네트워크 연결이 끊겼습니다.",
+                PositiveButtonText = "확인",
+            });
+        }
 
-    //private void OnOptionConfirm()
-    //{
-    //    //TODO: 적용 로직
-    //    gameObject.SetActive(false);
-    //}
-
-    //private void OnOptionCancel()
-    //{
-    //    //TODO: 원복 로직
-    //    gameObject.SetActive(false);
-    //}
-
-    //public void OnNetworkErrorConfirm()
-    //{
-    //    OnNetworkConfirmClicked?.Invoke();
-    //}
-
-    //public void OnNetworkWaittingConfirm()
-    //{
-    //    OnNetworkWaittingClicked?.Invoke();
-    //}
-
-    //public void SetQuitConfrimButton(Action callback)
-    //{
-    //    _quitConfirmButton.onClick.AddListener(callback.Invoke);
-    //}
-
-    //public void SetQuitCancelButton(Action callback)
-    //{
-    //    _quitCancelButton.onClick.AddListener(callback.Invoke);
-    //}
+        _messageBoxUI.ShowContext(_messageBoxes[MessageBoxOption.NetworkingError]);
+    }
 }

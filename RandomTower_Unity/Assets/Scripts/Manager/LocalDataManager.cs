@@ -95,5 +95,10 @@ public class LocalDataManager
     {
         PlayerPrefs.DeleteKey(Key);
     }
+
+    public void Reset()
+    {
+        PlayerPrefs.DeleteAll();
+    }
 }
  

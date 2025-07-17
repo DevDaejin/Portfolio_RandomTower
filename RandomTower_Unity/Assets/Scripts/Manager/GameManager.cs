@@ -35,6 +35,9 @@ public class GameManager : MonoBehaviour
     public SceneLoader Scene => _sceneLoader ??= GetComponentInChildren<SceneLoader>();
     private SceneLoader _sceneLoader;
 
+    public OptionManager Option => _optionManager ??= GetComponent<OptionManager>();
+    private OptionManager _optionManager;
+
     public Dispatcher Dispatcher => _dispatcher ??= GetComponent<Dispatcher>();
     private Dispatcher _dispatcher;
 
@@ -63,6 +66,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = 60;
+
         Network.OnConnectFailed += ActiveNetowrkPanel;
         Network.OnError += ActiveNetowrkPanel;
         Network.OnClose += ActiveNetowrkPanel;
@@ -85,6 +90,7 @@ public class GameManager : MonoBehaviour
     public void Initialize()
     {
         UI.Initialize(UIManager.UIType.None);
+        Option.Initialize();
     }
 
     public void LoadScene(Scenes scene)

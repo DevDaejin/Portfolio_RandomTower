@@ -1,16 +1,12 @@
-using UnityEngine;
+using System;
+using System.Collections.Generic;
 
-public class OptionData : MonoBehaviour
+public class OptionData
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public Dictionary<string, Action> LanguageDict;
+    public Dictionary<string, Action> ResolutionDict;
+    public Dictionary<string, Action> ScreenModeDict;
+    public Action<float> BGMSliderCallback;
+    public Action<float> SFXliderCallback;
+    public Action ResetButtonCallback;
 }
