@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour, IEnemyProvider
@@ -22,6 +23,23 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     public Action<int> OnReward;
 
     private const float SpawnInterval = 0.5f;
+
+    private class DistanceComparer : IComparer<BaseEnemy>
+    {
+        private readonly Vector3 _origin;
+
+        public DistanceComparer(Vector3 origin)
+        {
+            _origin = origin;
+        }
+
+        public int Compare(BaseEnemy a, BaseEnemy b)
+        {
+            float distA = (a.transform.position - _origin).sqrMagnitude;
+            float distB = (b.transform.position - _origin).sqrMagnitude;
+            return distA.CompareTo(distB);
+        }
+    }
 
     private void Awake()
     {
@@ -59,17 +77,15 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
 
     public EnemyData GetEnemyDataWithID(int id)
     {
-        EnemyDataConfig target = null;
-        foreach (EnemyDataConfig config in _enemyDatas)
+        foreach (var config in _enemyDatas)
         {
             if(config.Data.ID == id)
             {
-                target = config;
-                break;
+                return config.Data;
             }
         }
 
-        return target.Data;
+        return null;
     }
 
     public BaseEnemy GetEnemy(EnemyData data)
@@ -140,12 +156,8 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
             _cachingSortedList.Add(enemy);
         }
 
-        _cachingSortedList.Sort((a, b) =>
-        {
-            float distA = (a.transform.position - position).sqrMagnitude;
-            float distB = (b.transform.position - position).sqrMagnitude;
-            return distA.CompareTo(distB);
-        });
+        var comapre = new DistanceComparer(position);
+        _cachingSortedList.Sort(comapre);
 
         if (_cachingSortedList.Count > count)
             _cachingSortedList.RemoveRange(count, _cachingSortedList.Count - count);
@@ -155,30 +167,29 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
 
     public bool IsSpawningState()
     {
-        bool isSpawning = false;
-
-        foreach (KeyValuePair<int, Coroutine> kv in _spawnCoroutine)
+        foreach (var pair in _spawnCoroutine)
         {
-            if(kv.Value != null)
+            if(pair.Value != null)
             {
-                isSpawning = true;
+                return true;
             }
         }
 
-        return isSpawning;
+        return false;
     }
 
     public void ReleaseAll()
     {
-        foreach (KeyValuePair<int, Coroutine> pair in _spawnCoroutine)
+        foreach (var pair in _spawnCoroutine)
         {
             StopCoroutine(pair.Value);
         }
 
-        for (int i = 0; i < _spawnedEnemies.Count; i++)
+        while (_spawnedEnemies.Count > 0)
         {
             ReleaseEnemy(_spawnedEnemies[0]);
         }
+
         _spawnedEnemies.Clear();
         _cachingList.Clear();
         _cachingSortedList.Clear();

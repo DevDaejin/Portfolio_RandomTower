@@ -31,29 +31,9 @@ public class NetworkClient
     {
         _socket = new WebSocket(_url);
 
-        _socket.OnOpen += () =>
-        {
-            Debug.Log("[WebSocket] Connected");
-            OnConnected?.Invoke();
-        };
-
-        _socket.OnError += error =>
-        {
-            Debug.Log($"[WebSocket] Error - {error}");
-            OnError?.Invoke();
-        };
-
-        _socket.OnClose += code =>
-        {
-            Debug.Log($"[WebSocket] close - {code.ToString()}");
-
-            if (code != WebSocketCloseCode.Normal)
-            {
-                OnClose?.Invoke();
-            }
-        };
-
-
+        _socket.OnOpen += ConnectCallback;
+        _socket.OnError += ErrorCallback;
+        _socket.OnClose += CloseCallback;
         _socket.OnMessage += OnMessageReceived;
 
         try
@@ -66,9 +46,26 @@ public class NetworkClient
         }
     }
 
-    public void RegisterEnvelopeHandler(string type, Action<byte[]> handler)
+    private void ErrorCallback(string error)
     {
-        _envelopeHandlers[type] = handler;
+        Debug.Log($"[WebSocket] Error - {error}");
+        OnError?.Invoke();
+    }
+
+    private void ConnectCallback()
+    {
+        Debug.Log("[WebSocket] Connected");
+        OnConnected?.Invoke();
+    }
+
+    private void CloseCallback(WebSocketCloseCode code)
+    {
+        Debug.Log($"[WebSocket] close - {code.ToString()}");
+
+        if (code != WebSocketCloseCode.Normal)
+        {
+            OnClose?.Invoke();
+        }
     }
 
     private void OnMessageReceived(byte[] bytes)
@@ -102,6 +99,7 @@ public class NetworkClient
         await _socket.Send(envelope.ToByteArray());
     }
 
+    public void RegisterEnvelopeHandler(string type, Action<byte[]> handler) => _envelopeHandlers[type] = handler;
     public void CancelConnect() => _socket?.CancelConnection();
     public void DispatchMessages() => _socket?.DispatchMessageQueue();
     public void Disconnect() => _socket?.Close();

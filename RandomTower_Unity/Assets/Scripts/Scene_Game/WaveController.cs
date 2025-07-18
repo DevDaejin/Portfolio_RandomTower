@@ -38,7 +38,7 @@ public class WaveController
 
         _waveDuration = waveDuration;
         _timer = new Timer(WaveDuration);
-        _timer.OnTick += time => OnTimeChanged?.Invoke(time);
+        _timer.OnTick += OnTimeChanged;
         _timer.OnTimeUp += OnTimeUp;
     }
 

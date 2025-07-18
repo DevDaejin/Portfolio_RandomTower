@@ -22,7 +22,6 @@ public class MainUI : MonoBehaviour
     [SerializeField] private Button _uriCancelButton;
 
     public Action SinglePlayButton;
-    public Action QuitButton;
 
     public event Action<string> OnIpInput;
     public event Action<string> OnPortInput;
@@ -59,7 +58,6 @@ public class MainUI : MonoBehaviour
         _uriCancelButton.onClick.AddListener(MultiCancel);
 
         _connectingCancelButton.onClick.AddListener(ConnectingCancel);
-
 
         GlobalUI global = GameManager.Instance.UI.Global;
 

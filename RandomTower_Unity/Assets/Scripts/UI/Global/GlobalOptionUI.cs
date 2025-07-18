@@ -24,16 +24,20 @@ public class GlobalOptionUI : MonoBehaviour
     private TMP_Text _bgmValueTxt;
     private TMP_Text _sfxValueTxt;
 
+    private OptionData _data;
+
     public void Initialize(OptionData data)
     {
-        BindDropdown(_languageDropdown, data.LanguageDict);
-        BindDropdown(_resolutionDropdown, data.ResolutionDict);
-        BindDropdown(_screenModeDropdown, data.ScreenModeDict);
+        _data = data;
 
-        BindSlider(_bgmSlider, _bgmValueTxt,  data.BGMSliderCallback);
-        BindSlider(_sfxSlider, _sfxValueTxt, data.SFXliderCallback);
+        BindDropdown(_languageDropdown, _data.LanguageDict);
+        BindDropdown(_resolutionDropdown, _data.ResolutionDict);
+        BindDropdown(_screenModeDropdown, _data.ScreenModeDict);
+
+        BindSlider(_bgmSlider, _bgmValueTxt, _data.BGMSliderCallback);
+        BindSlider(_sfxSlider, _sfxValueTxt, _data.SFXliderCallback);
         
-        InitializeResetButton(data.ResetButtonCallback);
+        InitializeResetButton();
 
         _closeButton.onClick.AddListener(() => ActiveUI(false));
     }
@@ -70,21 +74,13 @@ public class GlobalOptionUI : MonoBehaviour
         });
     }
 
-    private void InitializeResetButton(Action resetButtonCallback)
+    private void InitializeResetButton()
     {
         _resetDataButton.onClick.RemoveAllListeners();
-        _resetDataButton.onClick.AddListener(()=>
-        {
-            GameManager.Instance.UI.Global.ShowMessage(new()
-            {
-                Title = "데이터 초기화",
-                Description = "게임 데이터 초기화하시겠습니까?",
-                PositiveButtonText = "예",
-                NegativeButtonText = "아니요",
-                OnPositiveButtonClick = resetButtonCallback
-            });
-        });
+        _resetDataButton.onClick.AddListener(OnResetButton);
     }
+
+    private void OnResetButton() => GameManager.Instance.UI.Global.ShowReset(_data.ResetButtonCallback);
 
     private void ResizeDropdownTemplate(TMP_Dropdown dropdown)
     {

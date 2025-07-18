@@ -48,9 +48,9 @@ public class NetworkManager : MonoBehaviour
         _client.RegisterEnvelopeHandler("sync", HandleSync);
         _client.RegisterEnvelopeHandler("game_state", HandleGameState);
 
-        _client.OnError = () => OnError?.Invoke();
-        _client.OnClose = () => OnClose?.Invoke();
-        _client.OnConnectFailed = () => OnConnectFailed?.Invoke();
+        _client.OnError = OnError;
+        _client.OnClose = OnClose;
+        _client.OnConnectFailed = OnConnectFailed;
         _client.OnConnected = Connected;
 
         await _client.Connect();

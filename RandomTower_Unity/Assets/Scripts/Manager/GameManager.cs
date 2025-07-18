@@ -11,7 +11,6 @@ public class GameManager : MonoBehaviour
     private const string Main = "Main";
     private const string Lobby = "Lobby";
     private const string Game = "Game";
-    private const int BasicGrade = 1;
 
     public UIManager UI
     {
@@ -66,8 +65,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        Application.targetFrameRate = 60;
-
         Network.OnConnectFailed += ActiveNetowrkPanel;
         Network.OnError += ActiveNetowrkPanel;
         Network.OnClose += ActiveNetowrkPanel;
@@ -84,7 +81,7 @@ public class GameManager : MonoBehaviour
     private void ActiveNetowrkPanel()
     {
         UI.Main.DeactiveConnectPanel();
-        //UI.Global.Set(GlobalUI.GlobalUIOption.Error);
+        UI.Global.ShowNetworkError();
     }
 
     public void Initialize()
@@ -95,20 +92,13 @@ public class GameManager : MonoBehaviour
 
     public void LoadScene(Scenes scene)
     {
-        string sceneName = string.Empty;
-
-        switch (scene)
+        string sceneName = scene switch
         {
-            case Scenes.Main:
-                sceneName = Main;
-                break;
-            case Scenes.Lobby:
-                sceneName = Lobby;
-                break;
-            case Scenes.Game:
-                sceneName = Game;
-                break;
-        }
+            Scenes.Main => Main,
+            Scenes.Game => Game,
+            Scenes.Lobby => Lobby,
+            _ => string.Empty,
+        };
 
         Scene.LoadSceneAsync(sceneName);
     }

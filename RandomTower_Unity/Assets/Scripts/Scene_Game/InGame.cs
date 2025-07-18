@@ -182,7 +182,6 @@ public class InGame : MonoBehaviour
         _towerHandler.OnSpawnTower(1);
     }
 
-
     private void GoToLobby() => GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
 
     private void Retry()
