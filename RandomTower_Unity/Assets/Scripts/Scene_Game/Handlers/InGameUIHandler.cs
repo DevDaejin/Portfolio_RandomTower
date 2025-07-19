@@ -60,13 +60,15 @@ public class InGameUIHandler
         _context.UI.InteractableWaveButton(isAct);
     }
 
-    public void SelectTowerUI(GameObject gameObject)
+    public void SelectTowerUI(BaseTower gameObject)
     {
         if (gameObject == null) return;
 
         _context.UI.ActiveTowerOptionMenuUI(true);
         _context.UI.MoveTowerOptionMenuUI(gameObject.transform.position);
     }
+
+    public void SetGold(int amount) => _context.UI.SetGoldCount(amount);
 
     public void DeselectTowerUI()
     {

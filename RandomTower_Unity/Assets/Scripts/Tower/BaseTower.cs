@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseTower : MonoBehaviour, ITower, ISelectable
+public class BaseTower : MonoBehaviour
 {
     public Transform Transform => transform;    
 
@@ -17,8 +17,6 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
     public Action<int, ISyncObject> OnAttack;
     public Action<string> OnSendProjectileReturn;
 
-    public ISelectable Selectable => this;
-
     public GameObject Selectd => gameObject;
 
     private float _fireElapsed;
@@ -28,17 +26,32 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
     protected IEnemyProvider _enemyProvider;
     private IProjectilePool _projectilePool;
 
-
-    public void Initialize(TowerData data, Vector3 gridPosition, IProjectilePool pool, IEnemyProvider enemyProvider, Action<int, ISyncObject> onActtack, Action<string> onSendProjectileReturn, int level = 1)
+    public void Initialize(TowerData data, Vector3 gridPosition, IProjectilePool pool, IEnemyProvider enemyProvider, Action<int, ISyncObject> onActtack, Action<string> onSendProjectileReturn)
     {
         Data = data;
         _gridPosition = gridPosition;
-        Level = level;
+        Level = data.Level;
         _projectilePool ??= pool;
         _enemyProvider ??= enemyProvider;
         _rangeViewer ??= GetComponentInChildren<TowerRangeViewer>();
+        _rangeViewer.Deactive();
         OnAttack = onActtack;
         OnSendProjectileReturn = onSendProjectileReturn;
+    }
+
+    protected virtual void Update()
+    {
+        if (_enemyProvider == null) return;
+
+        _fireElapsed += Time.deltaTime;
+
+        var enemies = FindClosestEnemies();
+        if (enemies.Count == 0) return;
+
+        if (_fireElapsed >= 1f / FireRate)
+        {
+            Attack(enemies);
+        }
     }
 
     protected virtual List<BaseEnemy> FindClosestEnemies()
@@ -59,28 +72,9 @@ public class BaseTower : MonoBehaviour, ITower, ISelectable
         }
     }
 
-    protected virtual void Update()
+    public void ShowRange(bool isAct)
     {
-        if (_enemyProvider == null) return;
-
-        _fireElapsed += Time.deltaTime;
-
-        var enemies = FindClosestEnemies();
-        if (enemies.Count == 0) return;
-
-        if (_fireElapsed >= 1f / FireRate)
-        {
-            Attack(enemies);
-        }
-    }
-
-    public void OnSelect()
-    {
-        _rangeViewer.Active(Range, _gridPosition);
-    }
-
-    public void OnDeselect()
-    {
-        _rangeViewer.Deactive();
+        if(isAct) _rangeViewer.Active(Range, _gridPosition);
+        else _rangeViewer.Deactive();
     }
 }

@@ -13,7 +13,7 @@ public class InGame : MonoBehaviour
     [SerializeField] private MultiEnviromentHandler _multiEnviromentHandler;
 
     private InGameContext _context;
-    
+
     private InGameTowerHandler _towerHandler;
     private InGameEnemyHandler _enemyHandler;
     private InGameWaveHandler _waveHandler;
@@ -42,16 +42,17 @@ public class InGame : MonoBehaviour
         );
 
         _networkHandler = new(_context, _multiEnviromentHandler);
-        _towerHandler = new(_context, MaxTower, ForceReturnProjectile);
+        _towerHandler = new(_context, GameManager.Instance.TowerDB, MaxTower, OnSellTower, ForceReturnProjectile);
         _enemyHandler = new(_context, ForceReturnEnemy);
         _waveHandler = new(_context, _stageConfigs[_currentStage], OnWave);
-        _uiHandler = new(_context, OnWave, OnSpawnTower, null, null, Retry, GoToLobby);
+        _uiHandler = new(_context, OnWave, OnSpawnTower, MergeTower, SellTower, Retry, GoToLobby);
     }
 
     private void Start()
     {
         _initialGold = new KeyValuePair<ResourceManager.ResourceType, int>(ResourceManager.ResourceType.Gold, InitialGoldAmount);
         _context.Resource.Initialize(_initialGold);
+        _context.Resource.SetCallback(ResourceManager.ResourceType.Gold, _uiHandler.SetGold);
 
         _towerHandler.Initialize();
         _enemyHandler.Initialize();
@@ -59,12 +60,33 @@ public class InGame : MonoBehaviour
         _waveHandler.Initialize();
         _uiHandler.Initialize();
 
-        TowerGridSelectionHandler.OnSelect += _uiHandler.SelectTowerUI;
-        TowerGridSelectionHandler.OnDeselect += _uiHandler.DeselectTowerUI;
+        TowerGridSelectionHandler.OnSelect = grid =>
+        {
+            if (grid == null) return;
+
+            var tower = grid?.GetTower();
+            if (tower == null) return;
+
+            _uiHandler.SelectTowerUI(tower);
+        };
+        TowerGridSelectionHandler.OnDeselect = () => _uiHandler.DeselectTowerUI();
 
         navMeshSurface.BuildNavMesh();
         RefreshAlivedEnemyCount();
     }
+
+    private void Update()
+    {
+        TowerSelecting();
+        UpdateWave();
+
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            _ = _context.Network.RoomService.LeaveRoom();
+            GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
+        }
+    }
+
     private void OnWave()
     {
         if (_waveHandler.IsFinalWave) return;
@@ -133,18 +155,6 @@ public class InGame : MonoBehaviour
         _ = _networkHandler.SendEnvelope("sync", packet);
     }
 
-    private void Update()
-    {
-        TowerSelecting();
-        UpdateWave();
-
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            _ = _context.Network.RoomService.LeaveRoom();
-            GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
-        }
-    }
-
     private void TowerSelecting()
     {
         if (Input.GetMouseButtonDown(0))
@@ -162,7 +172,7 @@ public class InGame : MonoBehaviour
             }
         }
     }
-    
+
     private void UpdateWave()
     {
         bool isClearEnemiesInWave = RefreshAlivedEnemyCount() == 0 && !GetSpawningState();
@@ -174,6 +184,7 @@ public class InGame : MonoBehaviour
     }
 
     private int RefreshAlivedEnemyCount() => _uiHandler.RefreshAlivedEnemyCount();
+
     private bool GetSpawningState() => _enemyHandler.IsSpawningState;
 
     private void OnSpawnTower()
@@ -181,6 +192,35 @@ public class InGame : MonoBehaviour
         //TODO: 임시코드
         _towerHandler.OnSpawnTower(1);
     }
+
+    private void MergeTower()
+    {
+        var grid = TowerGridSelectionHandler.Current;
+
+        if (grid == null) return;
+
+        _towerHandler.MergeTower(grid);
+    }
+
+    private void SellTower()
+    {
+        var grid = TowerGridSelectionHandler.Current;
+        _towerHandler.SellTower(grid.GetTower());
+        grid.RemoveTower();
+
+        var tower = grid.GetTower();
+        if (tower == null)
+        {
+            _uiHandler.DeselectTowerUI();
+            TowerGridSelectionHandler.Clear();
+        }
+        else
+        {
+            tower.ShowRange(true);
+        }
+    }
+
+    private void OnSellTower(int sellingPrice) => _context.Resource.Earn(ResourceManager.ResourceType.Gold, sellingPrice);
 
     private void GoToLobby() => GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
 

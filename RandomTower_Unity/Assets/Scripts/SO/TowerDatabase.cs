@@ -6,7 +6,7 @@ using UnityEngine;
 public class TowerDatabase : ScriptableObject
 {
     public List<TowerDataConfig> Towers;
-
+    public List<TowerDataConfig> ActiveTowers = new();
     private Dictionary<int, TowerDataConfig> _idDict = null;
     private Dictionary<string, TowerDataConfig> _nameDict = null;
 

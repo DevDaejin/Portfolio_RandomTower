@@ -3,24 +3,37 @@ using UnityEngine;
 
 public static class TowerGridSelectionHandler
 {
-    private static ISelectable _current;
-    public static Action<GameObject> OnSelect;
+    public static TowerGrid Current => _current;
+    private static TowerGrid _current;
+
+    public static Action<TowerGrid> OnSelect;
     public static Action OnDeselect;
 
-    public static void Select(ISelectable newOne)
+    public static void Select(TowerGrid newOne)
     {
-        if (_current == newOne) return;
+        if (Current == newOne) return;
 
-        _current?.OnDeselect();
+        Deselect();
         _current = newOne;
-        _current.OnSelect();
-        OnSelect?.Invoke(_current.Selectd);
+        Select();
     }
 
-    public static void Reselect()
+    public static void Select()
     {
-        _current?.OnSelect();
-        OnSelect?.Invoke(_current?.Selectd);
+        if (Current == null) return;
+
+        OnDeselect?.Invoke();
+        Current?.OnSelect();
+        OnSelect?.Invoke(Current);
+    }
+
+    public static void Deselect()
+    {
+        if(Current == null) return;
+
+        OnDeselect?.Invoke();
+        Current?.OnDeselect();
+        _current = null;
     }
 
     public static void TryDeselectOnEmptyClick(Vector3 screenPosition)
@@ -34,17 +47,12 @@ public static class TowerGridSelectionHandler
         }
         else
         {
-            if (!hit.collider.TryGetComponent<ISelectable>(out _))
+            if (!hit.collider.TryGetComponent<TowerGrid>(out _))
             {
                 Deselect();
             }
         }
     }
 
-    public static void Deselect()
-    {
-        OnDeselect?.Invoke();
-        _current?.OnDeselect();
-        _current = null;
-    }
+    public static void Clear() => _current = null;
 }

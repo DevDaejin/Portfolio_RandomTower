@@ -68,7 +68,7 @@ public class LobbyUI : MonoBehaviour
 
     public void UpdateTowerInfoPanel(TowerData data) => _towerInfo.UpdatePanel(data);
     public void CreateRoomButtons(List<RoomInfo> roomList, Action<string> onEnter) => _roomList.CreateRoomButtons(roomList, onEnter);
-    public void CreateTowerButtons(TowerDatabase database, Dictionary<int, TowerDataConfig> actived) => _towerList.CreateTowerButtons(database, actived);
+    public void CreateTowerButtons(TowerDatabase database) => _towerList.CreateTowerButtons(database);
     public void UpdateOwnedGem(int amount) => _gemTxt.text = amount.ToString();
     public void ActiveRoomListPanel(bool isAct) => _roomList.ActiveUI(isAct);
     public void RefreshUnlockedButton(TowerData data) => _towerList.RefreshUnlockedTowerButton(data);

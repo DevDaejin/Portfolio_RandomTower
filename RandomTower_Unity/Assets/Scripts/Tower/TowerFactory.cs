@@ -6,20 +6,23 @@ using Random = UnityEngine.Random;
 
 public class TowerFactory
 {
-    private readonly TowerDatabase _database;
     private readonly  Transform _towerGroup;
-
     private readonly Dictionary<int, GameObjectPool<BaseTower>> _towerPools = new();
     private readonly Dictionary<int, IProjectilePool> _projectilePools = new();
     public Dictionary<int, IProjectilePool> ProjectilePool => _projectilePools;
 
+    private TowerDatabase _database;
     private const string TowerGroupName = "TowerGroup";
 
-    public TowerFactory(TowerDatabase database)
+    public TowerFactory()
     {
-        _database = database;
         _towerGroup = new GameObject(TowerGroupName).transform;
         _towerGroup.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+    }
+
+    public void Initialize(TowerDatabase database)
+    {
+        _database = database;
     }
 
     public TowerData GetTowerRandomData(int grade)
@@ -29,12 +32,12 @@ public class TowerFactory
         return candidates[Random.Range(0, candidates.Length)].Data;
     }
 
-    public ITower CreateTower(TowerData data, Vector3 gridPosition, IEnemyProvider enemyProvider, Action<int, ISyncObject> onAttack, Action<string> onSendProjectileReturn, int level = 1)
+    public BaseTower CreateTower(TowerData data, Vector3 gridPosition, IEnemyProvider enemyProvider, Action<int, ISyncObject> onAttack, Action<string> onSendProjectileReturn)
     {
         GameObjectPool<BaseTower> towerPool = GetTowerPool(data);
         BaseTower tower = towerPool.Get();
         IProjectilePool projectilePool = GetProjectilePool(data);
-        tower.Initialize(data, gridPosition, projectilePool, enemyProvider, onAttack, onSendProjectileReturn, level);
+        tower.Initialize(data, gridPosition, projectilePool, enemyProvider, onAttack, onSendProjectileReturn);
 
         return tower;
     }
@@ -83,7 +86,7 @@ public class TowerFactory
         return count;
     }
 
-    public void Release(ITower tower)
+    public void Release(BaseTower tower)
     {
         if(tower is BaseTower baseTower &&
             _towerPools.TryGetValue(baseTower.Data.ID, out GameObjectPool<BaseTower> pool))

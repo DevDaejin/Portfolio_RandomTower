@@ -6,10 +6,10 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TowerGrid : MonoBehaviour, IPointerDownHandler, ISelectable
+public class TowerGrid : MonoBehaviour, IPointerDownHandler
 {
     private Transform _transform;
-    private List<ITower> _towers;
+    private List<BaseTower> _towers;
     private const int MaxCount = 3;
 
     private const float LeftSideX = -0.2f;
@@ -29,20 +29,14 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler, ISelectable
         new Vector3(RightSideX, 0, -intervalZ * 0.5f),
     };
 
-    public GameObject Selectd => gameObject;
-
     public void Initialize()
     {
         _transform = GetComponent<Transform>();
         _towers = new();
     }
 
-    public bool TryAddTower(ITower tower)
+    public bool TryAddTower(BaseTower tower)
     {
-        ITower exist = 
-            _towers
-            .FirstOrDefault(createdTower => createdTower.Data.ID == tower.Data.ID);
-
         if (_towers.Count >= MaxCount || (_towers.Count > 0 && _towers[0].Data.IsSpecial))
         {
             return false;
@@ -58,9 +52,18 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler, ISelectable
         return _towers.Count;
     }
 
-    public ITower GetTower()
+    public BaseTower GetTower()
     {
-        return (_towers.Count > 0) ? _towers[0] : null;
+        return (_towers.Count > 0) ? _towers[_towers.Count - 1] : null;
+    }
+
+    public List<BaseTower> GetTowerAll => _towers;
+
+    public void RemoveTower()
+    {
+        if (_towers.Count <= 0) return;
+
+        _towers.Remove(GetTower());
     }
 
     public void RemoveTowerAll()
@@ -92,8 +95,6 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler, ISelectable
         }
     }
 
-
-
     public void OnPointerDown(PointerEventData eventData)
     {
         if (_towers.Count == 0) return;
@@ -101,7 +102,7 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler, ISelectable
         TowerGridSelectionHandler.Select(this);
 
 #if UNITY_EDITOR
-        ITower tower = _towers[0];
+        BaseTower tower = _towers[0];
         StringBuilder sb = new StringBuilder();
         sb.AppendLine($"Tower : {tower.Data.TowerName}");
         sb.AppendLine($"Damage : {tower.Damage}");
@@ -113,11 +114,28 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler, ISelectable
 
     public void OnSelect()
     {
-        _towers[0].Selectable.OnSelect();
+        if(_towers.Count == 0)
+        {
+            return;
+        }
+
+        var lastTower = GetTower();
+        foreach (var tower in _towers)
+        {
+            tower.ShowRange(lastTower == tower);
+        }
     }
 
     public void OnDeselect()
     {
-        _towers[0].Selectable.OnDeselect();
+        if (_towers.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var tower in _towers)
+        {
+            tower.ShowRange(false);
+        }
     }
 }

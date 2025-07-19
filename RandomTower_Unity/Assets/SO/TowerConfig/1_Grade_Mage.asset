@@ -24,5 +24,6 @@ MonoBehaviour:
     _range: 10
     _fireRate: 1
     _targetCount: 1
+    _spawnCoast: 2
     _buyingCoast: 0
     _upgradeCost: 1

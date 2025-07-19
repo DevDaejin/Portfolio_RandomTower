@@ -47,8 +47,8 @@ public class InGameNetworkHandler
 
     private void OnReceivedTowerPacket(SpawnTowerPacket packet)
     {
-        TowerData data = _context.Tower.TowerDatabase.GetTowerByID(int.Parse(packet.SpawnId)).Data;
-        ITower tower = _context.Tower.CreateTower(data, Vector3.down, null, null, 1);
+        TowerData data = _context.Tower.TowerDB.GetTowerByID(int.Parse(packet.SpawnId)).Data;
+        BaseTower tower = _context.Tower.CreateTower(data, Vector3.down, null, null);
 
         ISyncObject syncObject = tower.Transform.GetComponent<ISyncObject>();
         syncObject.Initialize(packet.ObjectId, packet.OwnerId, packet.RoomId);
@@ -58,7 +58,7 @@ public class InGameNetworkHandler
 
     private void OnReceivedProjectilePacket(SpawnProjectilePacket packet)
     {
-        TowerData data = _context.Tower.TowerDatabase.GetTowerByID(int.Parse(packet.SpawnId)).Data;
+        TowerData data = _context.Tower.TowerDB.GetTowerByID(int.Parse(packet.SpawnId)).Data;
 
         IProjectilePool pool = _context.Tower.GetProjectilePool(data);
         Projectile projectile = pool.Get(null, Vector3.down, 0, data.ProjectileSpeed, null);

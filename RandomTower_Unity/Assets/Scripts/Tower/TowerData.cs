@@ -37,6 +37,9 @@ public class TowerData
     public int TargetCount => _targetCount;
     [SerializeField] private int _targetCount;
 
+    public int SpawnCoast => _spawnCoast;
+    [SerializeField] private int _spawnCoast;
+
     public int BuyingCoast => _buyingCoast;
     [SerializeField] private int _buyingCoast;
 

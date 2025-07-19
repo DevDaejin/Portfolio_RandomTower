@@ -19,7 +19,7 @@ public class LobbyTowerListUI : MonoBehaviour
         _onLockTowerClicked = onLockTowerClicked;
     }
 
-    public void CreateTowerButtons(TowerDatabase database, Dictionary<int, TowerDataConfig> actived)
+    public void CreateTowerButtons(TowerDatabase database)
     {
         var children = _towerContainer.GetComponentsInChildren<Transform>().ToList();
         children.Remove(_towerContainer);
@@ -29,6 +29,12 @@ public class LobbyTowerListUI : MonoBehaviour
             {
                 Destroy(child.gameObject);
             }
+        }
+
+        Dictionary<int, TowerDataConfig> actived = new();
+        foreach (var tower in database.ActiveTowers)
+        {
+            actived[tower.Data.ID] = tower;
         }
 
         createdButtons.Clear();

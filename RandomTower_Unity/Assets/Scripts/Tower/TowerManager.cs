@@ -1,16 +1,18 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TowerManager : MonoBehaviour
 {
     [SerializeField] private Transform _installationGrid;
     [SerializeField] private TowerChanceTable _towerChanceTable;
-    [SerializeField] private TowerDatabase _towerDatabase;
-    public TowerDatabase TowerDatabase => _towerDatabase;
 
     private IEnemyProvider _enemyProvider;
     private TowerGridController _gridController;
     private TowerFactory _towerFactory;
+
+    public TowerDatabase TowerDB => _towerDB;
+    private TowerDatabase _towerDB;
 
     public int MaxTower => _installableCount;
     private int _installableCount;
@@ -24,22 +26,24 @@ public class TowerManager : MonoBehaviour
     {
         Transform[] tree = GetChildrenTransformArray(_installationGrid);
         _gridController = new TowerGridController(tree);
-        _towerFactory = new TowerFactory(TowerDatabase);
+        _towerFactory = new TowerFactory();
     }
-    
+
+    //TODO : 타워 강화 로직 파라미터로 전달 받기
+    public void Initialize(TowerDatabase towerDB, IEnemyProvider enemyProvider, int installableCount)
+    {
+        _towerDB = towerDB;
+        _towerFactory.Initialize(_towerDB);
+        _enemyProvider = enemyProvider;
+        _installableCount = installableCount;
+        ApplyTowerLevel();
+    }
+
     public void SetInstallPoints(Transform points)
     {
         _installationGrid = points;
         Transform[] tree = GetChildrenTransformArray(_installationGrid);
         _gridController = new TowerGridController(tree);
-    }
-
-    //TODO : 타워 강화 로직 파라미터로 전달 받기
-    public void Initialize(IEnemyProvider enemyProvider, int installableCount)
-    {
-        _enemyProvider = enemyProvider;
-        _installableCount = installableCount;
-        ApplyTowerLevel();
     }
 
     private void ApplyTowerLevel()
@@ -67,7 +71,7 @@ public class TowerManager : MonoBehaviour
             data = grid.GetTower().Data;
         }
 
-        ITower tower = CreateTower(data, grid.transform.position, _enemyProvider, OnSendReturnProejctile, 1);
+        BaseTower tower = CreateTower(data, grid.transform.position, _enemyProvider, OnSendReturnProejctile);
 
         if (!grid.TryAddTower(tower))
         {
@@ -78,13 +82,50 @@ public class TowerManager : MonoBehaviour
             ISyncObject syncObject = tower.Transform.gameObject.GetComponent<ISyncObject>();
             OnSendSpawnTowerPacket?.Invoke(data.ID, syncObject);
             OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
-            TowerGridSelectionHandler.Reselect();
+            TowerGridSelectionHandler.Select();
         }
     }
 
-    public ITower CreateTower(TowerData data, Vector3 position, IEnemyProvider enemyProvider, Action<string> onSendProjectileReturn, int level)
+    public void MergeTower(TowerGrid grid)
     {
-        return _towerFactory.CreateTower(data, position, enemyProvider, OnTowerAttack, onSendProjectileReturn, level);
+        if (grid == null) return;
+
+        int towerGrade = grid.GetTower().Data.Grade + 1;
+
+        foreach (var tower in grid.GetTowerAll)
+        {
+            _towerFactory.Release(tower);
+        }
+        grid.RemoveTowerAll();
+
+        var data = _towerFactory.GetTowerRandomData(towerGrade);
+
+        var newGrid = _gridController.GetGridDifferentID(data);
+        if (newGrid == null) newGrid = grid;
+        BaseTower newTower = CreateTower(data, newGrid.transform.position, _enemyProvider, OnSendReturnProejctile);
+
+        if(!grid.TryAddTower(newTower))
+        {
+            _towerFactory.Release(newTower);
+        }
+        else
+        {
+            ISyncObject syncObject = newTower.Transform.gameObject.GetComponent<ISyncObject>();
+            OnSendSpawnTowerPacket?.Invoke(data.ID, syncObject);
+            OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
+            TowerGridSelectionHandler.Select();
+        }
+    }
+
+    public void SellTower(BaseTower tower, Action<int> onSellTower)
+    {
+        onSellTower?.Invoke(Mathf.RoundToInt(tower.Data.SpawnCoast * 0.5f));
+        _towerFactory.Release(tower);
+    }
+
+    public BaseTower CreateTower(TowerData data, Vector3 position, IEnemyProvider enemyProvider, Action<string> onSendProjectileReturn)
+    {
+        return _towerFactory.CreateTower(data, position, enemyProvider, OnTowerAttack, onSendProjectileReturn);
     }
 
     private void OnTowerAttack(int id, ISyncObject syncable)

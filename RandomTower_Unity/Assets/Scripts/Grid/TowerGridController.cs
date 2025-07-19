@@ -41,7 +41,7 @@ public class TowerGridController
 
         foreach (TowerGrid grid in _grids)
         {
-            ITower tower = grid.GetTower();
+            var tower = grid.GetTower();
             if (tower == null) continue;
 
             if (tower.Data.Grade == data.Grade &&

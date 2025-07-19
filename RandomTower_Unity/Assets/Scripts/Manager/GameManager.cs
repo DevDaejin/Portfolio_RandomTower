@@ -49,7 +49,6 @@ public class GameManager : MonoBehaviour
     public enum Scenes { Main, Lobby, Game };
 
     public TowerDatabase TowerDB => _towerDB;
-    public Dictionary<int, TowerDataConfig> ActivedTowers { get; private set; } = new();
 
     private void Awake()
     {
@@ -112,10 +111,10 @@ public class GameManager : MonoBehaviour
 
     private void LoadActivedTowers()
     {
-        ActivedTowers.Clear();
+        _towerDB.ActiveTowers.Clear();
         foreach (var towerID in Data.Loaded.GainedTowerID)
         {
-            ActivedTowers[towerID] = _towerDB.GetTowerByID(towerID);
+            _towerDB.ActiveTowers.Add(_towerDB.GetTowerByID(towerID));
         }
     }
 }
