@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class LobbyTowerListUI : MonoBehaviour
 {
@@ -19,9 +21,14 @@ public class LobbyTowerListUI : MonoBehaviour
 
     public void CreateTowerButtons(TowerDatabase database, Dictionary<int, TowerDataConfig> actived)
     {
-        while (_towerContainer.childCount > 0)
+        var children = _towerContainer.GetComponentsInChildren<Transform>().ToList();
+        children.Remove(_towerContainer);
+        foreach(var child in children)
         {
-            Destroy(_towerContainer.GetChild(0).gameObject);
+            if(child != null && child.parent == _towerContainer)
+            {
+                Destroy(child.gameObject);
+            }
         }
 
         createdButtons.Clear();

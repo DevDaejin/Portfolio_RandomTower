@@ -39,6 +39,7 @@ public class GlobalOptionUI : MonoBehaviour
         
         InitializeResetButton();
 
+        _closeButton.onClick.RemoveAllListeners();
         _closeButton.onClick.AddListener(() => ActiveUI(false));
     }
 

@@ -30,8 +30,14 @@ public class NetworkManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        RoomService?.LeaveRoom();
-        Disconnect();
+        if (IsConnect)
+        {
+            if (!string.IsNullOrWhiteSpace(RoomID))
+            {
+                RoomService?.LeaveRoom();
+            }
+            Disconnect();
+        }
     }
 
     public async void Connect(string ip, string port)

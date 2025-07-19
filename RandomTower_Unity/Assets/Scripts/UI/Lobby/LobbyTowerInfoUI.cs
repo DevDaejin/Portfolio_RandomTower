@@ -20,6 +20,8 @@ public class LobbyTowerInfoUI : MonoBehaviour
     public void Initialize(Action OnUpgradeClicked)
     {
         _towerInfoPanel.SetActive(false);
+
+        _upgradeButton.onClick.RemoveAllListeners();
         _upgradeButton.onClick.AddListener(() => OnUpgradeClicked?.Invoke());
     }
 

@@ -39,11 +39,14 @@ public class LobbyUI : MonoBehaviour
         _towerInfo.Initialize(OnUpgrade);
         _towerBuying.Initialize(OnBought);
 
+        _playButton.onClick.RemoveAllListeners();
         _playButton.onClick.AddListener(()=> OnPlay?.Invoke());
+
+        _backButton.onClick.RemoveAllListeners();
         _backButton.onClick.AddListener(()=> OnBack?.Invoke());
 
-        Action backButtonCallback = () => GameManager.Instance.LoadScene(GameManager.Scenes.Main);
-        _optionButton.onClick.AddListener(() => GameManager.Instance.UI.Global.ShowMenu(backButtonCallback));
+        _optionButton.onClick.RemoveAllListeners();
+        _optionButton.onClick.AddListener(() => GameManager.Instance.UI.Global.ShowMenu(OnBack));
     }
 
     

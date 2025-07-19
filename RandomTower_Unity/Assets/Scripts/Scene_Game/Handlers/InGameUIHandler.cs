@@ -39,8 +39,12 @@ public class InGameUIHandler
             _onMerge,
             _onSell);
 
+        _context.UI.WaveButton.onClick.RemoveAllListeners();
         _context.UI.WaveButton.onClick.AddListener(() =>_onWave?.Invoke());
+
+        _context.UI.SpawnButton.onClick.RemoveAllListeners();
         _context.UI.SpawnButton.onClick.AddListener(() => _onSpawnTower?.Invoke());
+
         _context.UI.SetResultButtons(_onRetry, _onGoToLobby);
     }
 

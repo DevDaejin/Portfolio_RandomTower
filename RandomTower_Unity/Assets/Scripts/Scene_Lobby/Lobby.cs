@@ -44,7 +44,6 @@ public class Lobby : MonoBehaviour
         _ui.Initialize();
         _ui.UpdateOwnedGem(GameManager.Instance.Data.Loaded.Gem);
         _ui.CreateTowerButtons(GameManager.Instance.TowerDB, GameManager.Instance.ActivedTowers);
-        InitializeUICallbacks();
     }
 
     private void InitializeUICallbacks()

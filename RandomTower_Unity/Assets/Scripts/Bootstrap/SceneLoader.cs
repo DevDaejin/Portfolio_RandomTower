@@ -6,40 +6,43 @@ public class SceneLoader : MonoBehaviour
 {
     public LoadingUI LoadingUI => _loadingUI ??= GetComponentInChildren<LoadingUI>(true);
     [SerializeField] private LoadingUI _loadingUI;
+    private bool _isLoading;
 
-    WaitForSeconds waitting = new WaitForSeconds(0.5f);
-
-    public string CurrentScene { get; private set; } = string.Empty;
+    public string CurrentSceneName { get; private set; } = string.Empty;
 
     public void LoadSceneAsync(string name)
     {
-        CurrentScene = name;
-        Scene scene = SceneManager.GetSceneByName(CurrentScene);
-        if (scene == null)
+        if(_isLoading)
         {
-            Debug.Log("Scene name is not valid");
+            Debug.Log("duplicated load blocked");
+            return;
+        }
+        
+        if (!Application.CanStreamedLevelBeLoaded(name))
+        {
+            Debug.Log($"Invalid scene : {name}");
             return;
         }
 
+        _isLoading = true;
+        CurrentSceneName = name;
         LoadingUI.Show();
         StartCoroutine(LoadSceneRoutine());
     }
 
     private IEnumerator LoadSceneRoutine()
     {
-        Debug.Log(CurrentScene);
-        AsyncOperation operation = SceneManager.LoadSceneAsync(CurrentScene);
+        AsyncOperation operation = SceneManager.LoadSceneAsync(CurrentSceneName);
         operation.allowSceneActivation = false;
 
-        while(!operation.isDone)
-        {
-            if(operation.progress >= 0.9f)
-            {
-                yield return waitting;
-                operation.allowSceneActivation = true;
-            }
-            yield return null;
-        }
+
+        while (operation.progress < 0.9f) yield return null;
+
+        yield return null;
+        operation.allowSceneActivation = true;
+        yield return null;
+
         LoadingUI.Hide();
+        _isLoading = false;
     }
 }

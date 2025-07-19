@@ -15,9 +15,16 @@ public class GlobalMenuUI : MonoBehaviour
 
     public void Initilaize(Action onOption, Action onQuit)
     {
+        _optionButton.onClick.RemoveAllListeners();
         _optionButton.onClick.AddListener(() => onOption.Invoke());
+
+        _backButton.onClick.RemoveAllListeners();
         _backButton.onClick.AddListener(() => _onBack?.Invoke());
+
+        _quitButton.onClick.RemoveAllListeners();
         _quitButton.onClick.AddListener(() => onQuit?.Invoke());
+
+        _closeButton.onClick.RemoveAllListeners();
         _closeButton.onClick.AddListener(() => ActiveUI(false));
     }
 

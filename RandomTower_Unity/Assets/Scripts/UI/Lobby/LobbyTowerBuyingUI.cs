@@ -16,7 +16,10 @@ public class LobbyTowerBuyingUI : MonoBehaviour
     public void Initialize(Action OnBought)
     {
         _onBought = OnBought;
+
+        _towerBuyingButton.onClick.RemoveAllListeners();
         _towerBuyingButton.onClick.AddListener(Buy);
+
         _towerBuyingPanel.SetActive(false);
     }
 

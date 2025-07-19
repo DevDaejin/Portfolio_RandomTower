@@ -15,9 +15,9 @@ public class InGameTowerOptionUI : MonoBehaviour
     public void Initialize(Action merge, Action sell)
     {
         MergeButton?.onClick.RemoveAllListeners();
-        SellButton?.onClick.RemoveAllListeners();
-
         MergeButton.onClick.AddListener(() => merge?.Invoke());
+        
+        SellButton?.onClick.RemoveAllListeners();
         SellButton.onClick.AddListener(() => sell?.Invoke());
     }
 

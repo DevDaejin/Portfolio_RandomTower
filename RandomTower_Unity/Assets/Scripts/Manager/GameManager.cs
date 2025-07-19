@@ -69,9 +69,6 @@ public class GameManager : MonoBehaviour
         Network.OnError += ActiveNetowrkPanel;
         Network.OnClose += ActiveNetowrkPanel;
 
-        //UI.Global.OnNetworkConfirmClicked = () => LoadScene(Scenes.Main);
-        //UI.Global.OnNetworkWaittingClicked = () => LoadScene(Scenes.Lobby);
-
         LoadActivedTowers();
 
         var loadedGem = new KeyValuePair<ResourceManager.ResourceType, int>(ResourceManager.ResourceType.Gem, Data.Loaded.Gem);

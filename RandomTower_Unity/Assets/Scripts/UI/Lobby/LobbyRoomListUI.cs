@@ -23,7 +23,10 @@ public class LobbyRoomListUI : MonoBehaviour
     {
         _roomButtons = new(_roomButton, _roomContainer);
 
+        _createRoomButton.onClick.RemoveAllListeners();
         _createRoomButton.onClick.AddListener(() => OnCreateButtonClicked?.Invoke());
+
+        _roomListCancelButton.onClick.RemoveAllListeners();
         _roomListCancelButton.onClick.AddListener(() => _roomListPanel.SetActive(false));
     }
 

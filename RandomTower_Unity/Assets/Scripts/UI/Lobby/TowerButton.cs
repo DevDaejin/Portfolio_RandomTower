@@ -23,12 +23,15 @@ public class TowerButton : MonoBehaviour
         _picture.sprite = Data.TowerSprite;
 
         _onButton = onButton;
+
+        _button.onClick.RemoveAllListeners();
         _button.onClick.AddListener(() => _onButton?.Invoke(Data));
 
         _onLockButton = onLockButton;
         _isLocked = _onLockButton != null; 
         if (_isLocked)
         {
+            _lockerButton.onClick.RemoveAllListeners();
             _lockerButton.onClick.AddListener(() => _onLockButton?.Invoke(Data));
         }
 

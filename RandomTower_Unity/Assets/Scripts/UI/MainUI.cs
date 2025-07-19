@@ -25,14 +25,14 @@ public class MainUI : MonoBehaviour
 
     public event Action<string> OnIpInput;
     public event Action<string> OnPortInput;
-    public event Action<string, string> OnMultiConfirm;
+    public Action<string, string> OnMultiConfirm;
 
     [Header("Connecting")]
     [SerializeField] private GameObject _connectingPanel;
     [SerializeField] private Button _connectingCancelButton;
     [SerializeField] private TMP_Text _connectingTxt;
     private readonly StringBuilder _connectBuilder = new(); 
-    public event Action OnConnectingCancel;
+    public Action OnConnectingCancel;
 
     private float _dotElpased = 0;
     private float _dotDuration = 0.5f;
