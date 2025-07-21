@@ -39,12 +39,8 @@ public class InGameUIHandler
             _onMerge,
             _onSell);
 
-        _context.UI.WaveButton.onClick.RemoveAllListeners();
         _context.UI.WaveButton.onClick.AddListener(() =>_onWave?.Invoke());
-
-        _context.UI.SpawnButton.onClick.RemoveAllListeners();
         _context.UI.SpawnButton.onClick.AddListener(() => _onSpawnTower?.Invoke());
-
         _context.UI.SetResultButtons(_onRetry, _onGoToLobby);
     }
 
@@ -55,28 +51,31 @@ public class InGameUIHandler
         return count;
     }
 
-    public void InteractableWaveButton(bool isAct)
+    public void RefreshInstalledTowerCount()
     {
-        _context.UI.InteractableWaveButton(isAct);
+        int count = _context.Tower.InstalledCount;
+        _context.UI.SetTowerCount(count, _context.Tower.MaxTower);
     }
 
-    public void SelectTowerUI(BaseTower gameObject)
+    public void SetInteractableMergeButton(bool isAct) => _context.UI.SetInterableMergeButton(isAct);
+
+    public void SetInteractableWaveButton(bool isAct) => _context.UI.SetInteractableWaveButton(isAct);
+
+    public void SelectTowerUI(BaseTower tower, bool isMergeable)
     {
-        if (gameObject == null) return;
+        if (tower == null) return;
 
         _context.UI.ActiveTowerOptionMenuUI(true);
-        _context.UI.MoveTowerOptionMenuUI(gameObject.transform.position);
+        _context.UI.SetInterableMergeButton(isMergeable);
+        _context.UI.MoveTowerOptionMenuUI(tower.transform.position);
     }
 
     public void SetGold(int amount) => _context.UI.SetGoldCount(amount);
 
-    public void DeselectTowerUI()
-    {
-        _context.UI.ActiveTowerOptionMenuUI(false);
-    }
+    public void DeselectTowerUI() => _context.UI.ActiveTowerOptionMenuUI(false);
 
     public void Reset()
     {
-
+        Initialize();
     }
 }

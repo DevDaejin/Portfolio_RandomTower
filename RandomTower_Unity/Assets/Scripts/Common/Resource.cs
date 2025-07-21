@@ -18,7 +18,7 @@ public class Resource
     public void Earn(int amount)
     {
         _value += amount;
-        ValueChanged?.Invoke(_value);
+        Invoke();
     }
 
     public bool Spend(int amount)
@@ -26,10 +26,15 @@ public class Resource
         if(_value - amount >= 0)
         {
             _value -= amount;
-            ValueChanged?.Invoke(_value);
+            Invoke();
             return true;
         }
 
         return false;
+    }
+
+    public void Invoke()
+    {
+        ValueChanged?.Invoke(_value);
     }
 }

@@ -30,10 +30,9 @@ public class InGameWaveHandler
 
     public WaveController.WaveState GetCurrentWaveState => _context.Wave.CurrentState;
 
-    public bool IsFinalWave => _context.Wave.IsFinalWave;
-
     public void StartWave() => _context.Wave.StartWave();
     public void ForceTimeUp() => _context.Wave.ForceTimeUp();
+    public void EndWave() => _context.Wave.EndWave();
 
     private void OnWaveStarted()
     {

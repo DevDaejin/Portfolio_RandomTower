@@ -57,7 +57,9 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler
         return (_towers.Count > 0) ? _towers[_towers.Count - 1] : null;
     }
 
-    public List<BaseTower> GetTowerAll => _towers;
+    public List<BaseTower> GetTowerList => _towers;
+
+    public bool IsMergeable => _towers.Count == MaxCount;
 
     public void RemoveTower()
     {

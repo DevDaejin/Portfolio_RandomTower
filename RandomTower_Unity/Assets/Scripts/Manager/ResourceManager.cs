@@ -23,4 +23,12 @@ public class ResourceManager
     public int Get(ResourceType type) => _resourceDict[type].Get();
     public void Earn(ResourceType type, int amount) => _resourceDict[type].Earn(amount);
     public bool Spend(ResourceType type, int amount) => _resourceDict[type].Spend(amount);
+
+    public void Reset()
+    {
+        foreach (var pair in _resourceDict)
+        {
+            _resourceDict[pair.Key].Invoke();
+        }
+    }
 }

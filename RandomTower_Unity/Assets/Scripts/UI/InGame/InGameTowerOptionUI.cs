@@ -5,27 +5,28 @@ using UnityEngine.UI;
 public class InGameTowerOptionUI : MonoBehaviour
 {
     [SerializeField] private GameObject _towerOptionalMenuPanel;
-    private RectTransform _towerOptionMenuRectTransform;
-    public Button MergeButton => _mergeButton;
     [SerializeField] private Button _mergeButton;
-
-    public Button SellButton => _sellButton;
     [SerializeField] private Button _sellButton;
+
+    private Camera _camera;
 
     public void Initialize(Action merge, Action sell)
     {
-        MergeButton?.onClick.RemoveAllListeners();
-        MergeButton.onClick.AddListener(() => merge?.Invoke());
-        
-        SellButton?.onClick.RemoveAllListeners();
-        SellButton.onClick.AddListener(() => sell?.Invoke());
+        _mergeButton?.onClick.RemoveAllListeners();
+        _mergeButton.onClick.AddListener(() => merge?.Invoke());
+
+        _sellButton?.onClick.RemoveAllListeners();
+        _sellButton.onClick.AddListener(() => sell?.Invoke());
     }
 
     public void ActiveUI(bool isAct) => _towerOptionalMenuPanel.SetActive(isAct);
 
+    public void SetInterableMergeButton(bool isAct) => _mergeButton.interactable = isAct;
+
     public void MoveUI(Vector3 position)
     {
-        var newPosition = Camera.main.WorldToScreenPoint(position);
+        _camera ??= Camera.main;
+        var newPosition = _camera.WorldToScreenPoint(position);
         _towerOptionalMenuPanel.transform.position = newPosition;
     }
 }

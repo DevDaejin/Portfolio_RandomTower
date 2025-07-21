@@ -2299,7 +2299,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _installationGrid: {fileID: 716944009}
   _towerChanceTable: {fileID: 11400000, guid: 59339ef7231fc93488191a19516e18eb, type: 2}
-  _towerDatabase: {fileID: 11400000, guid: 591c47ce350bccb448e5639e03007e4b, type: 2}
 --- !u!114 &1195791141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2314,7 +2313,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stageConfigs:
   - {fileID: 11400000, guid: fd2e73c5244c0c445bc25efb35669be6, type: 2}
-  navMeshSurface: {fileID: 1235937571}
+  _navMeshSurface: {fileID: 1235937571}
   _multiEnviromentHandler: {fileID: 1195791144}
 --- !u!114 &1195791142
 MonoBehaviour:

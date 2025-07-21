@@ -16,6 +16,7 @@ public class TowerManager : MonoBehaviour
 
     public int MaxTower => _installableCount;
     private int _installableCount;
+    public int InstalledCount => _towerFactory.GetTowerCount();
 
     public Action<int, ISyncObject> OnSendSpawnTowerPacket;
     public Action<int, ISyncObject> OnSendSpawnProjectilePacket;
@@ -92,7 +93,7 @@ public class TowerManager : MonoBehaviour
 
         int towerGrade = grid.GetTower().Data.Grade + 1;
 
-        foreach (var tower in grid.GetTowerAll)
+        foreach (var tower in grid.GetTowerList)
         {
             _towerFactory.Release(tower);
         }

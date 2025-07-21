@@ -48,17 +48,9 @@ public class WaveController
         CurrentState = WaveState.Idle;
         _timer.Stop();
 
-        OnWaveChanged?.Invoke(CurrentWaveIndex, _maxWave);
+        OnWaveChanged?.Invoke(CurrentWaveIndex + 1, _maxWave);
         OnTimeChanged?.Invoke(_timer.TimeLeft);
     }
-
-    //TODO: 추후 삭제 테스트용
-#if UNITY_EDITOR
-    public void TestCode()
-    {
-        _timer.TimeLeft = 1;
-    }
-#endif
 
     public void StartWave()
     {
@@ -82,7 +74,6 @@ public class WaveController
     public void EndWave()
     {
         CurrentWaveIndex++;
-
         if (CurrentWaveIndex >= _maxWave)
         {
             ClearStage();
@@ -109,7 +100,7 @@ public class WaveController
         }
 
         if (IsFinalWave && alive == 0 && !_getSpawningState.Invoke())
-        {
+        {            
             ClearStage();
         }
     }
@@ -117,8 +108,6 @@ public class WaveController
     private void OnTimeUp()
     {
         int alive = _getAliveEnemyCount.Invoke();
-        OnEnemyCountChanged?.Invoke(alive, _maxEnemies);
-
         if (IsFinalWave && alive > 0)
         {
             FailStage();

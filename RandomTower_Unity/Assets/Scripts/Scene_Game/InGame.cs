@@ -9,7 +9,7 @@ using UnityEngine;
 public class InGame : MonoBehaviour
 {
     [SerializeField] private List<StageConfig> _stageConfigs;
-    [SerializeField] private NavMeshSurface navMeshSurface;
+    [SerializeField] private NavMeshSurface _navMeshSurface;
     [SerializeField] private MultiEnviromentHandler _multiEnviromentHandler;
 
     private InGameContext _context;
@@ -22,7 +22,7 @@ public class InGame : MonoBehaviour
 
     private KeyValuePair<ResourceManager.ResourceType, int> _initialGold;
     private int _currentStage = 0;
-    private int maxWave = 0;
+    private int _maxWave = 0;
 
     private const int MaxTower = 20;
     private const int MaxEnemy = 20;
@@ -33,19 +33,19 @@ public class InGame : MonoBehaviour
     {
         GameManager.Instance.UI.Initialize(UIManager.UIType.InGame);
 
-        maxWave = _stageConfigs[_currentStage].WaveData.SpawnList.Count;
+        _maxWave = _stageConfigs[_currentStage].WaveData.SpawnList.Count;
 
         _context = new InGameContext(
             GetComponent<TowerManager>(),
             GetComponent<EnemyManager>(),
-            new WaveController(maxWave, MaxEnemy, WaveDuration, GetSpawningState, RefreshAlivedEnemyCount)
+            new WaveController(_maxWave, MaxEnemy, WaveDuration, GetSpawningState, RefreshAlivedEnemyCount)
         );
 
         _networkHandler = new(_context, _multiEnviromentHandler);
         _towerHandler = new(_context, GameManager.Instance.TowerDB, MaxTower, OnSellTower, ForceReturnProjectile);
         _enemyHandler = new(_context, ForceReturnEnemy);
         _waveHandler = new(_context, _stageConfigs[_currentStage], OnWave);
-        _uiHandler = new(_context, OnWave, OnSpawnTower, MergeTower, SellTower, Retry, GoToLobby);
+        _uiHandler = new(_context, OnWave, OnSpawnTower, OnMergeTower, OnSellTower, OnRetry, OnGoToLobby);
     }
 
     private void Start()
@@ -67,11 +67,11 @@ public class InGame : MonoBehaviour
             var tower = grid?.GetTower();
             if (tower == null) return;
 
-            _uiHandler.SelectTowerUI(tower);
+            _uiHandler.SelectTowerUI(tower, grid.IsMergeable);
         };
         TowerGridSelectionHandler.OnDeselect = () => _uiHandler.DeselectTowerUI();
 
-        navMeshSurface.BuildNavMesh();
+        _navMeshSurface.BuildNavMesh();
         RefreshAlivedEnemyCount();
     }
 
@@ -89,8 +89,6 @@ public class InGame : MonoBehaviour
 
     private void OnWave()
     {
-        if (_waveHandler.IsFinalWave) return;
-
         WaveController.WaveState state = _waveHandler.GetCurrentWaveState;
         int alive = _enemyHandler.GetAlivedEnemyCount;
         bool isSpawning = _enemyHandler.IsSpawningState;
@@ -103,7 +101,7 @@ public class InGame : MonoBehaviour
 
         else if (state == WaveController.WaveState.InProgress && !isSpawning && alive == 0)
         {
-            _waveHandler.ForceTimeUp();
+            _waveHandler.EndWave();
         }
     }
 
@@ -176,7 +174,7 @@ public class InGame : MonoBehaviour
     private void UpdateWave()
     {
         bool isClearEnemiesInWave = RefreshAlivedEnemyCount() == 0 && !GetSpawningState();
-        _uiHandler.InteractableWaveButton(isClearEnemiesInWave);
+        _uiHandler.SetInteractableWaveButton(isClearEnemiesInWave);
 
         if (_waveHandler.IsWaveStooped) return;
 
@@ -193,7 +191,7 @@ public class InGame : MonoBehaviour
         _towerHandler.OnSpawnTower(1);
     }
 
-    private void MergeTower()
+    private void OnMergeTower()
     {
         var grid = TowerGridSelectionHandler.Current;
 
@@ -202,7 +200,7 @@ public class InGame : MonoBehaviour
         _towerHandler.MergeTower(grid);
     }
 
-    private void SellTower()
+    private void OnSellTower()
     {
         var grid = TowerGridSelectionHandler.Current;
         _towerHandler.SellTower(grid.GetTower());
@@ -218,18 +216,21 @@ public class InGame : MonoBehaviour
         {
             tower.ShowRange(true);
         }
+
+        _uiHandler.SetInteractableMergeButton(grid.IsMergeable);
+        _uiHandler.RefreshInstalledTowerCount();
     }
 
     private void OnSellTower(int sellingPrice) => _context.Resource.Earn(ResourceManager.ResourceType.Gold, sellingPrice);
 
-    private void GoToLobby() => GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
+    private void OnGoToLobby() => GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
 
-    private void Retry()
+    private void OnRetry()
     {
+        _context.Resource.Reset();
         _enemyHandler.Reset();
         _towerHandler.Reset();
         _waveHandler.Reset();
         _uiHandler.Reset();
-        _context.Resource.Initialize(_initialGold);
     }
 }
