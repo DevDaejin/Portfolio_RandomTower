@@ -19,6 +19,10 @@ public class GlobalUI : MonoBehaviour
             ()=>ShowOption(), 
             ()=>ShowQuit(Application.Quit, null)
         );
+
+        _optionUI.ActiveUI(false);
+        _menuUI.ActiveUI(false);
+        _messageBoxUI.ActiveUI(false);
     }
 
     private void MoveBackground(GameObject target)
