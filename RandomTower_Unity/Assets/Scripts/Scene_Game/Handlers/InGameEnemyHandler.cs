@@ -13,7 +13,7 @@ public class InGameEnemyHandler
 
     public void Initialize()
     {
-        _context.Enemy.OnReward += OnReward;
+        _context.Enemy.OnReward = OnReward;
         if (_context.Network.IsConnect)
         {
             _context.Enemy.OnSendSpawnPacket += (id, syncObject) => _context.Network.OnSendSpawnPacket<SpawnEnemyPacket>("enemy", id, _context.IDGenerator.Get(), syncObject);
@@ -29,7 +29,6 @@ public class InGameEnemyHandler
     {
         ResourceManager.ResourceType type = ResourceManager.ResourceType.Gold;
         _context.Resource.Earn(type, gold);
-        _context.UI.SetGoldCount(_context.Resource.Get(type));
     }
 
     public void Reset()

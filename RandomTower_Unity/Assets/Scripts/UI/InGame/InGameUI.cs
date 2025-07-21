@@ -1,7 +1,4 @@
-using Newtonsoft.Json.Linq;
-using NUnit.Framework;
 using System;
-using System.Linq;
 using System.Text;
 using TMPro;
 using UnityEngine;
@@ -14,6 +11,7 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private InGameResultUI _resultUI;
     [SerializeField] private InGameTowerOptionUI _towerOptionUI;
 
+    [SerializeField] private Button _menuButton;
     public Button WaveButton => _waveButton;
     [SerializeField] private Button _waveButton;
     public Button SpawnButton => _spawnButton;
@@ -26,55 +24,56 @@ public class InGameUI : MonoBehaviour
 
     private RectTransform _infoPanelRectTransform;
 
+    private InGameUISetting _setting;
+
     private EventTrigger _spawnTrigger;
     private EventTrigger _upgradeTrigger;
 
-    private Func<int> _onUpdateSpawnPrice;
-    private Func<int> _onUpdateUpgradePrice;
-    private Func<int[]> _onUpdateUpgradeInfo;
-
     private enum ButtonType { Spawn, Upgrade }
 
-    public void Initialize(int maxWave, int maxEnemy, int maxTower, float time, int gold, bool isHost, Action merge, Action sell, Func<int> onSpawnPrice, Func<int>onUpgradePrice, Func<int[]> onUpgradeInfo)
+    public void Initialize(InGameUISetting setting)
     {
-        _resultUI.Intialize();
-        _towerOptionUI.Initialize(merge, sell);        
+        _setting = setting;
 
-        SetWave(0, maxWave);
-        SetEnemyCount(0, maxEnemy);
-        SetTimer(time);
-        SetGoldCount(gold);
-        SetTowerCount(0, maxTower);
+        _resultUI.Intialize(_setting.OnSuccessReward, _setting.OnFailedReward);
+        _towerOptionUI.Initialize(_setting.OnMerge, _setting.OnSell);        
+
+        SetWave(0, _setting.MaxWave);
+        SetEnemyCount(0, _setting.MaxEnemy);
+        SetTimer(_setting.Time);
+        SetGoldCount(_setting.Gold);
+        SetTowerCount(0, _setting.MaxTower);
         _resultUI.ActiveUI(false);
 
         UpgradeButton.onClick.RemoveAllListeners();
         SpawnButton.onClick.RemoveAllListeners();
         WaveButton.onClick.RemoveAllListeners();
+        _menuButton.onClick.RemoveAllListeners();
 
-        UpgradeButton.onClick.AddListener(() => UpdateInfoText(ButtonType.Upgrade));
-        SpawnButton.onClick.AddListener(() => UpdateInfoText(ButtonType.Spawn));
-
-        WaveButton.gameObject.SetActive(isHost);
-
-        _onUpdateSpawnPrice = onSpawnPrice;
-        _onUpdateUpgradePrice = onUpgradePrice;
-        _onUpdateUpgradeInfo = onUpgradeInfo;
+        WaveButton.gameObject.SetActive(_setting.IsHost);
+        _menuButton.onClick.AddListener(() => setting?.OnMenu?.Invoke());
 
         _spawnTrigger ??= SpawnButton.GetComponent<EventTrigger>();
-        _spawnTrigger.triggers.Clear();
-        SetEventTrigger(_spawnTrigger, EventTriggerType.PointerEnter, ActiveSpawnInfoPanel);
-        SetEventTrigger(_spawnTrigger, EventTriggerType.PointerExit, DeactiveInfoPanel);
+        SetEventTriggers(_spawnTrigger, ActiveSpawnInfoPanel, DeactiveInfoPanel);
 
         _upgradeTrigger ??= UpgradeButton.GetComponent<EventTrigger>();
-        _upgradeTrigger.triggers.Clear();
-        SetEventTrigger(_upgradeTrigger, EventTriggerType.PointerEnter, ActiveUpgradeInfoPanel);
-        SetEventTrigger(_upgradeTrigger, EventTriggerType.PointerExit, DeactiveInfoPanel);
+        SetEventTriggers(_upgradeTrigger, ActiveUpgradeInfoPanel, DeactiveInfoPanel);
+    }
+
+    private void SetEventTriggers(EventTrigger trigger, Action onActive, Action onDeactive)
+    {
+        trigger.triggers.Clear();
+        SetEventTrigger(trigger, EventTriggerType.PointerEnter, onActive);
+        SetEventTrigger(trigger, EventTriggerType.PointerUp, onActive);
+
+        SetEventTrigger(trigger, EventTriggerType.PointerExit, onDeactive);
+        SetEventTrigger(trigger, EventTriggerType.PointerDown, onDeactive);
     }
 
     private void SetEventTrigger(EventTrigger trigger, EventTriggerType type, Action callback)
     {
-        var entry = new EventTrigger.Entry { eventID = type};
-        entry.callback.AddListener( _ => callback.Invoke());
+        var entry = new EventTrigger.Entry { eventID = type };
+        entry.callback.AddListener(_ => callback.Invoke());
         trigger.triggers.Add(entry);
     }
 
@@ -94,44 +93,66 @@ public class InGameUI : MonoBehaviour
     {
         StringBuilder result = new();
         result.Clear();
+        result = UpdateInfoProbability(result, _setting.OnUpgradeProbability.Invoke());
+        result = UpdateInfoPrice(result, type);
+        _infoText.text = result.ToString();
+     
+        UpdateInfoPanel();
+    }
 
-        var array = _onUpdateUpgradeInfo.Invoke();
+    private StringBuilder UpdateInfoProbability(StringBuilder builder, int[] array)
+    {
+        for (int index = 0; index < array.Length; index++)
+        {
+            builder.AppendLine($"Grade {index + 1} : {array[index]}%");
+        }
 
-        result.AppendLine($"Grade 1 : {array[0]}%")
-            .AppendLine($"Grade 2 : {array[1]}%")
-            .AppendLine($"Grade 3 : {array[2]}%");
+        return builder;
+    }
 
+    private StringBuilder UpdateInfoPrice(StringBuilder builder, ButtonType type)
+    {
         switch (type)
         {
             case ButtonType.Spawn:
-                result.AppendLine($"\n\nSpawn price : {_onUpdateSpawnPrice.Invoke()} Gold");
+                builder.AppendLine($"\n\nSpawn price : {_setting.OnSpawnPrice.Invoke()} Gold");
                 break;
             case ButtonType.Upgrade:
-                result.AppendLine($"\n\nUpgrade price : {_onUpdateUpgradePrice.Invoke()} Gold");
+                var price = _setting.OnUpgradePrice.Invoke();
+                var priceText = price == 0 ? "-" : price.ToString();
+                builder.AppendLine($"\n\nUpgrade price : {priceText} Gold");
                 break;
             default:
-                result.Clear();
+                builder.Clear();
                 break;
         }
 
-        _infoText.text = result.ToString();
+        return builder;
+    }
+
+    private void UpdateInfoPanel()
+    {
         LayoutRebuilder.ForceRebuildLayoutImmediate(_infoText.rectTransform);
         _infoPanelRectTransform ??= _infoPanel.GetComponent<RectTransform>();
         _infoPanelRectTransform.sizeDelta = _infoText.rectTransform.sizeDelta;
-        
     }
+
+    public void SetResult(bool isSuccess)
+    {
+        _resultUI.SetResult(isSuccess);
+    }
+
     private void ActiveInfoPanel() => _infoPanel.SetActive(true);
     private void DeactiveInfoPanel() => _infoPanel.SetActive(false);
     public void SetInteractableWaveButton(bool isAct) => WaveButton.interactable = isAct;
     public void ActiveTowerOptionMenuUI(bool isAct) => _towerOptionUI.ActiveUI(isAct);
     public void MoveTowerOptionMenuUI(Vector3 position) => _towerOptionUI.MoveUI(position);
-    public void SetInterableMergeButton(bool isAct) => _towerOptionUI.SetInterableMergeButton(isAct);
-    public void SetInterableUpgradeButton(bool isAct) => UpgradeButton.interactable = isAct;
+    public void SetInteractableMergeButton(bool isAct) => _towerOptionUI.SetInterableMergeButton(isAct);
+    public void SetInteractableUpgradeButton(bool isAct) => UpgradeButton.interactable = isAct;
     public void SetWave(int current, int max) => _statusUI.SetWave(current, max);
     public void SetGoldCount(int current) => _statusUI.SetGoldCount(current);
     public void SetTimer(float time) => _statusUI.SetTimer(time);
     public void SetEnemyCount(int current, int max) => _statusUI.SetEnemyCount(current, max);
     public void SetTowerCount(int current, int max) => _statusUI.SetTowerCount(current, max);
-    public void SetResult(bool isSuccess) => _resultUI.SetResult(isSuccess);
     public void SetResultButtons(Action onRetry, Action onLobby) => _resultUI.SetResultButtons(onRetry, onLobby);
 }

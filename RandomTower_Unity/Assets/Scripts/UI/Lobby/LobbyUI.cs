@@ -19,7 +19,6 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private LobbyRoomListUI _roomList;
     [SerializeField] private LobbyTowerListUI _towerList;
     [SerializeField] private LobbyTowerInfoUI _towerInfo;
-    [SerializeField] private LobbyTowerBuyingUI _towerBuying;
 
     public string InputedRoomName => _roomList.InputedRoomName;
 
@@ -36,8 +35,8 @@ public class LobbyUI : MonoBehaviour
     {
         _roomList.Initialize(OnCreated);
         _towerList.Initialize(UnlockTowerClicked, LockTowerClicked);
-        _towerInfo.Initialize(OnUpgrade);
-        _towerBuying.Initialize(OnBought);
+        _towerInfo.Initialize(OnBought, OnUpgrade);
+        //_towerBuying.Initialize(OnBought);
 
         _playButton.onClick.RemoveAllListeners();
         _playButton.onClick.AddListener(()=> OnPlay?.Invoke());
@@ -48,22 +47,17 @@ public class LobbyUI : MonoBehaviour
         _optionButton.onClick.RemoveAllListeners();
         _optionButton.onClick.AddListener(() => GameManager.Instance.UI.Global.ShowMenu(OnBack));
     }
-
     
     public void UnlockTowerClicked(TowerData data)
     {
         CurrentTowerData = data;
-        _towerBuying.ActiveUI(false);
-        _towerInfo.ActiveUI(true);
-        UpdateTowerInfoPanel(data);
+        _towerInfo.UpdateInfoUI(data, LobbyTowerInfoUI.ButtonType.Upgrade);
     }
 
     private void LockTowerClicked(TowerData data)
     {
         CurrentTowerData = data;
-        _towerInfo.ActiveUI(false);
-        _towerBuying.ActiveUI(true);
-        _towerBuying.UpdateBuyingPrice(data.BuyingCoast.ToString());
+        _towerInfo.UpdateInfoUI(data, LobbyTowerInfoUI.ButtonType.Unlock);
     }
 
     public void UpdateTowerInfoPanel(TowerData data) => _towerInfo.UpdatePanel(data);

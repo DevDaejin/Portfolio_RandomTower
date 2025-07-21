@@ -21,7 +21,9 @@ public class InGame : MonoBehaviour
     private InGameUIHandler _uiHandler;
 
     private KeyValuePair<ResourceManager.ResourceType, int> _initialGold;
-    
+
+    private StageConfig _stageConfig;
+
     private int _currentStage = 0;
     private int _currentChanceLevel = 1;
 
@@ -44,7 +46,8 @@ public class InGame : MonoBehaviour
     {
         GameManager.Instance.UI.Initialize(UIManager.UIType.InGame);
 
-        _maxWave = _stageConfigs[_currentStage].WaveData.SpawnList.Count;
+        _stageConfig = _stageConfigs[_currentStage];
+        _maxWave = _stageConfig.WaveData.SpawnList.Count;
 
         _context = new InGameContext(
             GetComponent<TowerManager>(),
@@ -56,16 +59,28 @@ public class InGame : MonoBehaviour
         _towerHandler = new(_context, GameManager.Instance.TowerDB, MaxTower, OnSellTower, ForceReturnProjectile);
         _enemyHandler = new(_context, ForceReturnEnemy);
         _waveHandler = new(_context, _stageConfigs[_currentStage], OnWave);
-        _uiHandler = new(_context, 
-            OnWave, OnSpawnTower, OnUpgrade, 
-            OnMergeTower, OnSellTower, 
-            OnRetry, OnGoToLobby, 
-            OnSpawnPrice, OnUpgradePrice, OnUpgradeInfo);
+        _uiHandler = new(_context, new InGameUISetting()
+        {
+            OnWave = OnWave,
+            OnSpawnTower = OnSpawnTower, 
+            OnUpgrade = OnUpgrade,
+            OnMerge = OnMergeTower, 
+            OnSell = OnSellTower,
+            OnRetry = OnRetry, 
+            OnMenu = OnMenu,
+            OnGoToLobby = OnGoToLobby,
+            OnSpawnPrice = OnSpawnPrice, 
+            OnUpgradePrice = OnUpgradePrice, 
+            OnUpgradeProbability = OnUpgradeProbabilty,
+            OnSuccessReward = OnSuccessReward, 
+            OnFailedReward = OnFailedReward
+        });
     }
 
     private void Start()
     {
         _initialGold = new KeyValuePair<ResourceManager.ResourceType, int>(ResourceManager.ResourceType.Gold, InitialGoldAmount);
+        
         _context.Resource.Initialize(_initialGold);
         _context.Resource.SetCallback(ResourceManager.ResourceType.Gold, _uiHandler.SetGold);
 
@@ -75,16 +90,8 @@ public class InGame : MonoBehaviour
         _waveHandler.Initialize();
         _uiHandler.Initialize();
 
-        TowerGridSelectionHandler.OnSelect = grid =>
-        {
-            if (grid == null) return;
-
-            var tower = grid?.GetTower();
-            if (tower == null) return;
-
-            _uiHandler.SelectTowerUI(tower, grid.IsMergeable);
-        };
-        TowerGridSelectionHandler.OnDeselect = () => _uiHandler.DeselectTowerUI();
+        TowerGridSelectionHandler.OnSelect = SelectGrid;
+        TowerGridSelectionHandler.OnDeselect = _uiHandler.DeselectTowerUI;
 
         _navMeshSurface.BuildNavMesh();
         RefreshAlivedEnemyCount();
@@ -97,11 +104,20 @@ public class InGame : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F1))
         {
-            _ = _context.Network.RoomService.LeaveRoom();
+            _ = _networkHandler.LeaveRoom();
             GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
         }
     }
 
+    private void SelectGrid(TowerGrid grid)
+    {
+        if (grid == null) return;
+
+        var tower = grid?.GetTower();
+        if (tower == null) return;
+
+        _uiHandler.SelectTowerUI(tower, grid.IsMergeable);
+    }
 
     private void OnWave()
     {
@@ -243,6 +259,15 @@ public class InGame : MonoBehaviour
 
     private void OnSellTower(int sellingPrice) => _context.Resource.Earn(ResourceManager.ResourceType.Gold, sellingPrice);
 
+    private void OnMenu()
+    {
+        GameManager.Instance.UI.Global.ShowMenu(() =>
+        {
+            GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
+            _ = _networkHandler.LeaveRoom();
+        });
+    }
+
     private void OnGoToLobby() => GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
 
     private void OnRetry()
@@ -256,18 +281,36 @@ public class InGame : MonoBehaviour
 
     private void OnUpgrade()
     {
-        //todododo
-
-        bool condition = _towerHandler.IsUpgradeMax(_currentChanceLevel);
+        bool condition = !_towerHandler.IsUpgradeMax(_currentChanceLevel);
 
         if (condition) _currentChanceLevel++;
 
-        _context.UI.SetInterableUpgradeButton(condition);
+        _uiHandler.SetInteractableUpgradeButton(condition);
     }
 
-    private int OnUpgradePrice() => StartUpgradePrice + ((_currentChanceLevel - 1) * UpgradePriceWeight);
+    private int OnUpgradePrice()
+    {
+        var price = StartUpgradePrice + ((_currentChanceLevel - 1) * UpgradePriceWeight);
 
+        if (_towerHandler.IsUpgradeMax(_currentChanceLevel)) price = 0;
+
+        return price;
+    }
     private int OnSpawnPrice() => StartSpawnPrice + (_spawnCount * SpawnPriceWeight);
-
-    private int[] OnUpgradeInfo() => _towerHandler.GetProbability(_currentChanceLevel);
+    private int[] OnUpgradeProbabilty()
+    {
+        return _towerHandler.GetProbability(_currentChanceLevel);
+    }
+    private int OnSuccessReward()
+    {
+        var reward = _stageConfig.ClearReward;
+        _context.Resource.Earn(ResourceManager.ResourceType.Gem, reward);
+        return reward;
+    }
+    private int OnFailedReward()
+    {
+        var reward = _stageConfig.FailedReward;
+        _context.Resource.Earn(ResourceManager.ResourceType.Gem, reward);
+        return reward;
+    }
 }

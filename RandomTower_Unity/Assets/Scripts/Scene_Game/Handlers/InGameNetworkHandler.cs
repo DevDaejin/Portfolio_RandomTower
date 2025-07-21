@@ -74,4 +74,5 @@ public class InGameNetworkHandler
         if (!_context.Network.IsHost) _context.Wave.StartWave();
     }
 
+    public async Task LeaveRoom() => await _context.Network.RoomService.LeaveRoom();
 }

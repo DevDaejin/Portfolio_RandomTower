@@ -34,7 +34,7 @@ public class InGameTowerHandler
     public void SellTower(BaseTower tower) => _context.Tower.SellTower(tower, _onSellTower);
     public void MergeTower(TowerGrid grid) => _context.Tower.MergeTower(grid);
     public void OnSpawnTower(int towerSpawnChancePassiveLevel) => _context.Tower.SpawnTower(towerSpawnChancePassiveLevel);
-    public bool IsUpgradeMax(int level) => _context.Tower.GetHighestLevel() > level;
+    public bool IsUpgradeMax(int level) => _context.Tower.GetHighestLevel() <= level;
     public int[] GetProbability(int level) => _context.Tower.GetProbability(level);
     public void Reset() => _context.Tower.ReleaseAll();
 }
