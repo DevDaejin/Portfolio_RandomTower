@@ -21,13 +21,24 @@ public class InGame : MonoBehaviour
     private InGameUIHandler _uiHandler;
 
     private KeyValuePair<ResourceManager.ResourceType, int> _initialGold;
+    
     private int _currentStage = 0;
+    private int _currentChanceLevel = 1;
+
     private int _maxWave = 0;
+    private int _spawnCount = 0;
+
+
+    private const int StartSpawnPrice = 10;
+    private const int SpawnPriceWeight = 2;
+
+    private const int StartUpgradePrice = 50;
+    private const int UpgradePriceWeight = 50;
 
     private const int MaxTower = 20;
     private const int MaxEnemy = 20;
     private const float WaveDuration = 40;
-    private const int InitialGoldAmount = 10;
+    private const int InitialGoldAmount = 50;
 
     private void Awake()
     {
@@ -45,7 +56,11 @@ public class InGame : MonoBehaviour
         _towerHandler = new(_context, GameManager.Instance.TowerDB, MaxTower, OnSellTower, ForceReturnProjectile);
         _enemyHandler = new(_context, ForceReturnEnemy);
         _waveHandler = new(_context, _stageConfigs[_currentStage], OnWave);
-        _uiHandler = new(_context, OnWave, OnSpawnTower, OnMergeTower, OnSellTower, OnRetry, OnGoToLobby);
+        _uiHandler = new(_context, 
+            OnWave, OnSpawnTower, OnUpgrade, 
+            OnMergeTower, OnSellTower, 
+            OnRetry, OnGoToLobby, 
+            OnSpawnPrice, OnUpgradePrice, OnUpgradeInfo);
     }
 
     private void Start()
@@ -86,6 +101,7 @@ public class InGame : MonoBehaviour
             GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
         }
     }
+
 
     private void OnWave()
     {
@@ -187,8 +203,12 @@ public class InGame : MonoBehaviour
 
     private void OnSpawnTower()
     {
-        //TODO: 임시코드
-        _towerHandler.OnSpawnTower(1);
+        var price = OnSpawnPrice();
+
+        if (_context.Resource.Spend(ResourceManager.ResourceType.Gold, price))
+        {
+            _towerHandler.OnSpawnTower(_currentChanceLevel);
+        }
     }
 
     private void OnMergeTower()
@@ -233,4 +253,21 @@ public class InGame : MonoBehaviour
         _waveHandler.Reset();
         _uiHandler.Reset();
     }
+
+    private void OnUpgrade()
+    {
+        //todododo
+
+        bool condition = _towerHandler.IsUpgradeMax(_currentChanceLevel);
+
+        if (condition) _currentChanceLevel++;
+
+        _context.UI.SetInterableUpgradeButton(condition);
+    }
+
+    private int OnUpgradePrice() => StartUpgradePrice + ((_currentChanceLevel - 1) * UpgradePriceWeight);
+
+    private int OnSpawnPrice() => StartSpawnPrice + (_spawnCount * SpawnPriceWeight);
+
+    private int[] OnUpgradeInfo() => _towerHandler.GetProbability(_currentChanceLevel);
 }

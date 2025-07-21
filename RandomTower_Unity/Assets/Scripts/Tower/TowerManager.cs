@@ -5,11 +5,11 @@ using UnityEngine;
 public class TowerManager : MonoBehaviour
 {
     [SerializeField] private Transform _installationGrid;
-    [SerializeField] private TowerChanceTable _towerChanceTable;
-
+    
     private IEnemyProvider _enemyProvider;
     private TowerGridController _gridController;
     private TowerFactory _towerFactory;
+    private TowerChanceTable _towerChanceTable;
 
     public TowerDatabase TowerDB => _towerDB;
     private TowerDatabase _towerDB;
@@ -28,13 +28,14 @@ public class TowerManager : MonoBehaviour
         Transform[] tree = GetChildrenTransformArray(_installationGrid);
         _gridController = new TowerGridController(tree);
         _towerFactory = new TowerFactory();
+        _towerChanceTable = new();
     }
 
     //TODO : 타워 강화 로직 파라미터로 전달 받기
     public void Initialize(TowerDatabase towerDB, IEnemyProvider enemyProvider, int installableCount)
     {
         _towerDB = towerDB;
-        _towerFactory.Initialize(_towerDB);
+        _towerFactory.Initialize(_towerDB);        
         _enemyProvider = enemyProvider;
         _installableCount = installableCount;
         ApplyTowerLevel();
@@ -160,6 +161,8 @@ public class TowerManager : MonoBehaviour
         return _towerFactory.ProjectilePool[data.ID];
     }
 
+    public int GetHighestLevel() => _towerChanceTable.HighestLevel;
+    public int[] GetProbability(int level) => _towerChanceTable.GetProbability(level);
     public void ReleaseAll()
     {
         _gridController.RemoveAllTower();

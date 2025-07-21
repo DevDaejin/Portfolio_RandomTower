@@ -16,7 +16,6 @@ public class InGameTowerHandler
         _maxTowerCount = MaxTowerCount;
         _onSellTower = onSellTower;
         _onSendReturnProejctile = onSendReturnProjectile;
-
     }
 
     public void Initialize()
@@ -32,20 +31,10 @@ public class InGameTowerHandler
         }
     }
 
-    public void SellTower(BaseTower tower)
-    {
-        _context.Tower.SellTower(tower, _onSellTower);
-    }
-
-    public void MergeTower(TowerGrid grid)
-    {
-        _context.Tower.MergeTower(grid);
-    }
-
+    public void SellTower(BaseTower tower) => _context.Tower.SellTower(tower, _onSellTower);
+    public void MergeTower(TowerGrid grid) => _context.Tower.MergeTower(grid);
     public void OnSpawnTower(int towerSpawnChancePassiveLevel) => _context.Tower.SpawnTower(towerSpawnChancePassiveLevel);
-
-    public void Reset()
-    {
-        _context.Tower.ReleaseAll();
-    }
+    public bool IsUpgradeMax(int level) => _context.Tower.GetHighestLevel() > level;
+    public int[] GetProbability(int level) => _context.Tower.GetProbability(level);
+    public void Reset() => _context.Tower.ReleaseAll();
 }

@@ -21,8 +21,6 @@ public class Lobby : MonoBehaviour
     private void Start()
     {
         InitializeUI();
-        InitializeUICallbacks();
-
         _resource.SetCallback(ResourceManager.ResourceType.Gem, GemChangedCallback);
     }
 
@@ -41,18 +39,16 @@ public class Lobby : MonoBehaviour
 
     private void InitializeUI()
     {
-        _ui.Initialize();
-        _ui.UpdateOwnedGem(GameManager.Instance.Data.Loaded.Gem);
-        _ui.CreateTowerButtons(GameManager.Instance.TowerDB);
-    }
-
-    private void InitializeUICallbacks()
-    {
         _ui.OnCreated = OnCreated;
         _ui.OnPlay = OnPlay;
         _ui.OnBack = OnBack;
         _ui.OnBought = OnBought;
         _ui.OnUpgrade = OnUpgrade;
+
+        _ui.Initialize();
+
+        _ui.UpdateOwnedGem(GameManager.Instance.Data.Loaded.Gem);
+        _ui.CreateTowerButtons(GameManager.Instance.TowerDB);
     }
 
     private async void OnPlay()
@@ -88,20 +84,21 @@ public class Lobby : MonoBehaviour
         {
             _ui.UnlockTowerClicked(data);
             _ui.RefreshUnlockedButton(data);
-            _resource.Spend(ResourceManager.ResourceType.Gem, data.BuyingCoast);
-            _data.AddGainedTowerID(data.ID);
-            _data.Save();
+
+            if (_resource.Spend(ResourceManager.ResourceType.Gem, data.BuyingCoast))
+            {
+                _data.AddGainedTowerID(data.ID);
+                _data.Save();
+            }
         }
     }
 
     private void OnUpgrade()
     {
-        if(_ui.CurrentTowerData.LevelUp())
+        if (_ui.CurrentTowerData.LevelUp()
+            &&_resource.Spend(ResourceManager.ResourceType.Gem, _ui.CurrentTowerData.UpgradeCost))
         {
-            if (_resource.Spend(ResourceManager.ResourceType.Gem, _ui.CurrentTowerData.UpgradeCost))
-            {
-                _ui.UpdateTowerInfoPanel(_ui.CurrentTowerData);
-            }
+            _ui.UpdateTowerInfoPanel(_ui.CurrentTowerData);
         }
     }
 

@@ -1,41 +1,51 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[CreateAssetMenu(fileName = "TowerChanceTable", menuName = "Random TD/TowerChanceTable")]
-public class TowerChanceTable : ScriptableObject
+public class TowerChanceTable
 {
-    [Serializable]
-    public class GradeWeight
+    private readonly Dictionary<int, int[]> _chances = new();
+    public int HighestLevel => _chances.Count;
+    public TowerChanceTable()
     {
-        [Range(1, 3)] public int Grade;
-        [Range(0, 100)] public float MinWeight;
-        [Range(0, 100)] public float MaxWeight;
+        _chances.Add(1, new[] { 100,    0,      0 });
+        _chances.Add(2, new[] { 80,     20,     0 });
+        _chances.Add(3, new[] { 70,     30,     0 });
+        _chances.Add(4, new[] { 65,     30,     5 });
+        _chances.Add(5, new[] { 60,     30,    10 });
     }
 
-    [SerializeField] private GradeWeight[] _gradeWeight;
-
-    private float[] GetNormalizedWeights(int level)
+    public int[] GetProbability(int level)
     {
-        float t = Mathf.InverseLerp(1, 5, level);
-
-        float grade1 = Mathf.Lerp(_gradeWeight[0].MinWeight, _gradeWeight[0].MaxWeight, t);
-        float grade2 = Mathf.Lerp(_gradeWeight[1].MinWeight, _gradeWeight[1].MaxWeight, t);
-        float grade3 = Mathf.Lerp(_gradeWeight[2].MinWeight, _gradeWeight[2].MaxWeight, t);
-
-        float total = grade1 + grade2 + grade3;
-        return new[] { grade1 / total, grade2 / total, grade3 / total };
+        _chances.TryGetValue(level, out var probability);
+        return probability;
     }
 
     public int GetRandomGrade(int level)
     {
-        float[] weights = GetNormalizedWeights(level);
-        float rand = Random.value;
+        if (_chances.TryGetValue(level, out var weight))
+        {
+            return GetByChance(weight);
+        }
 
-        if (rand < weights[0]) return 1;
-        if (rand < weights[0] + weights[1]) return 2;
-        if (rand < weights[0] + weights[1] + weights[2]) return 3;
-        
-        return -1;
+        return 0;
+    }
+
+    private int GetByChance(int[] weight)
+    {
+        float random = Random.value * 100;
+        float sum = 0f;
+
+        for (int index = 0; index < weight.Length; index++)
+        {
+            sum += weight[index];
+            if(random <= sum)
+            {
+                return index + 1;
+            }
+        }
+
+        return 0;
     }
 }

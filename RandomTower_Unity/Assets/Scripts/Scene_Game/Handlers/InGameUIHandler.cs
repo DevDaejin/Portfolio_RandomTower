@@ -7,6 +7,7 @@ public class InGameUIHandler
     
     private Action _onWave;
     private Action _onSpawnTower;
+    private Action _onUpgrade;
 
     private Action _onMerge;
     private Action _onSell;
@@ -14,17 +15,31 @@ public class InGameUIHandler
     private Action _onRetry;
     private Action _onGoToLobby;
 
-    public InGameUIHandler(InGameContext context, Action onWave, Action onSpawnTower, Action onMerge, Action onSell, Action onRetry, Action onGoToLobby)
+    private Func<int> _onSpawnPrice;
+    private Func<int> _onUpgradePrice;
+    private Func<int[]> _onUpgradeInfo;
+
+    public InGameUIHandler(InGameContext context, 
+        Action onWave, Action onSpawnTower, Action onUpgrade,
+        Action onMerge, Action onSell, 
+        Action onRetry, Action onGoToLobby, 
+        Func<int> onSpawnPrice, Func<int>onUpgradePrice, Func<int[]> onUpgradeInfo)
     {
         _context = context;
+
         _onWave = onWave;
         _onSpawnTower = onSpawnTower;
+        _onUpgrade = onUpgrade;
 
         _onMerge = onMerge;
         _onSell = onSell;
 
         _onRetry = onRetry;
         _onGoToLobby = onGoToLobby;
+
+        _onSpawnPrice = onSpawnPrice;
+        _onUpgradePrice = onUpgradePrice;
+        _onUpgradeInfo = onUpgradeInfo;
     }
 
     public void Initialize()
@@ -37,11 +52,16 @@ public class InGameUIHandler
             _context.Resource.Get(ResourceManager.ResourceType.Gold), 
             _context.Network.IsHost,
             _onMerge,
-            _onSell);
+            _onSell,
+            _onSpawnPrice,
+            _onUpgradePrice,
+            _onUpgradeInfo);
 
         _context.UI.WaveButton.onClick.AddListener(() =>_onWave?.Invoke());
         _context.UI.SpawnButton.onClick.AddListener(() => _onSpawnTower?.Invoke());
         _context.UI.SetResultButtons(_onRetry, _onGoToLobby);
+
+        _context.UI.UpgradeButton.onClick.AddListener(() => _onUpgrade.Invoke());
     }
 
     public int RefreshAlivedEnemyCount()
@@ -74,8 +94,5 @@ public class InGameUIHandler
 
     public void DeselectTowerUI() => _context.UI.ActiveTowerOptionMenuUI(false);
 
-    public void Reset()
-    {
-        Initialize();
-    }
+    public void Reset() => Initialize();
 }
