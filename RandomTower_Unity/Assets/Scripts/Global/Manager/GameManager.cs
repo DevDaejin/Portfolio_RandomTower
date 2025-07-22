@@ -37,9 +37,6 @@ public class GameManager : MonoBehaviour
     public OptionManager Option => _optionManager ??= GetComponent<OptionManager>();
     private OptionManager _optionManager;
 
-    public Dispatcher Dispatcher => _dispatcher ??= GetComponent<Dispatcher>();
-    private Dispatcher _dispatcher;
-
     public LocalDataManager Data => _dataManager ??= GetDataManager();
     private LocalDataManager _dataManager;
 

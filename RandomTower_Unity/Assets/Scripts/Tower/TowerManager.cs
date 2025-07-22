@@ -38,7 +38,6 @@ public class TowerManager : MonoBehaviour
         _towerFactory.Initialize(_towerDB);        
         _enemyProvider = enemyProvider;
         _installableCount = installableCount;
-        ApplyTowerLevel();
     }
 
     public void SetInstallPoints(Transform points)
@@ -46,11 +45,6 @@ public class TowerManager : MonoBehaviour
         _installationGrid = points;
         Transform[] tree = GetChildrenTransformArray(_installationGrid);
         _gridController = new TowerGridController(tree);
-    }
-
-    private void ApplyTowerLevel()
-    {// TODO : 타워 데이터베이스에서 타워들 레벨 업데이트 쳐야 함
-
     }
 
     public void SpawnTower(int towerSpawnChancePassiveLevel)
