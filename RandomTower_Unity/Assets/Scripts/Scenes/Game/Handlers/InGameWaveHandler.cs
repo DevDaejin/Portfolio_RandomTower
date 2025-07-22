@@ -2,24 +2,23 @@ using System;
 public class InGameWaveHandler
 {
     private InGameContext _context;
-    private StageConfig _stageConfig;
-    private Action _onWave;
-    public InGameWaveHandler(InGameContext context, StageConfig stageConfig, Action onWave)
+    private WaveSetting _setting;
+
+    public InGameWaveHandler(InGameContext context, WaveSetting setting)
     {
         _context = context;
-        _stageConfig = stageConfig;
-        _onWave = onWave;
+        _setting = setting;
     }
 
     public void Initialize()
     {
-        _context.Wave.OnTimeChanged += _context.UI.SetTimer;
-        _context.Wave.OnWaveChanged += _context.UI.SetWave;
-        _context.Wave.OnEnemyCountChanged += _context.UI.SetEnemyCount;
-        _context.Wave.OnStageResult += Result;
-        _context.Wave.OnWaveEnded += _onWave;
-        _context.Wave.OnWaveStarted += OnWaveStarted;
-        _context.Wave.Initialize();
+        _setting.OnTimeChanged += _context.UI.SetTimer;
+        _setting.OnWaveChanged += _context.UI.SetWave;
+        _setting.OnEnemyCountChanged += _context.UI.SetEnemyCount;
+        _setting.OnStageResult += Result;
+        _setting.OnWaveStarted += OnWaveStarted;
+
+        _context.Wave.Initialize(_setting);
     }
 
     public void Update() => _context.Wave.Update();
@@ -33,11 +32,7 @@ public class InGameWaveHandler
     public void StartWave() => _context.Wave.StartWave();
     public void ForceTimeUp() => _context.Wave.ForceTimeUp();
     public void EndWave() => _context.Wave.EndWave();
-
-    private void OnWaveStarted()
-    {
-        _context.Enemy.SpawnWave(_stageConfig, _context.Wave.CurrentWaveIndex);
-    }
+    private void OnWaveStarted() => _context.Enemy.SpawnWave(_setting.StageConfig, _context.Wave.CurrentWaveIndex);
 
     private void Result(bool isSuccess)
     {
@@ -53,6 +48,6 @@ public class InGameWaveHandler
 
     public void Reset()
     {
-        _context.Wave.Initialize();
+        _context.Wave.Initialize(_setting);
     }
 }

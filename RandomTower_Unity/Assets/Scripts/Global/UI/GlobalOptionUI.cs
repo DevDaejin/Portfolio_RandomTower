@@ -24,9 +24,9 @@ public class GlobalOptionUI : MonoBehaviour
     private TMP_Text _bgmValueTxt;
     private TMP_Text _sfxValueTxt;
 
-    private OptionData _data;
+    private OptionSetting _data;
 
-    public void Initialize(OptionData data)
+    public void Initialize(OptionSetting data)
     {
         _data = data;
 
@@ -71,7 +71,7 @@ public class GlobalOptionUI : MonoBehaviour
         slider.onValueChanged.AddListener((value)=>
         {
             valueTxt.text = (value).ToString();
-            callback?.Invoke(value);
+            callback?.Invoke(value / slider.maxValue);
         });
     }
 

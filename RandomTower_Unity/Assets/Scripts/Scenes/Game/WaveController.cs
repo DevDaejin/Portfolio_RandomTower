@@ -3,53 +3,63 @@ using UnityEngine;
 
 public class WaveController
 {
+    private Timer _timer;
+
+    public WaveSetting Setting => _setting;
+    private WaveSetting _setting;
+    
     public enum WaveState { Idle, InProgress, Waiting, Failed, Cleared }
     public WaveState CurrentState { get; private set; } = WaveState.Idle;
     public int CurrentWaveIndex { get; private set; }
-    public bool IsFinalWave => (CurrentWaveIndex + 1) == _maxWave;
+    public bool IsFinalWave => (CurrentWaveIndex + 1) == MaxWave;
+    public float WaveDuration => _setting.WaveDuration;
+    public int MaxWave => _setting.MaxWave;
+    public int MaxEnemies => _setting.MaxEnemies;
 
-    private Timer _timer;
 
-    public float WaveDuration => _waveDuration;
-    private float _waveDuration;
+    /*_waveDuration;*/
+    //private float _waveDuration;
 
-    public int MaxWave => _maxWave;
-    private int _maxWave;
+    /*_maxWave;*/
+    //private int _maxWave;
 
-    public int MaxEnemies => _maxEnemies;
-    private int _maxEnemies;
-    private Func<bool> _getSpawningState;
-    private Func<int> _getAliveEnemyCount;
+    /*_maxEnemies;*/
+    //private int _maxEnemies;
 
-    public event Action<float> OnTimeChanged;
-    public event Action<int, int> OnWaveChanged;
-    public event Action<int, int> OnEnemyCountChanged;
 
-    public event Action OnWaveStarted;
-    public event Action OnWaveEnded;
-    public event Action<bool> OnStageResult;
 
-    public WaveController(int maxWave, int maxEnemies, float waveDuration, Func<bool> getSpawningState, Func<int> getAliveEnemyCount)
+    //private Func<bool> _getSpawningState;
+    //private Func<int> _getAliveEnemyCount;
+
+    //public event Action<float> OnTimeChanged;
+    //public event Action<int, int> OnWaveChanged;
+    //public event Action<int, int> OnEnemyCountChanged;
+
+    //public event Action OnWaveStarted;
+    //public event Action OnWaveEnded;
+    //public event Action<bool> OnStageResult;
+
+    public WaveController(float initializeTime)
+    //public WaveController(int maxWave, int maxEnemies, float waveDuration, Func<bool> getSpawningState, Func<int> getAliveEnemyCount)
     {
-        _maxWave = maxWave;
-        _maxEnemies = maxEnemies;
-        _getSpawningState = getSpawningState;
-        _getAliveEnemyCount = getAliveEnemyCount;
-
-        _waveDuration = waveDuration;
-        _timer = new Timer(WaveDuration);
-        _timer.OnTick += OnTimeChanged;
-        _timer.OnTimeUp += OnTimeUp;
+        _timer = new Timer(initializeTime);
     }
 
-    public void Initialize()
+    public void Initialize(WaveSetting setting)
     {
+        _setting = setting;
         CurrentWaveIndex = 0;
         CurrentState = WaveState.Idle;
         _timer.Stop();
 
-        OnWaveChanged?.Invoke(CurrentWaveIndex + 1, _maxWave);
-        OnTimeChanged?.Invoke(_timer.TimeLeft);
+        _timer.OnTick -= _setting.OnTimeChanged;
+        _timer.OnTick += _setting.OnTimeChanged;
+
+        _timer.OnTimeUp -= OnTimeUp;
+        _timer.OnTimeUp += OnTimeUp;
+
+        _setting.OnWaveChanged?.Invoke(CurrentWaveIndex + 1, MaxWave);
+        _setting.OnTimeChanged?.Invoke(_timer.TimeLeft);
     }
 
     public void StartWave()
@@ -59,8 +69,8 @@ public class WaveController
         CurrentState = WaveState.InProgress;
         _timer.Start();
 
-        OnWaveStarted?.Invoke();
-        OnWaveChanged?.Invoke(CurrentWaveIndex + 1, _maxWave);
+        _setting.OnWaveStarted?.Invoke();
+        _setting.OnWaveChanged?.Invoke(CurrentWaveIndex + 1, MaxWave);
     }
 
     public void ForceTimeUp()
@@ -74,14 +84,14 @@ public class WaveController
     public void EndWave()
     {
         CurrentWaveIndex++;
-        if (CurrentWaveIndex >= _maxWave)
+        if (CurrentWaveIndex >= MaxWave)
         {
             ClearStage();
             return;
         }
 
         CurrentState = WaveState.Idle;
-        OnWaveEnded?.Invoke();
+        _setting.OnWaveEnded?.Invoke();
     }
 
     public void Update()
@@ -90,16 +100,16 @@ public class WaveController
 
         _timer.Tick();
 
-        int alive = _getAliveEnemyCount.Invoke();
-        OnEnemyCountChanged?.Invoke(alive, _maxEnemies);
+        int alive = _setting.GetAliveEnemyCount.Invoke();
+        _setting.OnEnemyCountChanged?.Invoke(alive, MaxEnemies);
 
-        if (alive > _maxEnemies)
+        if (alive > MaxEnemies)
         {
             FailStage();
             return;
         }
 
-        if (IsFinalWave && alive == 0 && !_getSpawningState.Invoke())
+        if (IsFinalWave && alive == 0 && !_setting.GetSpawningState.Invoke())
         {            
             ClearStage();
         }
@@ -107,7 +117,7 @@ public class WaveController
 
     private void OnTimeUp()
     {
-        int alive = _getAliveEnemyCount.Invoke();
+        int alive = _setting.GetAliveEnemyCount.Invoke();
         if (IsFinalWave && alive > 0)
         {
             FailStage();
@@ -122,13 +132,13 @@ public class WaveController
     {
         _timer.Stop();
         CurrentState = WaveState.Cleared;
-        OnStageResult?.Invoke(true);
+        _setting.OnStageResult?.Invoke(true);
     }
 
     private void FailStage()
     {
         CurrentState = WaveState.Failed;
-        OnStageResult?.Invoke(false);
+        _setting.OnStageResult?.Invoke(false);
     }
 }
 

@@ -5,12 +5,14 @@ using Sync;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
+using ResourceType = ResourceManager.ResourceType;
 
 public class InGame : MonoBehaviour
 {
     [SerializeField] private List<StageConfig> _stageConfigs;
     [SerializeField] private NavMeshSurface _navMeshSurface;
     [SerializeField] private MultiEnviromentHandler _multiEnviromentHandler;
+    [SerializeField] private AudioClip _bgmClip;
 
     private InGameContext _context;
 
@@ -20,7 +22,9 @@ public class InGame : MonoBehaviour
     private InGameNetworkHandler _networkHandler;
     private InGameUIHandler _uiHandler;
 
-    private KeyValuePair<ResourceManager.ResourceType, int> _initialGold;
+    private SoundManager _sound => GameManager.Instance.Sound;
+
+    private KeyValuePair<ResourceType, int> _initialGold;
 
     private StageConfig _stageConfig;
 
@@ -39,26 +43,26 @@ public class InGame : MonoBehaviour
 
     private const int MaxTower = 20;
     private const int MaxEnemy = 20;
+
     private const float WaveDuration = 40;
     private const int InitialGoldAmount = 50;
 
     private void Awake()
     {
         GameManager.Instance.UI.Initialize(UIManager.UIType.InGame);
-
         _stageConfig = _stageConfigs[_currentStage];
         _maxWave = _stageConfig.WaveData.SpawnList.Count;
 
         _context = new InGameContext(
             GetComponent<TowerManager>(),
             GetComponent<EnemyManager>(),
-            new WaveController(_maxWave, MaxEnemy, WaveDuration, GetSpawningState, RefreshAlivedEnemyCount)
+            new WaveController(WaveDuration)
         );
 
         _networkHandler = new(_context, _multiEnviromentHandler);
         _towerHandler = new(_context, GameManager.Instance.TowerDB, MaxTower, OnSellTower, ForceReturnProjectile);
         _enemyHandler = new(_context, ForceReturnEnemy);
-        _waveHandler = new(_context, _stageConfigs[_currentStage], OnWave);
+
         _uiHandler = new(_context, new InGameUISetting()
         {
             OnWave = OnWave,
@@ -75,14 +79,25 @@ public class InGame : MonoBehaviour
             OnSuccessReward = OnSuccessReward, 
             OnFailedReward = OnFailedReward
         });
+
+        _waveHandler = new(_context, new WaveSetting
+        {
+            StageConfig = _stageConfigs[_currentStage],
+            MaxWave = _maxWave,
+            MaxEnemies = MaxEnemy,
+            WaveDuration = WaveDuration,
+            OnWaveEnded = OnWave,
+            GetSpawningState = GetSpawningState,
+            GetAliveEnemyCount = RefreshAlivedEnemyCount
+        });
     }
 
     private void Start()
     {
-        _initialGold = new KeyValuePair<ResourceManager.ResourceType, int>(ResourceManager.ResourceType.Gold, InitialGoldAmount);
+        _initialGold = new KeyValuePair<ResourceType, int>(ResourceType.Gold, InitialGoldAmount);
         
         _context.Resource.Initialize(_initialGold);
-        _context.Resource.SetCallback(ResourceManager.ResourceType.Gold, _uiHandler.SetGold);
+        _context.Resource.SetCallback(ResourceType.Gold, _uiHandler.SetGold);
 
         _towerHandler.Initialize();
         _enemyHandler.Initialize();
@@ -95,6 +110,8 @@ public class InGame : MonoBehaviour
 
         _navMeshSurface.BuildNavMesh();
         RefreshAlivedEnemyCount();
+
+        _sound.PlayBGM(_bgmClip);
     }
 
     private void Update()
@@ -221,7 +238,7 @@ public class InGame : MonoBehaviour
     {
         var price = OnSpawnPrice();
 
-        if (_context.Resource.Spend(ResourceManager.ResourceType.Gold, price))
+        if (_context.Resource.Spend(ResourceType.Gold, price))
         {
             _towerHandler.OnSpawnTower(_currentChanceLevel);
         }
@@ -257,7 +274,7 @@ public class InGame : MonoBehaviour
         _uiHandler.RefreshInstalledTowerCount();
     }
 
-    private void OnSellTower(int sellingPrice) => _context.Resource.Earn(ResourceManager.ResourceType.Gold, sellingPrice);
+    private void OnSellTower(int sellingPrice) => _context.Resource.Earn(ResourceType.Gold, sellingPrice);
 
     private void OnMenu()
     {
@@ -272,7 +289,7 @@ public class InGame : MonoBehaviour
 
     private void OnRetry()
     {
-        _context.Resource.Reset();
+        _context.Resource.Initialize(_initialGold);
         _enemyHandler.Reset();
         _towerHandler.Reset();
         _waveHandler.Reset();
@@ -304,13 +321,13 @@ public class InGame : MonoBehaviour
     private int OnSuccessReward()
     {
         var reward = _stageConfig.ClearReward;
-        _context.Resource.Earn(ResourceManager.ResourceType.Gem, reward);
+        _context.Resource.Earn(ResourceType.Gem, reward);
         return reward;
     }
     private int OnFailedReward()
     {
         var reward = _stageConfig.FailedReward;
-        _context.Resource.Earn(ResourceManager.ResourceType.Gem, reward);
+        _context.Resource.Earn(ResourceType.Gem, reward);
         return reward;
     }
 }

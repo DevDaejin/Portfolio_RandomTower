@@ -2298,7 +2298,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _installationGrid: {fileID: 716944009}
-  _towerChanceTable: {fileID: 11400000, guid: 59339ef7231fc93488191a19516e18eb, type: 2}
 --- !u!114 &1195791141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2315,6 +2314,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fd2e73c5244c0c445bc25efb35669be6, type: 2}
   _navMeshSurface: {fileID: 1235937571}
   _multiEnviromentHandler: {fileID: 1195791144}
+  _bgmClip: {fileID: 8300000, guid: cd8f2744e56f1b948a405f01ac9bd54a, type: 3}
 --- !u!114 &1195791142
 MonoBehaviour:
   m_ObjectHideFlags: 0

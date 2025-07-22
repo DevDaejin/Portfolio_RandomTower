@@ -24,7 +24,7 @@ public class InGameResultUI : MonoBehaviour
 
     public void Intialize(Func<int> onSuccessReward, Func<int> onFailedReward)
     {
-        OnSuccessReward = onSuccessReward; 
+        OnSuccessReward = onSuccessReward;
         OnFailedReward = onFailedReward;
 
         _retryButton.onClick.RemoveAllListeners();
@@ -37,12 +37,11 @@ public class InGameResultUI : MonoBehaviour
     {
         ActiveUI(true);
         _resultTitleText.text = isSuccess ? SuccessText : FailedText;
-        _resultDescriptionText.text= isSuccess ? SeuccessDescription : FailedDescription;
+        _resultDescriptionText.text = isSuccess ? SeuccessDescription : FailedDescription;
+        string reward = (isSuccess ? OnSuccessReward?.Invoke() : OnFailedReward?.Invoke()).ToString();
 
-        _rewardText.text = (isSuccess 
-            ? OnSuccessReward?.Invoke() 
-            : OnFailedReward?.Invoke()
-            ).ToString();
+        Debug.Log(reward);
+        _rewardText.text = reward;
     }
 
     public void SetResultButtons(Action onRetry, Action onLobby)

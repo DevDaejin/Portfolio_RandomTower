@@ -67,6 +67,7 @@ public class BaseEnemy : MonoBehaviour
     {
         Data = data;
         CurrentHP = Data.MaxHP;
+        _agent.speed = Data.MoveSpeed;
     }
 
     private void NextDestination()
@@ -102,6 +103,7 @@ public class BaseEnemy : MonoBehaviour
 
     public virtual void Die()
     {
+        GameManager.Instance.Sound.PlaySFX(Data.DeathClip);
         OnReward?.Invoke(Data.RewardGold);
         OnDie?.Invoke(this);
     }

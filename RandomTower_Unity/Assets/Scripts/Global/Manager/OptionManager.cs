@@ -8,10 +8,6 @@ using UnityEngine.Localization.Settings;
 public class OptionManager : MonoBehaviour
 {
     private Coroutine _localeRoutine = null;
-
-    public event Action<float> OnChagnedBGMVolume;
-    public event Action<float> OnChagnedSFXVolume;
-
     private Dictionary<string, string> _localeDict = new()
     {
         {"ko-KR", "한국어" }, {"en", "English"}
@@ -33,12 +29,12 @@ public class OptionManager : MonoBehaviour
     };
 
 
-    public void Initialize()
+    public void Initialize(Action<float> OnChagnedBGMVolume, Action<float> OnChagnedSFXVolume)
     {
         GlobalUI globalUI = GameManager.Instance.UI.Global;
         LocalDataManager dataManager = GameManager.Instance.Data;
 
-        var optionData = new OptionData
+        var optionData = new OptionSetting
         {
             LanguageDict = InitializeLanguage(),
             ResolutionDict = InitializeResolution(),

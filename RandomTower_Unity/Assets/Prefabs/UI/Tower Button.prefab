@@ -246,6 +246,7 @@ GameObject:
   - component: {fileID: 8409643084002171937}
   - component: {fileID: 7279571006116464983}
   - component: {fileID: 7450193876682675673}
+  - component: {fileID: 1757649933347796557}
   m_Layer: 5
   m_Name: Tower Button
   m_TagString: Untagged
@@ -372,6 +373,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1757649933347796557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4053128688589987742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b94f621efebfcc4b9dd8c14b861bb13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4260307216579784976
 GameObject:
   m_ObjectHideFlags: 0

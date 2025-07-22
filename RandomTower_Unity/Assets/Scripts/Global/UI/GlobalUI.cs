@@ -12,7 +12,7 @@ public class GlobalUI : MonoBehaviour
     public enum MessageBoxOption { None, NetworkingWaiting, Quit, NetworkingError, Reset };
     private Dictionary<MessageBoxOption, MessageBoxData> _messageBoxes = new();
 
-    public void Initialize(OptionData optionData)
+    public void Initialize(OptionSetting optionData)
     {
         _optionUI.Initialize(optionData);
         _menuUI.Initilaize(
@@ -28,6 +28,8 @@ public class GlobalUI : MonoBehaviour
     private void MoveBackground(GameObject target)
     {
         _background.SetParent(target.transform);
+        _background.anchoredPosition = Vector2.zero;
+        _background.gameObject.SetActive(true);
         _background.SetAsFirstSibling();
     }
 

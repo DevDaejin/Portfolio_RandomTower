@@ -151,6 +151,7 @@ GameObject:
   - component: {fileID: 2630507252575406878}
   - component: {fileID: 7558224546579870931}
   - component: {fileID: 2464614431838432632}
+  - component: {fileID: 4302225594972865157}
   m_Layer: 5
   m_Name: Room Button
   m_TagString: Untagged
@@ -274,3 +275,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _button: {fileID: 7558224546579870931}
   _buttonTxt: {fileID: 3389643944124489366}
+--- !u!114 &4302225594972865157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9019759547050234682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b94f621efebfcc4b9dd8c14b861bb13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

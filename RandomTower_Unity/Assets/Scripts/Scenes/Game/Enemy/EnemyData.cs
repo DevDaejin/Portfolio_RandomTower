@@ -24,4 +24,7 @@ public class EnemyData
 
     public int RewardGold => rewardGold;
     [SerializeField] private int rewardGold;
+
+    public AudioClip DeathClip => deathClip;
+    [SerializeField] private AudioClip deathClip;
 }

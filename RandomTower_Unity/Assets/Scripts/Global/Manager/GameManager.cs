@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
@@ -37,6 +38,9 @@ public class GameManager : MonoBehaviour
     public OptionManager Option => _optionManager ??= GetComponent<OptionManager>();
     private OptionManager _optionManager;
 
+    public SoundManager Sound => _soundManager ??= GetComponent<SoundManager>();
+    private SoundManager _soundManager;
+
     public LocalDataManager Data => _dataManager ??= GetDataManager();
     private LocalDataManager _dataManager;
 
@@ -59,16 +63,25 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    private void Start()
+    public void Initialize()
+    {
+        BindNetworkErroCallback();
+        LoadActivedTowers();
+        SetGemResource();
+
+        UI.Initialize(UIManager.UIType.None);
+
+        Option.Initialize(
+            (volume) => Sound.SetVolume(SoundManager.SoundType.BGM, volume),
+            (volume) => Sound.SetVolume(SoundManager.SoundType.SFX, volume));
+        Sound.Initialize();
+    }
+
+    private void BindNetworkErroCallback()
     {
         Network.OnConnectFailed += ActiveNetowrkPanel;
         Network.OnError += ActiveNetowrkPanel;
         Network.OnClose += ActiveNetowrkPanel;
-
-        LoadActivedTowers();
-
-        var loadedGem = new KeyValuePair<ResourceManager.ResourceType, int>(ResourceManager.ResourceType.Gem, Data.Loaded.Gem);
-        Resource.Initialize(loadedGem);
     }
 
     private void ActiveNetowrkPanel()
@@ -77,10 +90,10 @@ public class GameManager : MonoBehaviour
         UI.Global.ShowNetworkError();
     }
 
-    public void Initialize()
+    private void SetGemResource()
     {
-        UI.Initialize(UIManager.UIType.None);
-        Option.Initialize();
+        var loadedGem = new KeyValuePair<ResourceManager.ResourceType, int>(ResourceManager.ResourceType.Gem, Data.Loaded.Gem);
+        Resource.Initialize(loadedGem);
     }
 
     public void LoadScene(Scenes scene)

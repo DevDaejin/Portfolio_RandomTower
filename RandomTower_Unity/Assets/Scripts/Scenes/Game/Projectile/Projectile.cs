@@ -3,6 +3,8 @@ using UnityEngine;
 
 public abstract class Projectile : MonoBehaviour, IProjectileMovement, IProjectileHitCheck
 {
+    [SerializeField] private AudioClip _spawnClip;
+    [SerializeField] private AudioClip _hitClip;
     private BaseEnemy _target;
     private float _damage;
     private float _speed;
@@ -13,6 +15,11 @@ public abstract class Projectile : MonoBehaviour, IProjectileMovement, IProjecti
     private void Awake()
     {
         _syncObject = GetComponent<ISyncObject>();
+    }
+
+    private void Start()
+    {
+        GameManager.Instance.Sound.PlaySFX(_spawnClip);
     }
 
     protected virtual void Update()
@@ -30,6 +37,7 @@ public abstract class Projectile : MonoBehaviour, IProjectileMovement, IProjecti
 
         if (HasHit(transform.position, _target))
         {
+            GameManager.Instance.Sound.PlaySFX(_hitClip);
             _target?.TakeDamage(_damage);
             _onReturn?.Invoke(this);
         }

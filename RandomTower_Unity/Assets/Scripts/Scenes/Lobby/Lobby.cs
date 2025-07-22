@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class Lobby : MonoBehaviour
 {
+    [SerializeField] private AudioClip _bgm;
     private LobbyUI _ui => GameManager.Instance.UI.Lobby;
     private ResourceManager _resource => GameManager.Instance.Resource;
     private NetworkManager _network => GameManager.Instance.Network;
     private LocalDataManager _data => GameManager.Instance.Data;
+    private SoundManager _sound => GameManager.Instance.Sound;
     private List<RoomInfo> _roomList = null;
 
     private float _time = 0;
@@ -22,6 +24,7 @@ public class Lobby : MonoBehaviour
     {
         InitializeUI();
         _resource.SetCallback(ResourceManager.ResourceType.Gem, GemChangedCallback);
+        _sound.PlayBGM(_bgm);
     }
 
     private async void Update()
