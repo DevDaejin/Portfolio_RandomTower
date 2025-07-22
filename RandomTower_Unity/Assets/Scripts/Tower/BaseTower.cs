@@ -9,10 +9,6 @@ public class BaseTower : MonoBehaviour
     public TowerData Data { get; private set; }
 
     public int Level { get; private set; }
-
-    public float Damage => Data.Damage + ((Level - 1) * 0.1f);
-    public float Range => Data.Range + ((Level - 1) * 0.1f);
-    public float FireRate => Data.FireRate + ((Level - 1) * 0.1f);
     
     public Action<int, ISyncObject> OnAttack;
     public Action<string> OnSendProjectileReturn;
@@ -48,16 +44,31 @@ public class BaseTower : MonoBehaviour
         var enemies = FindClosestEnemies();
         if (enemies.Count == 0) return;
 
-        if (_fireElapsed >= 1f / FireRate)
+        Vector3 direction = enemies[0].transform.position - transform.position;
+        direction.y = 0;
+
+        if (direction != Vector3.zero)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 2);
+        }        
+
+        if (_fireElapsed >= 1f / Data.FireRate)
         {
             Attack(enemies);
         }
     }
 
+    //TODO 이동로직 구현해야함.
+    public void MoveToGrid(TowerGrid grid)
+    {
+
+    }
+
+
     protected virtual List<BaseEnemy> FindClosestEnemies()
     {
         Vector3 pos = transform.position;
-        return _enemyProvider.FindClosestWithCount(pos, Range, Data.TargetCount);
+        return _enemyProvider.FindClosestWithCount(pos, Data.Range, Data.TargetCount);
     }
 
     protected virtual void Attack(List<BaseEnemy> targets)
@@ -66,7 +77,7 @@ public class BaseTower : MonoBehaviour
 
         foreach (BaseEnemy target in targets)
         {
-            ISyncObject syncObject = _projectilePool.Get(target, transform.position, Damage, Data.ProjectileSpeed, OnSendProjectileReturn).GetComponent<ISyncObject>();
+            ISyncObject syncObject = _projectilePool.Get(target, transform.position, Data.Damage, Data.ProjectileSpeed, OnSendProjectileReturn).GetComponent<ISyncObject>();
             OnAttack?.Invoke(Data.ID, syncObject);
             _fireElapsed = 0f;
         }
@@ -74,7 +85,7 @@ public class BaseTower : MonoBehaviour
 
     public void ShowRange(bool isAct)
     {
-        if(isAct) _rangeViewer.Active(Range, _gridPosition);
+        if(isAct) _rangeViewer.Active(Data.Range, _gridPosition);
         else _rangeViewer.Deactive();
     }
 }

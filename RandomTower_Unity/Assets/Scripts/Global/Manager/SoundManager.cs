@@ -56,6 +56,8 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySFX(AudioClip clip)
     {
+        if (clip == null) return;
+
         var source = _sounds[SoundType.SFX].Pool.Get();
         source.clip = clip;
         source.loop = false;
@@ -65,6 +67,8 @@ public class SoundManager : MonoBehaviour
 
     public void PlayBGM(AudioClip clip)
     {
+        if (clip == null) return;
+
         StopBGM();
         _currentBGM = _sounds[SoundType.BGM].Pool.Get();
         _currentBGM.clip = clip;

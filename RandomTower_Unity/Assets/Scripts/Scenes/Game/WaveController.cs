@@ -50,6 +50,7 @@ public class WaveController
         _setting = setting;
         CurrentWaveIndex = 0;
         CurrentState = WaveState.Idle;
+
         _timer.Stop();
 
         _timer.OnTick -= _setting.OnTimeChanged;

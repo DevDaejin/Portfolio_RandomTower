@@ -75,9 +75,20 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler
 
     private void UpdateTowerPosition()
     {
-        if (_towers.Count == 1)
+        var positions = GetTowerPostions(_towers.Count);
+        for (int index = 0; index < _towers.Count; index++)
         {
-            _towers[0].Transform.position = _transform.position;
+            _towers[index].transform.position = positions[index];
+        }
+    }
+
+    public Vector3[] GetTowerPostions(int towerCount)
+    {
+        List<Vector3> positions = new();
+
+        if(towerCount == 1)
+        {
+            positions.Add(_transform.position);
         }
         else
         {
@@ -88,13 +99,13 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler
                 _ => null
             };
 
-            if (offsets == null) return;
-
             for (int index = 0; index < offsets.Length; index++)
             {
-                _towers[index].Transform.position = _transform.position + offsets[index];
+                positions.Add(_transform.position + offsets[index]);
             }
         }
+
+         return positions.ToArray();
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -102,16 +113,6 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler
         if (_towers.Count == 0) return;
 
         TowerGridSelectionHandler.Select(this);
-
-#if UNITY_EDITOR
-        BaseTower tower = _towers[0];
-        StringBuilder sb = new StringBuilder();
-        sb.AppendLine($"Tower : {tower.Data.TowerName}");
-        sb.AppendLine($"Damage : {tower.Damage}");
-        sb.AppendLine($"Range : {tower.Range}");
-        sb.AppendLine($"FireRate : {tower.FireRate}");
-        Debug.Log(sb.ToString());
-#endif
     }
 
     public void OnSelect()

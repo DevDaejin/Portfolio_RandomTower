@@ -50,6 +50,7 @@ public class InGameUI : MonoBehaviour
         WaveButton.onClick.RemoveAllListeners();
         _menuButton.onClick.RemoveAllListeners();
 
+        SetInteractableWaveButton(true);
         WaveButton.gameObject.SetActive(_setting.IsHost);
         _menuButton.onClick.AddListener(() => setting?.OnMenu?.Invoke());
 

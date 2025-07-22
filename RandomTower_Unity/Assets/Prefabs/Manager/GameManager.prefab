@@ -86,7 +86,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ac1d74891bbfd240ad0f3df04f239fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _buttonBasicClip: {fileID: 8300000, guid: afbf66e1b5a2a6d42b9afab65c5de815, type: 3}
+  _buttonBasicClip: {fileID: 8300000, guid: c945dac2af9f66c4dbf844e74a92d8e3, type: 3}
 --- !u!1 &2853641201941431102
 GameObject:
   m_ObjectHideFlags: 0

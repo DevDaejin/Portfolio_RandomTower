@@ -15,6 +15,8 @@ public class Main : MonoBehaviour
 
         _network.OnSceneLoad = LoadNextScene;
         _network.Disconnect();
+
+        GameManager.Instance.Sound.StopBGM();
     }
 
     private void Main_OnMultiConfirm(string ip, string port)
