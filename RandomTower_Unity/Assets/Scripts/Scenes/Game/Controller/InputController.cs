@@ -4,7 +4,7 @@ public class InputController
 {
     private Vector3 _startPosition;
     private bool _isDragging;
-    private float _dragThreshold = 1f;
+    private float _dragThreshold = 5f;
 
     private IDrag _dragTarget;
     private ISelect _selectTarget;
@@ -22,6 +22,12 @@ public class InputController
             if(Raycast(_startPosition, out var hit))
             {
                 _dragTarget = hit.collider.GetComponent<IDrag>();
+
+                if(_selectTarget != null)
+                {
+                    _selectTarget.OnDeselect();
+                    _selectTarget = null;
+                }
                 _selectTarget = hit.collider.GetComponent<ISelect>();
             }
         }
@@ -60,7 +66,6 @@ public class InputController
             }
 
             _dragTarget = null;
-            //_selectTarget = null;
         }
     }
 
