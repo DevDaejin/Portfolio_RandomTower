@@ -23,6 +23,7 @@ public class InGame : MonoBehaviour
     private InGameUIHandler _uiHandler;
 
     private SoundManager _sound => GameManager.Instance.Sound;
+    private InputController _inputController;
 
     private KeyValuePair<ResourceType, int> _initialGold;
 
@@ -52,6 +53,8 @@ public class InGame : MonoBehaviour
         GameManager.Instance.UI.Initialize(UIManager.UIType.InGame);
         _stageConfig = _stageConfigs[_currentStage];
         _maxWave = _stageConfig.WaveData.SpawnList.Count;
+
+        _inputController = new();
 
         _context = new InGameContext(
             GetComponent<TowerManager>(),
@@ -116,9 +119,9 @@ public class InGame : MonoBehaviour
 
     private void Update()
     {
-        TowerSelecting();
+        //TowerSelecting();
         UpdateWave();
-
+        _inputController.Raycast();
         if (Input.GetKeyDown(KeyCode.F1))
         {
             _ = _networkHandler.LeaveRoom();
@@ -202,23 +205,23 @@ public class InGame : MonoBehaviour
         _ = _networkHandler.SendEnvelope("sync", packet);
     }
 
-    private void TowerSelecting()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            TowerGridSelectionHandler.TryDeselectOnEmptyClick(Input.mousePosition);
-        }
+    //private void TowerSelecting()
+    //{
+    //    if (Input.GetMouseButtonDown(0))
+    //    {
+    //        TowerGridSelectionHandler.TryDeselectOnEmptyClick(Input.mousePosition);
+    //    }
 
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
+    //    if (Input.touchCount > 0)
+    //    {
+    //        Touch touch = Input.GetTouch(0);
 
-            if (touch.phase == TouchPhase.Began)
-            {
-                TowerGridSelectionHandler.TryDeselectOnEmptyClick(touch.position);
-            }
-        }
-    }
+    //        if (touch.phase == TouchPhase.Began)
+    //        {
+    //            TowerGridSelectionHandler.TryDeselectOnEmptyClick(touch.position);
+    //        }
+    //    }
+    //}
 
     private void UpdateWave()
     {

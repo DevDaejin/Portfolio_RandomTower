@@ -32,26 +32,7 @@ public static class TowerGridSelectionHandler
         if(Current == null) return;
 
         OnDeselect?.Invoke();
-        Current?.OnDeselect();
         _current = null;
-    }
-
-    public static void TryDeselectOnEmptyClick(Vector3 screenPosition)
-    {
-        if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
-
-        Ray ray = Camera.main.ScreenPointToRay(screenPosition);
-        if (!Physics.Raycast(ray, out RaycastHit hit))
-        {
-            Deselect();
-        }
-        else
-        {
-            if (!hit.collider.TryGetComponent<TowerGrid>(out _))
-            {
-                Deselect();
-            }
-        }
     }
 
     public static void Clear() => _current = null;

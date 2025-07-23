@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TowerManager : MonoBehaviour
@@ -31,7 +30,6 @@ public class TowerManager : MonoBehaviour
         _towerChanceTable = new();
     }
 
-    //TODO : 타워 강화 로직 파라미터로 전달 받기
     public void Initialize(TowerDatabase towerDB, IEnemyProvider enemyProvider, int installableCount)
     {
         _towerDB = towerDB;
@@ -67,7 +65,13 @@ public class TowerManager : MonoBehaviour
             data = grid.GetTower().Data;
         }
 
-        BaseTower tower = CreateTower(data, grid.transform.position, _enemyProvider, OnSendReturnProejctile);
+        BaseTower tower = CreateTower(new TowerSetting
+        {
+            Data = data, 
+            GridPosition = grid.transform.position, 
+            EnemyProvider = _enemyProvider, 
+            OnSendReturnProjectile = OnSendReturnProejctile
+        });
 
         if (!grid.TryAddTower(tower))
         {
@@ -98,8 +102,13 @@ public class TowerManager : MonoBehaviour
 
         var newGrid = _gridController.GetGridDifferentID(data);
         if (newGrid == null) newGrid = grid;
-        BaseTower newTower = CreateTower(data, newGrid.transform.position, _enemyProvider, OnSendReturnProejctile);
-
+        BaseTower newTower = CreateTower(new TowerSetting{
+            Data = data, 
+            GridPosition = newGrid.transform.position, 
+            EnemyProvider = _enemyProvider, 
+            OnAttack = OnTowerAttack,
+            OnSendReturnProjectile = OnSendReturnProejctile,
+        });
         if(!grid.TryAddTower(newTower))
         {
             _towerFactory.Release(newTower);
@@ -119,9 +128,9 @@ public class TowerManager : MonoBehaviour
         _towerFactory.Release(tower);
     }
 
-    public BaseTower CreateTower(TowerData data, Vector3 position, IEnemyProvider enemyProvider, Action<string> onSendProjectileReturn)
+    public BaseTower CreateTower(TowerSetting setting)
     {
-        return _towerFactory.CreateTower(data, position, enemyProvider, OnTowerAttack, onSendProjectileReturn);
+        return _towerFactory.CreateTower(setting);
     }
 
     private void OnTowerAttack(int id, ISyncObject syncable)

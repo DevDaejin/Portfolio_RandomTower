@@ -4,40 +4,24 @@ using UnityEngine;
 
 public class BaseTower : MonoBehaviour
 {
-    public Transform Transform => transform;    
-
-    public TowerData Data { get; private set; }
-
-    public int Level { get; private set; }
-    
-    public Action<int, ISyncObject> OnAttack;
-    public Action<string> OnSendProjectileReturn;
-
+    public Transform Transform => transform;
+    public TowerData Data => _setting.Data;
     public GameObject Selectd => gameObject;
 
+    private TowerSetting _setting;
     private float _fireElapsed;
-    private Vector3 _gridPosition;
-
     private TowerRangeViewer _rangeViewer;
-    protected IEnemyProvider _enemyProvider;
-    private IProjectilePool _projectilePool;
 
-    public void Initialize(TowerData data, Vector3 gridPosition, IProjectilePool pool, IEnemyProvider enemyProvider, Action<int, ISyncObject> onActtack, Action<string> onSendProjectileReturn)
+    public void Initialize(TowerSetting setting)
     {
-        Data = data;
-        _gridPosition = gridPosition;
-        Level = data.Level;
-        _projectilePool ??= pool;
-        _enemyProvider ??= enemyProvider;
+        _setting = setting;
         _rangeViewer ??= GetComponentInChildren<TowerRangeViewer>();
         _rangeViewer.Deactive();
-        OnAttack = onActtack;
-        OnSendProjectileReturn = onSendProjectileReturn;
     }
 
     protected virtual void Update()
     {
-        if (_enemyProvider == null) return;
+        if (_setting?.EnemyProvider == null) return;
 
         _fireElapsed += Time.deltaTime;
 
@@ -68,7 +52,7 @@ public class BaseTower : MonoBehaviour
     protected virtual List<BaseEnemy> FindClosestEnemies()
     {
         Vector3 pos = transform.position;
-        return _enemyProvider.FindClosestWithCount(pos, Data.Range, Data.TargetCount);
+        return _setting?.EnemyProvider?.FindClosestWithCount(pos, Data.Range, Data.TargetCount);
     }
 
     protected virtual void Attack(List<BaseEnemy> targets)
@@ -77,15 +61,16 @@ public class BaseTower : MonoBehaviour
 
         foreach (BaseEnemy target in targets)
         {
-            ISyncObject syncObject = _projectilePool.Get(target, transform.position, Data.Damage, Data.ProjectileSpeed, OnSendProjectileReturn).GetComponent<ISyncObject>();
-            OnAttack?.Invoke(Data.ID, syncObject);
+            ISyncObject syncObject = _setting.ProjectilePool.Get(target, transform.position, Data.Damage, Data.ProjectileSpeed, _setting.OnSendReturnProjectile).GetComponent<ISyncObject>();
+
+            _setting.OnAttack?.Invoke(Data.ID, syncObject);
             _fireElapsed = 0f;
         }
     }
 
     public void ShowRange(bool isAct)
     {
-        if(isAct) _rangeViewer.Active(Data.Range, _gridPosition);
+        if(isAct) _rangeViewer.Active(Data.Range, _setting.GridPosition);
         else _rangeViewer.Deactive();
     }
 }

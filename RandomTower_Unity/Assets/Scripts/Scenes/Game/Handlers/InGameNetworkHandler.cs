@@ -48,7 +48,11 @@ public class InGameNetworkHandler
     private void OnReceivedTowerPacket(SpawnTowerPacket packet)
     {
         TowerData data = _context.Tower.TowerDB.GetTowerByID(int.Parse(packet.SpawnId)).Data;
-        BaseTower tower = _context.Tower.CreateTower(data, Vector3.down, null, null);
+        BaseTower tower = _context.Tower.CreateTower(new TowerSetting
+        {
+            Data = data, 
+            GridPosition = Vector3.down,
+        });
 
         ISyncObject syncObject = tower.Transform.GetComponent<ISyncObject>();
         syncObject.Initialize(packet.ObjectId, packet.OwnerId, packet.RoomId);

@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TowerGrid : MonoBehaviour, IPointerDownHandler
+public class TowerGrid : MonoBehaviour, IPointerDownHandler, IDrag, ISelect
 {
     private Transform _transform;
     private List<BaseTower> _towers;
@@ -127,6 +127,8 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler
         {
             tower.ShowRange(lastTower == tower);
         }
+
+        TowerGridSelectionHandler.Select(this);
     }
 
     public void OnDeselect()
@@ -140,5 +142,22 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler
         {
             tower.ShowRange(false);
         }
+
+        TowerGridSelectionHandler.Deselect();
+    }
+
+    public void OnBeginDrag(Vector3 startPosition)
+    {
+        Debug.Log("begin");
+    }
+
+    public void OnDrag(Vector3 currentPosition)
+    {
+        Debug.Log("drag");
+    }
+
+    public void OnEndDrag(Vector3 endPosition)
+    {
+        Debug.Log("end");
     }
 }
