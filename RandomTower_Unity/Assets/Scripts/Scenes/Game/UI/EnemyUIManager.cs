@@ -18,7 +18,6 @@ public class EnemyUIManager : MonoBehaviour
 
     private void Awake()
     {
-        _cam = Camera.main;
         Transform canvasTransform = _canvas.transform;
         _enemyUIPool = new GameObjectPool<EnemyUI>(_enemyUIPrefab, canvasTransform);
         _damageUIPool = new GameObjectPool<DamageUI>(_damageUIPrefab, canvasTransform);
@@ -82,6 +81,7 @@ public class EnemyUIManager : MonoBehaviour
     private Vector2 GetScreenPosition(BaseEnemy enemy)
     {
         Vector3 world = enemy.transform.position + Vector3.up * HeightOffset;
+        _cam ??= Camera.main;
         return _cam.WorldToScreenPoint(world);
     }
 

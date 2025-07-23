@@ -98,7 +98,7 @@ public class TowerManager : MonoBehaviour
 
         foreach (var tower in grid.GetTowerList)
         {
-            _towerFactory.Release(tower);
+            RemoveTower(tower);
         }
         grid.RemoveTowerAll();
 
@@ -129,19 +129,16 @@ public class TowerManager : MonoBehaviour
     public void SellTower(BaseTower tower, Action<int> onSellTower)
     {
         onSellTower?.Invoke(Mathf.RoundToInt(tower.Data.SpawnCoast * 0.5f));
-
-        ISyncObject syncObject = tower.GetComponent<ISyncObject>();
-        OnSendDespawnTowerPacket?.Invoke(tower.Data.ID, syncObject);
-
-        _towerFactory.Release(tower);
-
+        RemoveTower(tower);
         int count = _towerFactory.GetTowerCount();
         OnTowerUpdated(count, _installableCount);
+    }
 
-        //if(count <= 0)
-        //{
-        //    TowerGridSelectionHandler.Deselect();
-        //}
+    private void RemoveTower(BaseTower tower)
+    {
+        ISyncObject syncObject = tower.GetComponent<ISyncObject>();
+        OnSendDespawnTowerPacket?.Invoke(tower.Data.ID, syncObject);
+        _towerFactory.Release(tower);
     }
 
     public void SwapTower(Vector3 gridPosition1, Vector3 gridPosition2)
@@ -151,8 +148,8 @@ public class TowerManager : MonoBehaviour
         var grid1 = _gridController.GetGridByPosition(gridPosition1);
         var grid2 = _gridController.GetGridByPosition(gridPosition2);
 
-        var grid2Positions = grid1.GetTowerPostions(grid2.GetTowerCount() + 1);
-        var grid1Positions = grid2.GetTowerPostions(grid1.GetTowerCount() + 1);
+        var grid2Positions = grid1.GetTowerPostions(grid2.GetTowerCount());
+        var grid1Positions = grid2.GetTowerPostions(grid1.GetTowerCount());
 
         var grid1Towers = new List<BaseTower>(grid1.GetTowerList);
         var grid2Towers = new List<BaseTower>(grid2.GetTowerList);

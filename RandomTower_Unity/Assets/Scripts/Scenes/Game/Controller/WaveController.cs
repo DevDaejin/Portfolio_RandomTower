@@ -16,31 +16,7 @@ public class WaveController
     public int MaxWave => _setting.MaxWave;
     public int MaxEnemies => _setting.MaxEnemies;
 
-
-    /*_waveDuration;*/
-    //private float _waveDuration;
-
-    /*_maxWave;*/
-    //private int _maxWave;
-
-    /*_maxEnemies;*/
-    //private int _maxEnemies;
-
-
-
-    //private Func<bool> _getSpawningState;
-    //private Func<int> _getAliveEnemyCount;
-
-    //public event Action<float> OnTimeChanged;
-    //public event Action<int, int> OnWaveChanged;
-    //public event Action<int, int> OnEnemyCountChanged;
-
-    //public event Action OnWaveStarted;
-    //public event Action OnWaveEnded;
-    //public event Action<bool> OnStageResult;
-
     public WaveController(float initializeTime)
-    //public WaveController(int maxWave, int maxEnemies, float waveDuration, Func<bool> getSpawningState, Func<int> getAliveEnemyCount)
     {
         _timer = new Timer(initializeTime);
     }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.InputSystem.XInput;
+using UnityEngine.PlayerLoop;
 using ResourceType = ResourceManager.ResourceType;
 
 public class InGame : MonoBehaviour
@@ -114,7 +115,7 @@ public class InGame : MonoBehaviour
         TowerGridSelectionHandler.OnSelect = SelectGrid;
         TowerGridSelectionHandler.OnDeselect = _uiHandler.DeselectTowerUI;
 
-        _navMeshSurface.BuildNavMesh();
+        //_navMeshSurface.BuildNavMesh();
         RefreshAlivedEnemyCount();
 
         _sound.PlayBGM(_bgmClip);
@@ -311,12 +312,20 @@ public class InGame : MonoBehaviour
     {
         var reward = _stageConfig.ClearReward;
         _context.Resource.Earn(ResourceType.Gem, reward);
+
+        _towerHandler.Reset();
+        _enemyHandler.Reset();
+
         return reward;
     }
     private int OnFailedReward()
     {
         var reward = _stageConfig.FailedReward;
         _context.Resource.Earn(ResourceType.Gem, reward);
+
+        _towerHandler.Reset();
+        _enemyHandler.Reset();
+
         return reward;
     }
 }

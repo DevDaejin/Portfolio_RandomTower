@@ -40,7 +40,6 @@ public class InGameResultUI : MonoBehaviour
         _resultDescriptionText.text = isSuccess ? SeuccessDescription : FailedDescription;
         string reward = (isSuccess ? OnSuccessReward?.Invoke() : OnFailedReward?.Invoke()).ToString();
 
-        Debug.Log(reward);
         _rewardText.text = reward;
     }
 

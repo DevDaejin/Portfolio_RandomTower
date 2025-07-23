@@ -49,7 +49,7 @@ public class GlobalMessageBoxUI : MonoBehaviour
         SetButtons(box.PositiveButtonText, box.NegativeButtonText, box.OnPositiveButtonClick, box.OnNegativeButtonClick);
 
         ActiveUI(true);
-    }
+     }
 
     private void Resize(Vector2 messageBoxSize, Vector2 descriptionSize)
     {

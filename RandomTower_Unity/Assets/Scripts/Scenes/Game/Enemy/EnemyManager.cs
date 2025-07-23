@@ -184,13 +184,14 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         {
             StopCoroutine(pair.Value);
         }
+        _spawnCoroutine.Clear();
 
         while (_spawnedEnemies.Count > 0)
         {
             ReleaseEnemy(_spawnedEnemies[0]);
         }
-
         _spawnedEnemies.Clear();
+
         _cachingList.Clear();
         _cachingSortedList.Clear();
 
