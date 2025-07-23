@@ -27,18 +27,9 @@ public class InputController
             _startPosition = Input.mousePosition;
             _isDragging = false;
 
-            if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
-
             if (Raycast(_startPosition, out var hit))
             {
                 _dragTarget = hit.collider.GetComponent<IDrag>();
-
-                if (_selectTarget != null)
-                {
-                    _selectTarget?.OnDeselect();
-                    _selectTarget = null;
-                }
-                _selectTarget = hit.collider.GetComponent<ISelect>();
             }
         }
 
@@ -77,8 +68,10 @@ public class InputController
             }
             else
             {
-                if(Raycast(Input.mousePosition, out var hit))
+                if (Raycast(Input.mousePosition, out var hit))
                 {
+                    _selectTarget?.OnDeselect();
+                    _selectTarget = hit.collider.GetComponent<ISelect>();
                     _selectTarget?.OnSelect();
                 }
                 else
