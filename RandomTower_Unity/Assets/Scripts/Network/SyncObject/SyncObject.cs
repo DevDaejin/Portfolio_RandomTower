@@ -81,7 +81,7 @@ public class SyncObject : MonoBehaviour, ISyncObject
             Payload = ByteString.CopyFrom(syncable.Serialize().ToByteArray())
         };
 
-        await _network.SendEnvelope("sync", syncPacket);
+        await _network.SendEnvelope(NetworkConst.Sync, syncPacket);
         syncable.ClearDirty();
     }
 

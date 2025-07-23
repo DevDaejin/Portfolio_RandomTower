@@ -1,5 +1,7 @@
+using Despawn;
 using Spawn;
 using System;
+using UnityEngine;
 
 public class InGameTowerHandler
 {
@@ -25,14 +27,39 @@ public class InGameTowerHandler
         
         if (_context.Network.IsConnect)
         {
-            _context.Tower.OnSendSpawnTowerPacket = (id, sync) => _context.Network.OnSendSpawnPacket<SpawnTowerPacket>("tower", id, _context.IDGenerator.Get(), sync);
-            _context.Tower.OnSendSpawnProjectilePacket = (id, sync) => _context.Network.OnSendSpawnPacket<SpawnProjectilePacket>("projectile", id, _context.IDGenerator.Get(), sync);
+            _context.Tower.OnSendSpawnTowerPacket = (id, sync) =>
+            {
+                _context.Network.OnSendSpawnPacket<SpawnTowerPacket>(
+                    NetworkConst.Tower, 
+                    id, 
+                    _context.IDGenerator.Get(), 
+                    sync);
+            };
+
+            _context.Tower.OnSendDespawnTowerPacket = (id, sync) =>
+            {
+                _context.Network.OnSendDespawnPacket<DespawnTowerPacket>(
+                    NetworkConst.Tower,
+                    id,
+                    sync
+                );
+            };
+
+            _context.Tower.OnSendSpawnProjectilePacket = (id, sync) =>
+            {
+                _context.Network.OnSendSpawnPacket<SpawnProjectilePacket>(
+                    NetworkConst.Projectile, 
+                    id, 
+                    _context.IDGenerator.Get(), 
+                    sync);
+            };
             _context.Tower.OnSendReturnProejctile = _onSendReturnProejctile;
         }
     }
 
     public void SellTower(BaseTower tower) => _context.Tower.SellTower(tower, _onSellTower);
     public void MergeTower(TowerGrid grid) => _context.Tower.MergeTower(grid);
+    public void SwapTower(Vector3 position1, Vector3 position2) => _context.Tower.SwapTower(position1, position2);
     public void OnSpawnTower(int towerSpawnChancePassiveLevel) => _context.Tower.SpawnTower(towerSpawnChancePassiveLevel);
     public bool IsUpgradeMax(int level) => _context.Tower.GetHighestLevel() <= level;
     public int[] GetProbability(int level) => _context.Tower.GetProbability(level);

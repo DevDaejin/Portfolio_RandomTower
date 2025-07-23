@@ -1,16 +1,24 @@
+using System;
 using UnityEngine;
 
 public class InputController
 {
+    public Action<Vector3, Vector3> OnDragEnd;
+
     private Vector3 _startPosition;
+
+    private Vector3 _startWorldPosition;
+    private Vector3 _endWorldPosition;
+
     private bool _isDragging;
-    private float _dragThreshold = 5f;
+    private float _dragThreshold = 10f;
 
     private IDrag _dragTarget;
     private ISelect _selectTarget;
 
     private Camera _cam;
     private const string InteractableLayer = "Interactable";
+
 
     public void Raycast()
     {
@@ -19,13 +27,15 @@ public class InputController
             _startPosition = Input.mousePosition;
             _isDragging = false;
 
-            if(Raycast(_startPosition, out var hit))
+            if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
+
+            if (Raycast(_startPosition, out var hit))
             {
                 _dragTarget = hit.collider.GetComponent<IDrag>();
 
-                if(_selectTarget != null)
+                if (_selectTarget != null)
                 {
-                    _selectTarget.OnDeselect();
+                    _selectTarget?.OnDeselect();
                     _selectTarget = null;
                 }
                 _selectTarget = hit.collider.GetComponent<ISelect>();
@@ -38,12 +48,19 @@ public class InputController
             if(IsDragable(sqrDistacne))
             {
                 _isDragging = true;
-                _dragTarget?.OnBeginDrag(_startPosition);
+                if (Raycast(_startPosition, out var hit))
+                {
+                    _startWorldPosition = hit.transform.position;
+                    _dragTarget?.OnBeginDrag(_startWorldPosition);
+                }
             }
 
             if(_isDragging)
             {
-                _dragTarget?.OnDrag(Input.mousePosition);
+                if (Raycast(Input.mousePosition, out var hit))
+                {
+                    _dragTarget?.OnDrag(hit.transform.position);
+                }
             }
         }
 
@@ -51,7 +68,12 @@ public class InputController
         {
             if(_isDragging)
             {
-                _dragTarget?.OnEndDrag(Input.mousePosition);
+                if (Raycast(Input.mousePosition, out var hit))
+                {
+                    _endWorldPosition = hit.transform.position;
+                    _dragTarget?.OnEndDrag(_endWorldPosition);
+                    OnDragEnd?.Invoke(_startWorldPosition, _endWorldPosition);
+                }
             }
             else
             {
@@ -73,7 +95,7 @@ public class InputController
     {
 
         _cam ??= Camera.main;
-        Ray ray = _cam.ScreenPointToRay(_startPosition);
+        Ray ray = _cam.ScreenPointToRay(screenPosition);
 
         if (Physics.Raycast(ray, out hit))
         {
@@ -83,8 +105,5 @@ public class InputController
         return false;
     }
 
-    private bool IsDragable(float sqrDistance)
-    {
-        return (!_isDragging && sqrDistance > (_dragThreshold * _dragThreshold) && _dragTarget != null);
-    }
+    private bool IsDragable(float sqrDistance) => (!_isDragging && sqrDistance > (_dragThreshold * _dragThreshold) && _dragTarget != null);
 }

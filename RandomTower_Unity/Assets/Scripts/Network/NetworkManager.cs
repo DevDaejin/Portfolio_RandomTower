@@ -1,3 +1,4 @@
+using Despawn;
 using Game;
 using Google.Protobuf;
 using Net;
@@ -12,12 +13,12 @@ public class NetworkManager : MonoBehaviour
     private NetworkClient _client;
     public RoomService RoomService { get; private set; }
     public SpawnService SpawnService { get; private set; }
+    public DespawnService DespawnService { get; private set; }
     public SyncService SyncService { get; private set; }
     public GameStateService GameStateService { get; private set; }
     public bool IsConnect { get; private set; } = false;
 
     public bool IsHost => _client?.ClientID == _client?.RoomOwnerID;
-
     public string ClientID => _client?.ClientID ?? string.Empty;
     public string RoomID => _client?.RoomID ?? string.Empty;
 
@@ -46,13 +47,15 @@ public class NetworkManager : MonoBehaviour
 
         RoomService = new RoomService(_client);
         SpawnService = new SpawnService(_client);
+        DespawnService = new DespawnService(_client);
         SyncService = new SyncService();
         GameStateService = new GameStateService();
 
-        _client.RegisterEnvelopeHandler("room", HandleRoomEnvelope);
-        _client.RegisterEnvelopeHandler("spawn", HandleSpawn);
-        _client.RegisterEnvelopeHandler("sync", HandleSync);
-        _client.RegisterEnvelopeHandler("game_state", HandleGameState);
+        _client.RegisterEnvelopeHandler(NetworkConst.Room, HandleRoomEnvelope);
+        _client.RegisterEnvelopeHandler(NetworkConst.Spawn, HandleSpawn);
+        _client.RegisterEnvelopeHandler(NetworkConst.Despawn, HandleDespawn);
+        _client.RegisterEnvelopeHandler(NetworkConst.Sync, HandleSync);
+        _client.RegisterEnvelopeHandler(NetworkConst.GameState, HandleGameState);
 
         _client.OnError = OnError;
         _client.OnClose = OnClose;
@@ -68,12 +71,17 @@ public class NetworkManager : MonoBehaviour
         OnSceneLoad?.Invoke();
     }
 
-    public async void OnSendSpawnPacket<T>(string type, int senderId, string objectId, ISyncObject syncObject)
+    public async void OnSendSpawnPacket<T>(string type, int dataId, string objectId, ISyncObject syncObject)
     {
         if (!IsConnect) return;
 
         syncObject.Initialize(objectId, ClientID, RoomID);
-        await SpawnService.SendSpawn(type, senderId.ToString(), syncObject);
+        await SpawnService.SendSpawn(type, dataId.ToString(), syncObject);
+    }
+
+    public async void OnSendDespawnPacket<T>(string type, int dataId, ISyncObject syncObject)
+    {
+        await DespawnService.SendDespawn(type, dataId.ToString(), syncObject);
     }
 
     private void HandleRoomEnvelope(byte[] bytes)
@@ -92,6 +100,12 @@ public class NetworkManager : MonoBehaviour
     {
         var packet = SpawnPacketData.Parser.ParseFrom(bytes);
         SpawnService.OnReceive(packet);
+    }
+
+    private void HandleDespawn(byte[] bytes)
+    {
+        var packet = DespawnPacketData.Parser.ParseFrom(bytes);
+        DespawnService.OnReceive(packet);
     }
 
     private void HandleGameState(byte[] bytes)

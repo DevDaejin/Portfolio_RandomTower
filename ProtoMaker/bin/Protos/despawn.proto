@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package despawn;
+
+message DespawnEnemyPacket {
+  string object_id = 1;
+  string owner_id = 2;
+  string room_id = 3;
+  string despawn_id = 4;
+}
+
+message DespawnTowerPacket {
+  string object_id = 1;
+  string owner_id = 2;
+  string room_id = 3;
+  string despawn_id = 4;
+}
+
+message DespawnProjectilePacket {
+  string object_id = 1;
+  string owner_id = 2;
+  string room_id = 3;
+  string despawn_id = 4;
+}
+
+message DespawnPacketData {
+  string object_id = 1;
+  string despawn_type = 2;
+  bytes payload = 3;
+}

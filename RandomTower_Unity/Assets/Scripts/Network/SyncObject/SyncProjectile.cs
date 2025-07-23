@@ -7,7 +7,7 @@ public class SyncProjectile : BaseSync<SyncProjectileData>
     private LineRenderer _lineRenderer;
     private bool _isLaser => _lineRenderer != null;
 
-    public override string SyncType => "projectile";
+    public override string SyncType => NetworkConst.Projectile;
 
     protected override void Awake()
     {

@@ -8,11 +8,11 @@ public class BaseTower : MonoBehaviour
     public TowerData Data => _setting.Data;
     public GameObject Selectd => gameObject;
 
-    private TowerSetting _setting;
+    private TowerCreateSetting _setting;
     private float _fireElapsed;
     private TowerRangeViewer _rangeViewer;
 
-    public void Initialize(TowerSetting setting)
+    public void Initialize(TowerCreateSetting setting)
     {
         _setting = setting;
         _rangeViewer ??= GetComponentInChildren<TowerRangeViewer>();
@@ -41,13 +41,6 @@ public class BaseTower : MonoBehaviour
             Attack(enemies);
         }
     }
-
-    //TODO 이동로직 구현해야함.
-    public void MoveToGrid(TowerGrid grid)
-    {
-
-    }
-
 
     protected virtual List<BaseEnemy> FindClosestEnemies()
     {

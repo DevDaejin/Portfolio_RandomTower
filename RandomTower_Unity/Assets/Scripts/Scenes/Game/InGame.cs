@@ -5,6 +5,7 @@ using Sync;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.InputSystem.XInput;
 using ResourceType = ResourceManager.ResourceType;
 
 public class InGame : MonoBehaviour
@@ -97,6 +98,8 @@ public class InGame : MonoBehaviour
 
     private void Start()
     {
+        _inputController.OnDragEnd = OnSwapTower;
+
         _initialGold = new KeyValuePair<ResourceType, int>(ResourceType.Gold, InitialGoldAmount);
         
         _context.Resource.Initialize(_initialGold);
@@ -107,7 +110,7 @@ public class InGame : MonoBehaviour
         _networkHandler.Initialize();
         _waveHandler.Initialize();
         _uiHandler.Initialize();
-
+        
         TowerGridSelectionHandler.OnSelect = SelectGrid;
         TowerGridSelectionHandler.OnDeselect = _uiHandler.DeselectTowerUI;
 
@@ -119,7 +122,6 @@ public class InGame : MonoBehaviour
 
     private void Update()
     {
-        //TowerSelecting();
         UpdateWave();
         _inputController.Raycast();
         if (Input.GetKeyDown(KeyCode.F1))
@@ -167,7 +169,7 @@ public class InGame : MonoBehaviour
                 RoomId = _networkHandler.RoomID
             };
 
-            await _networkHandler.SendEnvelope("game_state", packet);
+            await _networkHandler.SendEnvelope(NetworkConst.GameState, packet);
         }
     }
 
@@ -181,11 +183,11 @@ public class InGame : MonoBehaviour
         var packet = new SyncPacketData
         {
             ObjectId = objectId,
-            SyncType = "projectile",
+            SyncType = NetworkConst.Projectile,
             Payload = data.ToByteString()
         };
 
-        _ = _networkHandler.SendEnvelope("sync", packet);
+        _ = _networkHandler.SendEnvelope(NetworkConst.Sync, packet);
     }
 
     private void ForceReturnEnemy(string objectId)
@@ -202,26 +204,8 @@ public class InGame : MonoBehaviour
             Payload = data.ToByteString()
         };
 
-        _ = _networkHandler.SendEnvelope("sync", packet);
+        _ = _networkHandler.SendEnvelope(NetworkConst.Sync, packet);
     }
-
-    //private void TowerSelecting()
-    //{
-    //    if (Input.GetMouseButtonDown(0))
-    //    {
-    //        TowerGridSelectionHandler.TryDeselectOnEmptyClick(Input.mousePosition);
-    //    }
-
-    //    if (Input.touchCount > 0)
-    //    {
-    //        Touch touch = Input.GetTouch(0);
-
-    //        if (touch.phase == TouchPhase.Began)
-    //        {
-    //            TowerGridSelectionHandler.TryDeselectOnEmptyClick(touch.position);
-    //        }
-    //    }
-    //}
 
     private void UpdateWave()
     {
@@ -258,7 +242,7 @@ public class InGame : MonoBehaviour
 
     private void OnSellTower()
     {
-        var grid = TowerGridSelectionHandler.Current;
+        var grid = TowerGridSelectionHandler.Current;        
         _towerHandler.SellTower(grid.GetTower());
         grid.RemoveTower();
 
@@ -276,6 +260,8 @@ public class InGame : MonoBehaviour
         _uiHandler.SetInteractableMergeButton(grid.IsMergeable);
         _uiHandler.RefreshInstalledTowerCount();
     }
+
+    private void OnSwapTower(Vector3 position1, Vector3 position2) => _towerHandler.SwapTower(position1, position2);
 
     private void OnSellTower(int sellingPrice) => _context.Resource.Earn(ResourceType.Gold, sellingPrice);
 

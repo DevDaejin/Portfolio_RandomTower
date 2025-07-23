@@ -7,12 +7,12 @@ public class TowerGridController
     private const int MaxTowerCount = 3;
     private readonly List<TowerGrid> _grids = new();
 
-    public TowerGridController(Transform[] grid)
+    public TowerGridController(Transform[] grid, IDrag dragIndicator)
     {
         for (int index = 0; index < grid.Length; index++)
         {
             TowerGrid created = grid[index].AddComponent<TowerGrid>();
-            created.Initialize();
+            created.Initialize(dragIndicator);
             _grids.Add(created);
         }
     }
@@ -129,6 +129,19 @@ public class TowerGridController
 
         int rand = Random.Range(0, nullGrids.Length);
         return nullGrids[rand];
+    }
+
+    public TowerGrid GetGridByPosition(Vector3 gridPosition)
+    {
+        foreach(var grid in _grids)
+        {
+            if(grid.transform.position == gridPosition)
+            {
+                return grid;
+            }
+        }
+
+        return null;
     }
 
     public void RemoveAllTower()

@@ -6,12 +6,13 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TowerGrid : MonoBehaviour, IPointerDownHandler, IDrag, ISelect
+public class TowerGrid : MonoBehaviour, IDrag, ISelect, IPointerDownHandler
 {
     private Transform _transform;
     private List<BaseTower> _towers;
-    private const int MaxCount = 3;
+    private IDrag _indicator;
 
+    private const int MaxCount = 3;
     private const float LeftSideX = -0.2f;
     private const float RightSideX = 0.2f;
     private const float intervalZ = 0.2f;
@@ -29,10 +30,11 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler, IDrag, ISelect
         new Vector3(RightSideX, 0, -intervalZ * 0.5f),
     };
 
-    public void Initialize()
+    public void Initialize(IDrag indicator)
     {
         _transform = GetComponent<Transform>();
         _towers = new();
+        _indicator = indicator;
     }
 
     public bool TryAddTower(BaseTower tower)
@@ -92,7 +94,7 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler, IDrag, ISelect
         }
         else
         {
-            Vector3[] offsets = _towers.Count switch
+            Vector3[] offsets = towerCount switch
             {
                 2 => Positions2,
                 3 => Positions3,
@@ -106,13 +108,6 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler, IDrag, ISelect
         }
 
          return positions.ToArray();
-    }
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        if (_towers.Count == 0) return;
-
-        TowerGridSelectionHandler.Select(this);
     }
 
     public void OnSelect()
@@ -148,16 +143,22 @@ public class TowerGrid : MonoBehaviour, IPointerDownHandler, IDrag, ISelect
 
     public void OnBeginDrag(Vector3 startPosition)
     {
-        Debug.Log("begin");
+        _indicator.OnBeginDrag(startPosition);
     }
 
     public void OnDrag(Vector3 currentPosition)
     {
-        Debug.Log("drag");
+        _indicator.OnDrag(currentPosition);
     }
 
     public void OnEndDrag(Vector3 endPosition)
     {
-        Debug.Log("end");
+        _indicator.OnEndDrag(endPosition);
+    }
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (_towers.Count == 0) return;
+
+        TowerGridSelectionHandler.Select(this);
     }
 }

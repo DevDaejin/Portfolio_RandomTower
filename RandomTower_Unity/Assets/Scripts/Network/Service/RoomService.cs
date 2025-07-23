@@ -35,14 +35,14 @@ public class RoomService
     }
 
     public async Task CreateRoom(string name) =>
-        await _client.SendEnvelope("room", new RoomPacket { CreateRoom = new CreateRoomRequest { Name = name } });
+        await _client.SendEnvelope(NetworkConst.Room, new RoomPacket { CreateRoom = new CreateRoomRequest { Name = name } });
 
     public async Task JoinRoom(string roomId) =>
-        await _client.SendEnvelope("room", new RoomPacket { JoinRoom = new JoinRoomRequest { RoomId = roomId } });
+        await _client.SendEnvelope(NetworkConst.Room, new RoomPacket { JoinRoom = new JoinRoomRequest { RoomId = roomId } });
 
     public async Task LeaveRoom() =>
-        await _client.SendEnvelope("room", new RoomPacket { LeaveRoom = new LeaveRoomRequest { RoomId = _client.RoomID } });
+        await _client.SendEnvelope(NetworkConst.Room, new RoomPacket { LeaveRoom = new LeaveRoomRequest { RoomId = _client.RoomID } });
 
     public async Task RequestRoomList() =>
-        await _client.SendEnvelope("room", new RoomPacket { ListRoom = new ListRoomRequest() });
+        await _client.SendEnvelope(NetworkConst.Room, new RoomPacket { ListRoom = new ListRoomRequest() });
 }

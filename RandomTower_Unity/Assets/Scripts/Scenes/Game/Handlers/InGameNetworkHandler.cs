@@ -1,3 +1,4 @@
+using Despawn;
 using Google.Protobuf;
 using Spawn;
 using System.Threading.Tasks;
@@ -21,9 +22,10 @@ public class InGameNetworkHandler
             _multiEnviromentHandler.Initialize(_context.Network.IsHost);
 
             _context.Network.SpawnService.OnEnemySpawned = OnReceivedEnemyPacket;
-            _context.Network.SpawnService.OnTowerSpawned = OnReceivedTowerPacket;
+            _context.Network.SpawnService.OnTowerSpawned = OnReceivedSpawnTowerPacket;
             _context.Network.SpawnService.OnProjectileSpawned =  OnReceivedProjectilePacket;
             _context.Network.GameStateService.OnWaveStart += OnWaveStart;
+            _context.Network.DespawnService.OnTowerDespawned = OnReceivedDespawnTowerPacket;
         }
     }
 
@@ -45,10 +47,10 @@ public class InGameNetworkHandler
         _context.Network.SyncService.OnSyncObjectSpawned(syncObject);
     }
 
-    private void OnReceivedTowerPacket(SpawnTowerPacket packet)
+    private void OnReceivedSpawnTowerPacket(SpawnTowerPacket packet)
     {
         TowerData data = _context.Tower.TowerDB.GetTowerByID(int.Parse(packet.SpawnId)).Data;
-        BaseTower tower = _context.Tower.CreateTower(new TowerSetting
+        BaseTower tower = _context.Tower.CreateTower(new TowerCreateSetting
         {
             Data = data, 
             GridPosition = Vector3.down,
@@ -58,6 +60,12 @@ public class InGameNetworkHandler
         syncObject.Initialize(packet.ObjectId, packet.OwnerId, packet.RoomId);
 
         _context.Network.SyncService.OnSyncObjectSpawned(syncObject);
+    }
+
+    private void OnReceivedDespawnTowerPacket(DespawnTowerPacket packet)
+    {
+        var tower = _context.Tower.GetTowerByObjectId(packet.DespawnId, packet.ObjectId);
+        _context.Tower.SellTower(tower, null);
     }
 
     private void OnReceivedProjectilePacket(SpawnProjectilePacket packet)

@@ -30,7 +30,6 @@ public static class TowerGridSelectionHandler
     public static void Deselect()
     {
         if(Current == null) return;
-
         OnDeselect?.Invoke();
         _current = null;
     }

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class TowerSetting
+public class TowerCreateSetting
 {
     public TowerData Data = null;
     public Vector3 GridPosition = Vector3.zero;

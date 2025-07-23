@@ -32,7 +32,7 @@ public class TowerFactory
         return candidates[Random.Range(0, candidates.Length)].Data;
     }
 
-    public BaseTower CreateTower(TowerSetting setting)
+    public BaseTower CreateTower(TowerCreateSetting setting)
     {
         GameObjectPool<BaseTower> towerPool = GetTowerPool(setting.Data);
         BaseTower tower = towerPool.Get();
@@ -52,6 +52,16 @@ public class TowerFactory
         }
         return pool;
     }
+
+    public GameObjectPool<BaseTower> GetTowerPool(int dataId)
+    {
+        if (_towerPools.TryGetValue(dataId, out GameObjectPool<BaseTower> pool))
+        {
+            return pool;
+        }
+        return null;
+    }
+
 
     private IProjectilePool GetProjectilePool(TowerData data)
     {

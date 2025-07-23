@@ -16,7 +16,15 @@ public class InGameEnemyHandler
         _context.Enemy.OnReward = OnReward;
         if (_context.Network.IsConnect)
         {
-            _context.Enemy.OnSendSpawnPacket += (id, syncObject) => _context.Network.OnSendSpawnPacket<SpawnEnemyPacket>("enemy", id, _context.IDGenerator.Get(), syncObject);
+            _context.Enemy.OnSendSpawnPacket += (id, syncObject) =>
+            {
+                _context.Network.OnSendSpawnPacket<SpawnEnemyPacket>(
+                    NetworkConst.Enemy, 
+                    id, 
+                    _context.IDGenerator.Get(), 
+                    syncObject);
+            };
+
             _context.Enemy.OnSendEnemyReturn += _onSendReturnEnemy;
         }
     }

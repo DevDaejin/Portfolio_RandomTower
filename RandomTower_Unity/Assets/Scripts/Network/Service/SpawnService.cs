@@ -21,19 +21,19 @@ public class SpawnService
     {
         switch(packet.SpawnType.ToLower())
         {
-            case "enemy":
+            case NetworkConst.Enemy:
                 var enemy = SpawnEnemyPacket.Parser.ParseFrom(packet.Payload);
                 if (enemy.OwnerId == _client.ClientID) return;
                 OnEnemySpawned?.Invoke(enemy);
                 break;
 
-            case "tower":
+            case NetworkConst.Tower:
                 var tower = SpawnTowerPacket.Parser.ParseFrom(packet.Payload);
                 if (tower.OwnerId == _client.ClientID) return;
                 OnTowerSpawned?.Invoke(tower);
                 break;
 
-            case "projectile":
+            case NetworkConst.Projectile:
                 var projectile = SpawnProjectilePacket.Parser.ParseFrom(packet.Payload);
                 if (projectile.OwnerId == _client.ClientID) return;
                 OnProjectileSpawned?.Invoke(projectile);
@@ -49,21 +49,21 @@ public class SpawnService
     {
         IMessage payload = type switch
         {
-            "enemy" => new SpawnEnemyPacket
+            NetworkConst.Enemy => new SpawnEnemyPacket
             {
                 ObjectId = syncObject.ObjectID,
                 OwnerId = syncObject.OwnerID,
                 RoomId = syncObject.RoomID,
                 SpawnId = spawnId
             },
-            "tower" => new SpawnTowerPacket
+            NetworkConst.Tower => new SpawnTowerPacket
             {
                 ObjectId = syncObject.ObjectID,
                 OwnerId = syncObject.OwnerID,
                 RoomId = syncObject.RoomID,
                 SpawnId = spawnId
             },
-            "projectile" => new SpawnProjectilePacket
+            NetworkConst.Projectile => new SpawnProjectilePacket
             {
                 ObjectId = syncObject.ObjectID,
                 OwnerId = syncObject.OwnerID,
@@ -82,6 +82,6 @@ public class SpawnService
             Payload = payload.ToByteString()
         };
 
-        await _client.Send("spawn", packet);
+        await _client.Send(NetworkConst.Spawn, packet);
     }
 }

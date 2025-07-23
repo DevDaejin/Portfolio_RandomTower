@@ -9,6 +9,8 @@ public class GameObjectPool<T> where T : Component
     private readonly GameObject _prefab;
     private readonly Transform _parent;
 
+    public List<T> GetActivedTowers => _actived;
+
     public GameObjectPool(GameObject prefab, Transform parent)
     {
         _prefab = prefab;

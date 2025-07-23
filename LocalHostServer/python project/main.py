@@ -10,14 +10,17 @@ from room_manager import RoomManager
 from spawn_manager import SpawnManager
 from sync_manager import SyncManager
 from game_state_manager import GameStateManager
+from despawn_manager import DespawnManager
 
 from proto.net_pb2 import SyncPacketData, Envelope
 from proto.spawn_pb2 import SpawnPacketData
+from proto.despawn_pb2 import DespawnPacketData
 from proto.game_pb2 import GameStatePacket
 from proto.room_pb2 import RoomPacket
 
 room_manager = RoomManager()
 spawn_manager = SpawnManager(room_manager)
+despawn_manager = DespawnManager(room_manager)
 sync_manager = SyncManager(room_manager)
 game_state_manager = GameStateManager(room_manager)
 
@@ -65,6 +68,11 @@ async def handle_message(context, message: bytes):
             spawn_packet.ParseFromString(envelope.payload)
             await spawn_manager.handle_spawn(context, spawn_packet)
 
+        elif envelope.type == "despawn":
+            despawn_packet = DespawnPacketData()
+            despawn_packet.ParseFromString(envelope.payload)
+            await despawn_manager.handle_despawn(context, despawn_packet)
+
         elif envelope.type == "game_state":
             packet = GameStatePacket()
             packet.ParseFromString(envelope.payload)
@@ -77,15 +85,19 @@ async def handle_message(context, message: bytes):
         print(f"[Error] Failed to parse envelope: {e}")
 
 async def handle_room_packet(context, packet: RoomPacket):
+    
     if packet.HasField("create_room"):
         print(f"[Room] Client {context.client_id} requested room creation with name: {packet.create_room.name}")
         await room_manager.create_room(context, packet.create_room)
+
     elif packet.HasField("join_room"):
         print(f"[Room] Client {context.client_id} requested to join room: {packet.join_room.room_id}")
         await room_manager.join_room(context, packet.join_room)
+
     elif packet.HasField("leave_room"):
         print(f"[Room] Client {context.client_id} requested to leave room")
         await room_manager.leave_room(context)
+
     elif packet.HasField("list_room"):
         print(f"[Room] Client {context.client_id} requested room list")
         await room_manager.list_rooms(context)
