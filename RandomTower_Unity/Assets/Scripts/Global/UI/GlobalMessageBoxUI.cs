@@ -20,6 +20,8 @@ public class GlobalMessageBoxUI : MonoBehaviour
     private Action _onPositiveCallback;
     private Action _onNegativeCallback;
 
+    private Transform _background;
+
     private readonly Vector2 BasicMessageBoxSize = new Vector2(920, 680);
     private readonly Vector2 BasicDescriptionSize = new Vector2(700, 250);
 
@@ -32,23 +34,44 @@ public class GlobalMessageBoxUI : MonoBehaviour
         {
             _onPositiveCallback?.Invoke();
             ActiveUI(false);
+            SetBackground(false);
         });
 
         _negativeButton.onClick.AddListener(() =>
         {
             _onNegativeCallback?.Invoke();
             ActiveUI(false);
+            SetBackground(false);
         });
     }
 
-    public void ShowContext(MessageBoxData box)
+    public void ShowContext(MessageBoxData box, Transform background)
     {
+        _background = background;
+        SetBackground(true);
         Resize(box.MessageBoxSize, box.DescriptionSize);
         SetTitle(box.Title);
         SetDescription(box.Description);
         SetButtons(box.PositiveButtonText, box.NegativeButtonText, box.OnPositiveButtonClick, box.OnNegativeButtonClick);
 
         ActiveUI(true);
+    }
+
+    public void SetBackground(bool isAct)
+    {
+        if (_background == null) return;
+
+        if (isAct)
+        {
+            _background.SetParent(transform.parent);
+            _background.SetAsFirstSibling();
+            _background = null;
+        }
+        else
+        {
+            _background.SetParent(transform);
+            _background.SetAsFirstSibling();
+        }
     }
 
     private void Resize(Vector2 messageBoxSize, Vector2 descriptionSize)
@@ -63,7 +86,6 @@ public class GlobalMessageBoxUI : MonoBehaviour
             SetSizeDelta(_descriptionArea, descriptionSize);
         }
     }
-
 
     private void SetSizeDelta(RectTransform target, Vector2 size)
     {

@@ -1,6 +1,7 @@
 // InputController.cs
 
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -86,6 +87,9 @@ public class InputController
 
     private void EndDrag()
     {
+        SelectTarget?.OnDeselect();
+        OnDeselect?.Invoke();
+
         if (Raycast(Input.mousePosition, out var hit))
         {
             _endWorldPosition = hit.transform.position;

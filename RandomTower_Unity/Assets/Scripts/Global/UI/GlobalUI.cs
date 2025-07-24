@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
+using UnityEngine.UIElements;
 
 public class GlobalUI : MonoBehaviour
 {
@@ -38,12 +39,6 @@ public class GlobalUI : MonoBehaviour
         _background.SetAsFirstSibling();
     }
 
-    public void ShowMessage(MessageBoxData data)
-    {
-        gameObject.SetActive(true);
-        _messageBoxUI.ShowContext(data);
-    }
-
     public void ShowOption(bool includeResetButton = false)
     {
         gameObject.SetActive(true);
@@ -56,14 +51,13 @@ public class GlobalUI : MonoBehaviour
     {
         gameObject.SetActive(true);
         _messageBoxUI.ActiveUI(true);
-        MoveBackground(_messageBoxUI.Panel);
         _optionUI.ActiveUI(false);
 
         var data = GetMessageBoxData(MessageBoxOption.Quit);
         data.OnPositiveButtonClick = positive;
         data.OnNegativeButtonClick = negative;
 
-        _messageBoxUI.ShowContext(data);
+        _messageBoxUI.ShowContext(data, _background);
     }
 
     public void ShowNetworkWaiting()
@@ -71,14 +65,14 @@ public class GlobalUI : MonoBehaviour
         gameObject.SetActive(true);
         _optionUI.ActiveUI(false);
         var data = GetMessageBoxData(MessageBoxOption.NetworkingWaiting);
-        _messageBoxUI.ShowContext(data);
+        _messageBoxUI.ShowContext(data, _background);
     }
     public void ShowNetworkError()
     {
         gameObject.SetActive(true);
         _optionUI.ActiveUI(false);
         var data = GetMessageBoxData(MessageBoxOption.NetworkingError);
-        _messageBoxUI.ShowContext(data);
+        _messageBoxUI.ShowContext(data, _background);
     }
 
     public void ShowReset(Action resetCallback)
@@ -87,7 +81,7 @@ public class GlobalUI : MonoBehaviour
         gameObject.SetActive(true);
         var data = GetMessageBoxData(MessageBoxOption.Reset);
         data.OnPositiveButtonClick = resetCallback;
-        _messageBoxUI.ShowContext(data);
+        _messageBoxUI.ShowContext(data, _background);
     }
 
     public void ShowMenu(Action backCallback)
@@ -168,7 +162,7 @@ public class GlobalUI : MonoBehaviour
 
             if(key == _currentOption && _messageBoxUI.gameObject.activeInHierarchy)
             {
-                _messageBoxUI.ShowContext(GetMessageBoxData(key));
+                _messageBoxUI.ShowContext(GetMessageBoxData(key), _background);
             }
         }
     }

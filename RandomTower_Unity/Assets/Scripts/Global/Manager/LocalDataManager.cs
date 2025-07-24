@@ -51,7 +51,7 @@ public class LocalDataManager
 
     public SaveData Loaded { get; private set; }
 
-    private const int BasicGem = 3;
+    private const int BasicGem = 300;
     private const int BasicReachedStage = 1;
     private const string Key = "LocalProgress";
 

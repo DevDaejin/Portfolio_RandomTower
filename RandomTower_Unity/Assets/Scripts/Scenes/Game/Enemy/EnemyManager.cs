@@ -34,8 +34,12 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
 
         public int Compare(BaseEnemy a, BaseEnemy b)
         {
-            float distA = (a.transform.position - _origin).sqrMagnitude;
-            float distB = (b.transform.position - _origin).sqrMagnitude;
+            Vector3 aPosition = new Vector3(a.transform.position.x, 0, a.transform.position.z);
+            Vector3 bPosition = new Vector3(b.transform.position.x, 0, b.transform.position.z);
+
+            float distA = (aPosition - _origin).sqrMagnitude;
+            float distB = (bPosition - _origin).sqrMagnitude;
+
             return distA.CompareTo(distB);
         }
     }
@@ -117,7 +121,14 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
 
         foreach (BaseEnemy enemy in _spawnedEnemies)
         {
-            float sqrDistance = (position - enemy.transform.position).sqrMagnitude;
+            var originPosition = position;
+            originPosition.y = 0;
+
+            var enemyPosition = enemy.transform.position;
+            enemyPosition.y = 0;
+
+            float sqrDistance = (originPosition - enemyPosition).sqrMagnitude;
+
             if (sqrDistance <= sqrRange && sqrDistance < minSqrDistance)
             {
                 minSqrDistance = sqrDistance;
@@ -134,9 +145,17 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
 
         _cachingList.Clear();
 
+        var originPosition = position;
+        originPosition.y = 0;
+
         foreach (BaseEnemy enemy in _spawnedEnemies)
         {
-            if ((enemy.transform.position - position).sqrMagnitude <= sqrRange)
+            var enemyPosition = enemy.transform.position;
+            enemyPosition.y = 0;
+
+            var sqrDistance = (originPosition - enemyPosition).sqrMagnitude;
+
+            if (sqrDistance <= sqrRange)
             {
                 _cachingList.Add(enemy);
             }
@@ -150,16 +169,15 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
         FindAllInRange(position, range);
         _cachingSortedList.Clear();
 
-        foreach (var enemy in _cachingList)
-        {
-            _cachingSortedList.Add(enemy);
-        }
+        _cachingSortedList.AddRange(_cachingList);
 
         var comapre = new DistanceComparer(position);
         _cachingSortedList.Sort(comapre);
 
         if (_cachingSortedList.Count > count)
+        {
             _cachingSortedList.RemoveRange(count, _cachingSortedList.Count - count);
+        }
 
         return _cachingSortedList;
     }

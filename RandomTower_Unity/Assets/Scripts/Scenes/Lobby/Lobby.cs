@@ -98,10 +98,16 @@ public class Lobby : MonoBehaviour
 
     private void OnUpgrade()
     {
-        if (_ui.CurrentTowerData.LevelUp()
-            && _resource.Spend(ResourceManager.ResourceType.Gem, _ui.CurrentTowerData.UpgradeCost))
+        if (_resource.Spend(ResourceManager.ResourceType.Gem, _ui.CurrentTowerData.UpgradeCost))
         {
-            _ui.UpdateTowerInfoPanel(_ui.CurrentTowerData);
+            if (_ui.CurrentTowerData.LevelUp())
+            {
+                _ui.UpdateTowerInfoPanel(_ui.CurrentTowerData);
+            }
+            else
+            {
+                _resource.Earn(ResourceManager.ResourceType.Gem, _ui.CurrentTowerData.UpgradeCost);
+            }
         }
     }
 

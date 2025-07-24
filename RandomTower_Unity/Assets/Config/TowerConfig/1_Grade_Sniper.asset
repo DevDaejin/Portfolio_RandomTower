@@ -21,7 +21,7 @@ MonoBehaviour:
     _projectilePrefab: {fileID: 8195383268220158610, guid: b9265511bbb872c4d915c35364a7bd1d, type: 3}
     _projectileSpeed: 5
     _damage: 10
-    _range: 20
+    _range: 3
     _fireRate: 0.3
     _targetCount: 1
     _spawnCoast: 2
