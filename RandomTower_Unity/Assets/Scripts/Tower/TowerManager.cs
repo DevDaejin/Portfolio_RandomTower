@@ -86,7 +86,6 @@ public class TowerManager : MonoBehaviour
             ISyncObject syncObject = tower.Transform.gameObject.GetComponent<ISyncObject>();
             OnSendSpawnTowerPacket?.Invoke(data.ID, syncObject);
             OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
-            TowerGridSelectionHandler.Select();
         }
     }
 
@@ -123,7 +122,6 @@ public class TowerManager : MonoBehaviour
             ISyncObject syncObject = newTower.Transform.gameObject.GetComponent<ISyncObject>();
             OnSendSpawnTowerPacket?.Invoke(data.ID, syncObject);
             OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
-            TowerGridSelectionHandler.Select();
         }
     }
 
@@ -152,17 +150,16 @@ public class TowerManager : MonoBehaviour
         var grid1Towers = new List<BaseTower>(grid1.GetTowerList);
         var grid2Towers = new List<BaseTower>(grid2.GetTowerList);
 
+        grid1.RemoveTowerAll();
+        grid2.RemoveTowerAll();
+
         if (grid1Towers.Count != 0)
-        {
-            var grid1Positions = grid2.GetTowerPostions(grid1Towers.Count);
-            grid1.RemoveTowerAll();
+        {   
             MoveToGrid(grid1Towers, grid2);
         }
 
         if (grid2Towers.Count != 0)
         {
-            var grid2Positions = grid1.GetTowerPostions(grid2Towers.Count);
-            grid2.RemoveTowerAll();
             MoveToGrid(grid2Towers, grid1);
         }
     }

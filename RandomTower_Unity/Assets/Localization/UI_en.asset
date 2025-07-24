@@ -30,6 +30,174 @@ MonoBehaviour:
     m_Localized: 'tip : this is tip3'
     m_Metadata:
       m_Items: []
+  - m_Id: 30631558996520960
+    m_Localized: Single play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30631646011551744
+    m_Localized: Multi play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30631717251805184
+    m_Localized: Option
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30631756669874176
+    m_Localized: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30631821799026688
+    m_Localized: Multi setting
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30632664866713600
+    m_Localized: Confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30632792432275456
+    m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30642211467522048
+    m_Localized: Close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30642359836831744
+    m_Localized: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30642437645365248
+    m_Localized: Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30642665215717376
+    m_Localized: Menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30642801023086592
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30642935265980416
+    m_Localized: Resolution
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30643026966048768
+    m_Localized: Screen mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30643161439629312
+    m_Localized: BGM
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30643191017861120
+    m_Localized: SFX
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30643314187792384
+    m_Localized: Reset data
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30643415908052992
+    m_Localized: Press to reset
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30654426287403008
+    m_Localized: Wave
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30654483665481728
+    m_Localized: Spawn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30654534294925312
+    m_Localized: Upgrade
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30654781846941696
+    m_Localized: Retry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30654812285005824
+    m_Localized: Lobby
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30654857826758656
+    m_Localized: Merge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30654900021456896
+    m_Localized: Sell
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30655153105760256
+    m_Localized: 'Reward : '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30663014355529728
+    m_Localized: 'Grade {0} : {1}%'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30663117149532160
+    m_Localized: 'Spawn price : {0} Gold'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30663155925872640
+    m_Localized: 'Upgrade price : {0} Gold'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30675022735962112
+    m_Localized: Success
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30675030482841600
+    m_Localized: Failed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30675094332731392
+    m_Localized: "Great job! You did it!\t"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30675164692180992
+    m_Localized: "You\u2019re getting better every time, keep going!\t"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30679725867757568
+    m_Localized: Play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30679968407580672
+    m_Localized: Coast
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30680021280976896
+    m_Localized: Unlock
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30680087022497792
+    m_Localized: 'Coast : {0} Gem'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30689577159585792
+    m_Localized: 'Firerate : {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30689542816624640
+    m_Localized: 'Range : {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30689511501950976
+    m_Localized: 'Damage: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30689481059692544
+    m_Localized: 'Level : {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30689424138792960
+    m_Localized: 'Grade : {0}'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -3,6 +3,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Localization;
 using UnityEngine.UI;
 
 public class InGameUI : MonoBehaviour
@@ -21,6 +22,14 @@ public class InGameUI : MonoBehaviour
 
     [SerializeField] private GameObject _infoPanel;
     [SerializeField] private TMP_Text _infoText;
+
+    [SerializeField] private LocalizedString _localizedGrade;
+    [SerializeField] private LocalizedString _localizedSpawnPrice;
+    [SerializeField] private LocalizedString _localizedUpgradePrice;
+
+    private object[] _gradeArgs = new object[2];
+    private object[] _priceArgs = new object[1];
+
 
     private RectTransform _infoPanelRectTransform;
 
@@ -93,7 +102,6 @@ public class InGameUI : MonoBehaviour
     private void UpdateInfoText(ButtonType type)
     {
         StringBuilder result = new();
-        result.Clear();
         result = UpdateInfoProbability(result, _setting.OnUpgradeProbability.Invoke());
         result = UpdateInfoPrice(result, type);
         _infoText.text = result.ToString();
@@ -105,7 +113,11 @@ public class InGameUI : MonoBehaviour
     {
         for (int index = 0; index < array.Length; index++)
         {
-            builder.AppendLine($"Grade {index + 1} : {array[index]}%");
+            _gradeArgs[0] = index + 1;
+            _gradeArgs[1] = array[index];
+
+            _localizedGrade.Arguments = _gradeArgs;
+            builder.AppendLine(_localizedGrade.GetLocalizedString());
         }
 
         return builder;
@@ -113,15 +125,21 @@ public class InGameUI : MonoBehaviour
 
     private StringBuilder UpdateInfoPrice(StringBuilder builder, ButtonType type)
     {
+        builder.AppendLine();
+        builder.AppendLine();
+
         switch (type)
         {
             case ButtonType.Spawn:
-                builder.AppendLine($"\n\nSpawn price : {_setting.OnSpawnPrice.Invoke()} Gold");
+                _priceArgs[0] = _setting.OnSpawnPrice();
+                _localizedSpawnPrice.Arguments = _priceArgs;
+                builder.AppendLine(_localizedSpawnPrice.GetLocalizedString());
                 break;
             case ButtonType.Upgrade:
                 var price = _setting.OnUpgradePrice.Invoke();
-                var priceText = price == 0 ? "-" : price.ToString();
-                builder.AppendLine($"\n\nUpgrade price : {priceText} Gold");
+                _priceArgs[0] = price == 0 ? "-" : price.ToString();
+                _localizedUpgradePrice.Arguments = _priceArgs;
+                builder.AppendLine(_localizedUpgradePrice.GetLocalizedString());
                 break;
             default:
                 builder.Clear();

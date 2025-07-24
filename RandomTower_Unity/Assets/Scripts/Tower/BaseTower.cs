@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class BaseTower : MonoBehaviour
 {
+    [SerializeField] private Transform _firePoint;
     public Transform Transform => transform;
     public TowerData Data => _setting.Data;
     public GameObject Selectd => gameObject;
@@ -36,7 +37,7 @@ public class BaseTower : MonoBehaviour
         }
 
         if (_fireElapsed >= 1f / Data.FireRate)
-        {
+        {  
             Attack(enemies);
         }
     }
@@ -53,7 +54,7 @@ public class BaseTower : MonoBehaviour
 
         foreach (BaseEnemy target in targets)
         {
-            ISyncObject syncObject = _setting.ProjectilePool.Get(target, transform.position, Data.Damage, Data.ProjectileSpeed, _setting.OnSendReturnProjectile).GetComponent<ISyncObject>();
+            ISyncObject syncObject = _setting.ProjectilePool.Get(target, _firePoint.position, Data.Damage, Data.ProjectileSpeed, _setting.OnSendReturnProjectile).GetComponent<ISyncObject>();
 
             _setting.OnAttack?.Invoke(Data.ID, syncObject);
             _fireElapsed = 0f;

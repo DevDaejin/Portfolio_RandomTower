@@ -5,12 +5,12 @@ using Sync;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.Localization.SmartFormat.Core.Parsing;
 using ResourceType = ResourceManager.ResourceType;
 
 public class InGame : MonoBehaviour
 {
     [SerializeField] private List<StageConfig> _stageConfigs;
-    [SerializeField] private NavMeshSurface _navMeshSurface;
     [SerializeField] private MultiEnviromentHandler _multiEnviromentHandler;
     [SerializeField] private AudioClip _bgmClip;
 
@@ -98,6 +98,8 @@ public class InGame : MonoBehaviour
     private void Start()
     {
         _inputController.OnDragEnd = OnSwapTower;
+        _inputController.OnSelect = SelectGrid;
+        _inputController.OnDeselect = _uiHandler.DeselectTowerUI;
 
         _initialGold = new KeyValuePair<ResourceType, int>(ResourceType.Gold, InitialGoldAmount);
 
@@ -110,10 +112,6 @@ public class InGame : MonoBehaviour
         _waveHandler.Initialize();
         _uiHandler.Initialize();
 
-        TowerGridSelectionHandler.OnSelect = SelectGrid;
-        TowerGridSelectionHandler.OnDeselect = _uiHandler.DeselectTowerUI;
-
-        //_navMeshSurface.BuildNavMesh();
         RefreshAlivedEnemyCount();
 
         _sound.PlayBGM(_bgmClip);
@@ -130,14 +128,12 @@ public class InGame : MonoBehaviour
         }
     }
 
-    private void SelectGrid(TowerGrid grid)
+    private void SelectGrid(ISelect selected)
     {
-        if (grid == null) return;
-
-        var tower = grid?.GetTower();
-        if (tower == null) return;
-
-        _uiHandler.SelectTowerUI(tower, grid.IsMergeable);
+        if(selected is TowerGrid grid)
+        {
+            _uiHandler.SelectTowerUI(grid.GetTower(), grid.IsMergeable);
+        }
     }
 
     private void OnWave()
@@ -232,32 +228,34 @@ public class InGame : MonoBehaviour
 
     private void OnMergeTower()
     {
-        var grid = TowerGridSelectionHandler.Current;
-
-        if (grid == null) return;
-
-        _towerHandler.MergeTower(grid);
+        var selected = _inputController.SelectTarget;
+        if (selected is TowerGrid grid)
+        {
+            _towerHandler.MergeTower(grid);
+        }
     }
 
     private void OnSellTower()
     {
-        var grid = TowerGridSelectionHandler.Current;
-        _towerHandler.SellTower(grid.GetTower());
-        grid.RemoveTower();
-
-        var tower = grid.GetTower();
-        if (tower == null)
+        var selected = _inputController.SelectTarget;
+        if (selected is TowerGrid grid)
         {
-            _uiHandler.DeselectTowerUI();
-            TowerGridSelectionHandler.Clear();
-        }
-        else
-        {
-            tower.ShowRange(true);
-        }
+            _towerHandler.SellTower(grid.GetTower());
+            grid.RemoveTower();
 
-        _uiHandler.SetInteractableMergeButton(grid.IsMergeable);
-        _uiHandler.RefreshInstalledTowerCount();
+            var tower = grid.GetTower();
+            if (tower == null)
+            {
+                _uiHandler.DeselectTowerUI();
+            }
+            else
+            {
+                tower.ShowRange(true);
+            }
+
+            _uiHandler.SetInteractableMergeButton(grid.IsMergeable);
+            _uiHandler.RefreshInstalledTowerCount();
+        }
     }
 
     private void OnSwapTower(Vector3 position1, Vector3 position2) => _towerHandler.SwapTower(position1, position2);
@@ -287,8 +285,12 @@ public class InGame : MonoBehaviour
     private void OnUpgrade()
     {
         bool condition = !_towerHandler.IsUpgradeMax(_currentChanceLevel);
+        var price = OnUpgradePrice();
 
-        if (condition) _currentChanceLevel++;
+        if (_context.Resource.Spend(ResourceType.Gold, price))
+        {
+            if (condition) _currentChanceLevel++;
+        }
 
         _uiHandler.SetInteractableUpgradeButton(condition);
     }

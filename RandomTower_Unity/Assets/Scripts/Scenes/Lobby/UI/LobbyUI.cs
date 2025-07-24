@@ -36,7 +36,6 @@ public class LobbyUI : MonoBehaviour
         _roomList.Initialize(OnCreated);
         _towerList.Initialize(UnlockTowerClicked, LockTowerClicked);
         _towerInfo.Initialize(OnBought, OnUpgrade);
-        //_towerBuying.Initialize(OnBought);
 
         _playButton.onClick.RemoveAllListeners();
         _playButton.onClick.AddListener(() => OnPlay?.Invoke());

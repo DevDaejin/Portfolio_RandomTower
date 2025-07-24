@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 1
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: defeb03fbbff99c4fa8579f03ae528cb
+    m_Address: Assets/Localization/MessageBox Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: 63710675f069c9f4aa00c31cb5367775, type: 2}
   m_SchemaSet:

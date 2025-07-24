@@ -2576,8 +2576,8 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_VertexColorAlwaysGammaSpace: 1
+  m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 10
@@ -19547,7 +19547,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stageConfigs:
   - {fileID: 11400000, guid: fd2e73c5244c0c445bc25efb35669be6, type: 2}
-  _navMeshSurface: {fileID: 1235937571}
   _multiEnviromentHandler: {fileID: 1195791144}
   _bgmClip: {fileID: 8300000, guid: cd8f2744e56f1b948a405f01ac9bd54a, type: 3}
 --- !u!114 &1195791142

@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.UI;
 
 public class LobbyTowerInfoUI : MonoBehaviour
@@ -18,20 +19,25 @@ public class LobbyTowerInfoUI : MonoBehaviour
     [SerializeField] private TMP_Text _priceText;
     [SerializeField] private Button _purchaseButton;
 
+    [SerializeField] private LocalizedString _localizedUnlock;
+    [SerializeField] private LocalizedString _localizedUpgrade;
+    [SerializeField] private LocalizedString _localizedPrice;
+
+    [SerializeField] private LocalizedString _localizedGrade;
+    [SerializeField] private LocalizedString _localizedLevel;
+    [SerializeField] private LocalizedString _localizedDamage;
+    [SerializeField] private LocalizedString _localizedRange;
+    [SerializeField] private LocalizedString _localizedFirerate;
+
+    private object[] _priceArgs = new object[1];
+    private object[] _infoArgs = new object[1];
+
     private Action _onUnlock;
     private Action _onUpgrade;
-
     private Action _buttonCallback;
-
     private TMP_Text _purchaseButtonText;
 
     public enum ButtonType { Unlock, Upgrade };
-
-    private const string CoastText = "Coast : ";
-    private const string UnlockText = "Unlock";
-    private const string UpgradeText = "Upgrade";
-    private const string GemText = "Gem";
-
     public void Initialize(Action onUnlock, Action onUpgrade)
     {
         _towerInfoPanel.SetActive(false);
@@ -54,11 +60,22 @@ public class LobbyTowerInfoUI : MonoBehaviour
     {
         _picture.sprite = data.TowerSprite;
         _name.text = data.TowerName;
-        _grade.text = $"Grade: {data.Grade}";
-        _level.text = $"Level: {data.Level}";
-        _damage.text = $"Damage: {data.Damage}";
-        _range.text = $"Range: {data.Range}";
-        _firerate.text = $"Firerate: {data.FireRate}";
+
+        _infoArgs[0] = data.Grade;
+        _grade.text = GetLocalizedStringToText(_localizedGrade, _infoArgs);
+
+        _infoArgs[0] = data.Level;
+        _level.text = GetLocalizedStringToText(_localizedLevel, _infoArgs);
+
+        _infoArgs[0] = data.Damage;
+        _damage.text = GetLocalizedStringToText(_localizedDamage, _infoArgs);
+
+        _infoArgs[0] = data.Range;
+        _range.text = GetLocalizedStringToText(_localizedRange, _infoArgs);
+
+        _infoArgs[0] = data.FireRate;
+        _firerate.text = GetLocalizedStringToText(_localizedFirerate, _infoArgs);
+
         _purchaseButton.interactable = data.IsUpgradeable;
     }
 
@@ -73,21 +90,29 @@ public class LobbyTowerInfoUI : MonoBehaviour
         switch (type)
         {
             case ButtonType.Unlock:
-                buttonText = UnlockText;
+                buttonText = _localizedUnlock.GetLocalizedString();
                 price = unlockPrice.ToString();
                 callback = _onUnlock;
                 break;
 
             case ButtonType.Upgrade:
-                buttonText = UpgradeText;
+                buttonText = _localizedUpgrade.GetLocalizedString();
                 price = upgradePrice.ToString();
                 callback = _onUpgrade;
                 break;
         }
 
-        _priceText.text = $"{CoastText}{price}{GemText}";
+        _priceArgs[0] = price;
+        _localizedPrice.Arguments = _priceArgs;
+        _priceText.text = _localizedPrice.GetLocalizedString();
         _purchaseButtonText.text = buttonText;
         _buttonCallback = callback;
+    }
+
+    private string GetLocalizedStringToText(LocalizedString localized, object[] objects)
+    {
+        localized.Arguments = objects;
+        return localized.GetLocalizedString();
     }
 
     public void ActiveUI(bool isAct)

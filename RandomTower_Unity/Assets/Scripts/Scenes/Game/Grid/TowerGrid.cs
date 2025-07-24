@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TowerGrid : MonoBehaviour, IDrag, ISelect, IPointerDownHandler
+public class TowerGrid : MonoBehaviour, IDrag, ISelect
 {
     private Transform _transform;
     private List<BaseTower> _towers;
@@ -45,15 +46,9 @@ public class TowerGrid : MonoBehaviour, IDrag, ISelect, IPointerDownHandler
         return true;
     }
 
-    public int GetTowerCount()
-    {
-        return _towers.Count;
-    }
+    public int GetTowerCount() => _towers.Count;
 
-    public BaseTower GetTower()
-    {
-        return (_towers.Count > 0) ? _towers[_towers.Count - 1] : null;
-    }
+    public BaseTower GetTower() => (_towers.Count > 0) ? _towers[_towers.Count - 1] : null;
 
     public List<BaseTower> GetTowerList => _towers;
 
@@ -66,10 +61,7 @@ public class TowerGrid : MonoBehaviour, IDrag, ISelect, IPointerDownHandler
         _towers.Remove(GetTower());
     }
 
-    public void RemoveTowerAll()
-    {
-        _towers.Clear();
-    }
+    public void RemoveTowerAll() => _towers.Clear();
 
     private void UpdateTowerPosition()
     {
@@ -108,53 +100,40 @@ public class TowerGrid : MonoBehaviour, IDrag, ISelect, IPointerDownHandler
 
     public void OnSelect()
     {
-        if (_towers.Count == 0)
-        {
-            return;
-        }
+        if (_towers.Count == 0) return;
 
         var lastTower = GetTower();
         foreach (var tower in _towers)
         {
             tower.ShowRange(lastTower == tower);
         }
-
-        TowerGridSelectionHandler.Select(this);
     }
 
     public void OnDeselect()
     {
-        if (_towers.Count == 0)
-        {
-            return;
-        }
+        if (_towers.Count == 0) return;
 
         foreach (var tower in _towers)
         {
             tower.ShowRange(false);
         }
-
-        TowerGridSelectionHandler.Deselect();
     }
 
     public void OnBeginDrag(Vector3 startPosition)
     {
+        if (GetTowerCount() == 0) return;
         _indicator.OnBeginDrag(startPosition);
     }
 
     public void OnDrag(Vector3 currentPosition)
     {
+        if (GetTowerCount() == 0) return;
         _indicator.OnDrag(currentPosition);
     }
 
     public void OnEndDrag(Vector3 endPosition)
     {
+        if (GetTowerCount() == 0) return;
         _indicator.OnEndDrag(endPosition);
-    }
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        if (_towers.Count == 0) return;
-
-        TowerGridSelectionHandler.Select(this);
     }
 }

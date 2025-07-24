@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 
 public class GlobalUI : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class GlobalUI : MonoBehaviour
     [SerializeField] private GlobalMenuUI _menuUI;
 
     public enum MessageBoxOption { None, NetworkingWaiting, Quit, NetworkingError, Reset };
+    private MessageBoxOption _currentOption = MessageBoxOption.None;
     private Dictionary<MessageBoxOption, MessageBoxData> _messageBoxes = new();
 
     public void Initialize(OptionSetting optionData)
@@ -23,6 +26,8 @@ public class GlobalUI : MonoBehaviour
         _optionUI.ActiveUI(false);
         _menuUI.ActiveUI(false);
         _messageBoxUI.ActiveUI(false);
+
+        LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
     }
 
     private void MoveBackground(GameObject target)
@@ -78,6 +83,7 @@ public class GlobalUI : MonoBehaviour
 
     public void ShowReset(Action resetCallback)
     {
+        _currentOption = MessageBoxOption.None;
         gameObject.SetActive(true);
         var data = GetMessageBoxData(MessageBoxOption.Reset);
         data.OnPositiveButtonClick = resetCallback;
@@ -86,6 +92,7 @@ public class GlobalUI : MonoBehaviour
 
     public void ShowMenu(Action backCallback)
     {
+        _currentOption = MessageBoxOption.None;
         gameObject.SetActive(true);
         MoveBackground(_menuUI.Panel);
         _menuUI.ShowContent(backCallback);
@@ -98,11 +105,14 @@ public class GlobalUI : MonoBehaviour
             CreateMessageBoxData(option);
         }
 
+        _currentOption = option;
         return _messageBoxes[option];
     }
 
-    private void CreateMessageBoxData(MessageBoxOption option)
+    private void CreateMessageBoxData(MessageBoxOption option, bool overWirte = false)
     {
+        if (!overWirte && _messageBoxes.ContainsKey(option)) return;
+
         MessageBoxData data = null;
 
         switch (option)
@@ -110,41 +120,61 @@ public class GlobalUI : MonoBehaviour
             case MessageBoxOption.NetworkingWaiting:
                 data = new()
                 {
-                    Title = "네트워크 연결",
-                    Description = "서버와 연결 중입니다. 잠시만 기다려 주세요.",
-                    NegativeButtonText = "취소",
+                    Title = GetLocalized("네트워크 연결"),
+                    Description = GetLocalized("서버와 연결 중입니다. 잠시만 기다려 주세요."),
+                    NegativeButtonText = GetLocalized("취소"),
                 };
                 break;
             case MessageBoxOption.NetworkingError:
                 data = new()
                 {
-                    Title = "네트워크 에러",
-                    Description = "네트워크 연결이 끊겼습니다.",
-                    PositiveButtonText = "확인",
+                    Title = GetLocalized("네트워크 에러"),
+                    Description = GetLocalized("네트워크 연결이 끊겼습니다."),
+                    PositiveButtonText = GetLocalized("확인"),
                 };
                 break;
 
             case MessageBoxOption.Quit:
                 data = new()
                 {
-                    Title = "게임 종료",
-                    Description = "정말로 게임을 종료하시겠습니까?",
-                    PositiveButtonText = "네",
-                    NegativeButtonText = "아니요",
+                    Title = GetLocalized("게임 종료"),
+                    Description = GetLocalized("정말로 게임을 종료하시겠습니까?"),
+                    PositiveButtonText = GetLocalized("확인"),
+                    NegativeButtonText = GetLocalized("취소"), 
                 };
                 break;
 
             case MessageBoxOption.Reset:
                 data = new()
                 {
-                    Title = "데이터 초기화",
-                    Description = "게임 데이터 초기화하시겠습니까?",
-                    PositiveButtonText = "예",
-                    NegativeButtonText = "아니요",
+                    Title = GetLocalized("데이터 초기화"),
+                    Description = GetLocalized("게임 데이터 초기화하시겠습니까?"),
+                    PositiveButtonText = GetLocalized("확인"),
+                    NegativeButtonText = GetLocalized("취소"),
                 };
                 break;
         }
 
-        _messageBoxes.Add(option, data);
+        _messageBoxes[option] = data;
+    }
+
+    private void OnLocaleChanged(Locale locale)
+    {
+        var keys = new List<MessageBoxOption>(_messageBoxes.Keys);
+
+        foreach (var key in keys)
+        {
+            CreateMessageBoxData(key, true);
+
+            if(key == _currentOption && _messageBoxUI.gameObject.activeInHierarchy)
+            {
+                _messageBoxUI.ShowContext(GetMessageBoxData(key));
+            }
+        }
+    }
+
+    private string GetLocalized(string key)
+    {
+        return LocalizationSettings.StringDatabase.GetLocalizedString("MessageBox", key);
     }
 }
