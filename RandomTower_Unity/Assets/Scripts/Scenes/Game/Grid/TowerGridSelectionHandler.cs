@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 public static class TowerGridSelectionHandler
 {
@@ -29,7 +28,7 @@ public static class TowerGridSelectionHandler
 
     public static void Deselect()
     {
-        if(Current == null) return;
+        if (Current == null) return;
         OnDeselect?.Invoke();
         _current = null;
     }

@@ -36,7 +36,7 @@ public class GlobalOptionUI : MonoBehaviour
 
         BindSlider(_bgmSlider, _bgmValueTxt, _data.BGMSliderCallback);
         BindSlider(_sfxSlider, _sfxValueTxt, _data.SFXliderCallback);
-        
+
         InitializeResetButton();
 
         _closeButton.onClick.RemoveAllListeners();
@@ -68,7 +68,7 @@ public class GlobalOptionUI : MonoBehaviour
 
         valueTxt ??= slider.GetComponentInChildren<TMP_Text>();
 
-        slider.onValueChanged.AddListener((value)=>
+        slider.onValueChanged.AddListener((value) =>
         {
             valueTxt.text = (value).ToString();
             callback?.Invoke(value / slider.maxValue);

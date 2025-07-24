@@ -1,6 +1,5 @@
 using Net;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class SyncService
 {

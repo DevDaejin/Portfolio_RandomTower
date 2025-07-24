@@ -19,7 +19,7 @@ public class Timer
         _duration = duration;
         TimeLeft = duration;
 
-        if(isStart)
+        if (isStart)
         {
             Start();
         }
@@ -51,10 +51,10 @@ public class Timer
     {
         if (!IsRunning) return;
 
-        TimeLeft = Mathf.Max(0f, TimeLeft-Time.deltaTime);
+        TimeLeft = Mathf.Max(0f, TimeLeft - Time.deltaTime);
         OnTick?.Invoke(TimeLeft);
 
-        if(TimeLeft <= 0)
+        if (TimeLeft <= 0)
         {
             IsRunning = false;
             OnTimeUp?.Invoke();

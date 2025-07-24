@@ -28,7 +28,7 @@ public class LoadingUI : MonoBehaviour
         ShowTips();
         gameObject.SetActive(true);
     }
-      
+
     private void Initialize()
     {
         _isShow = true;
@@ -61,7 +61,7 @@ public class LoadingUI : MonoBehaviour
         _loadingImg.fillAmount = Mathf.Lerp(_fillAmountStart, _fillAmountEnd, _loadingAnimationTime);
     }
 
-    private void  UpdateImageAnimCondition(bool isUp)
+    private void UpdateImageAnimCondition(bool isUp)
     {
         _fillAmountStart = isUp ? 0 : 1;
         _fillAmountEnd = isUp ? 1 : 0;

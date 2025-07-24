@@ -1,13 +1,12 @@
 using System;
-using UnityEngine;
 
 public class WaveSetting
 {
     public StageConfig StageConfig = null;
     public int MaxWave = 0;
     public int MaxEnemies = 0;
-    public float WaveDuration = 0   ;
-    
+    public float WaveDuration = 0;
+
     public Func<bool> GetSpawningState = null;
     public Func<int> GetAliveEnemyCount = null;
 

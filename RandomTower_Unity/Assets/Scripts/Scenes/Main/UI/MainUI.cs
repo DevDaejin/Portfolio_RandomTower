@@ -31,7 +31,7 @@ public class MainUI : MonoBehaviour
     [SerializeField] private GameObject _connectingPanel;
     [SerializeField] private Button _connectingCancelButton;
     [SerializeField] private TMP_Text _connectingTxt;
-    private readonly StringBuilder _connectBuilder = new(); 
+    private readonly StringBuilder _connectBuilder = new();
     public Action OnConnectingCancel;
 
     private float _dotElpased = 0;

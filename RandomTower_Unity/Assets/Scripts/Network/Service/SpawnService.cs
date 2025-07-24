@@ -1,5 +1,4 @@
 using Google.Protobuf;
-using Net;
 using Spawn;
 using System;
 using System.Threading.Tasks;
@@ -19,7 +18,7 @@ public class SpawnService
 
     public void OnReceive(SpawnPacketData packet)
     {
-        switch(packet.SpawnType.ToLower())
+        switch (packet.SpawnType.ToLower())
         {
             case NetworkConst.Enemy:
                 var enemy = SpawnEnemyPacket.Parser.ParseFrom(packet.Payload);

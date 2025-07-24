@@ -1,5 +1,5 @@
-using UnityEngine;
 using Sync;
+using UnityEngine;
 
 public class SyncTransform : BaseSync<SyncTransformData>
 {
@@ -25,11 +25,11 @@ public class SyncTransform : BaseSync<SyncTransformData>
     protected override void ApplyData(SyncTransformData data)
     {
         transform.position = ProtoVectorToVector(_receivedData.Position);
-        if(isSyncRotation)
+        if (isSyncRotation)
         {
             transform.eulerAngles = ProtoVectorToVector(_receivedData.Rotation);
         }
-        if(isSyncScale)
+        if (isSyncScale)
         {
             transform.localScale = ProtoVectorToVector(_receivedData.Scale);
         }

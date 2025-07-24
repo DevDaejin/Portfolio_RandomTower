@@ -28,7 +28,7 @@ public class TowerButton : MonoBehaviour
         _button.onClick.AddListener(() => _onButton?.Invoke(Data));
 
         _onLockButton = onLockButton;
-        _isLocked = _onLockButton != null; 
+        _isLocked = _onLockButton != null;
         if (_isLocked)
         {
             _lockerButton.onClick.RemoveAllListeners();
@@ -38,4 +38,3 @@ public class TowerButton : MonoBehaviour
         _lockerButton.transform.gameObject.SetActive(_isLocked);
     }
 }
- 

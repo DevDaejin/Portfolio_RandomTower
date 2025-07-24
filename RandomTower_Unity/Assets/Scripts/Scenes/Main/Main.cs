@@ -26,7 +26,7 @@ public class Main : MonoBehaviour
 
     private void LoadNextScene()
     {
-        if(_network.IsConnect) _ui.DeactiveConnectPanel();
+        if (_network.IsConnect) _ui.DeactiveConnectPanel();
         GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
     }
 }

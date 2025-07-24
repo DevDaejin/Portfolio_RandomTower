@@ -23,4 +23,3 @@ public class ProjectilePool<T> : IProjectilePool where T : Projectile
         _pool.ReleaseAll();
     }
 }
- 

@@ -19,9 +19,9 @@ public class InGameEnemyHandler
             _context.Enemy.OnSendSpawnPacket += (id, syncObject) =>
             {
                 _context.Network.OnSendSpawnPacket<SpawnEnemyPacket>(
-                    NetworkConst.Enemy, 
-                    id, 
-                    _context.IDGenerator.Get(), 
+                    NetworkConst.Enemy,
+                    id,
+                    _context.IDGenerator.Get(),
                     syncObject);
             };
 

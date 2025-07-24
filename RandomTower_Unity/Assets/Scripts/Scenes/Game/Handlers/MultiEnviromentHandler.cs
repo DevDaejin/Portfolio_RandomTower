@@ -1,5 +1,4 @@
 using System;
-using Unity.AI.Navigation;
 using UnityEngine;
 
 public class MultiEnviromentHandler : MonoBehaviour
@@ -18,7 +17,7 @@ public class MultiEnviromentHandler : MonoBehaviour
     [Header("Maps")]
     [SerializeField] private GameObject _singleMap;
     [SerializeField] private GameObject _multiMap;
-     
+
 
 
     public void Initialize(bool isHost)

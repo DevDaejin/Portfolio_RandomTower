@@ -11,7 +11,7 @@ public class InGameTowerHandler
     private Action<int> _onSellTower;
     private Action<string> _onSendReturnProejctile;
 
-    public InGameTowerHandler( InGameContext context, TowerDatabase towerDB, int MaxTowerCount, Action<int> onSellTower, Action<string> onSendReturnProjectile)
+    public InGameTowerHandler(InGameContext context, TowerDatabase towerDB, int MaxTowerCount, Action<int> onSellTower, Action<string> onSendReturnProjectile)
     {
         _context = context;
         _towerDB = towerDB;
@@ -24,15 +24,15 @@ public class InGameTowerHandler
     {
         _context.Tower.Initialize(_towerDB, _context.Enemy, _maxTowerCount);
         _context.Tower.OnTowerUpdated += _context.UI.SetTowerCount;
-        
+
         if (_context.Network.IsConnect)
         {
             _context.Tower.OnSendSpawnTowerPacket = (id, sync) =>
             {
                 _context.Network.OnSendSpawnPacket<SpawnTowerPacket>(
-                    NetworkConst.Tower, 
-                    id, 
-                    _context.IDGenerator.Get(), 
+                    NetworkConst.Tower,
+                    id,
+                    _context.IDGenerator.Get(),
                     sync);
             };
 
@@ -48,9 +48,9 @@ public class InGameTowerHandler
             _context.Tower.OnSendSpawnProjectilePacket = (id, sync) =>
             {
                 _context.Network.OnSendSpawnPacket<SpawnProjectilePacket>(
-                    NetworkConst.Projectile, 
-                    id, 
-                    _context.IDGenerator.Get(), 
+                    NetworkConst.Projectile,
+                    id,
+                    _context.IDGenerator.Get(),
                     sync);
             };
             _context.Tower.OnSendReturnProejctile = _onSendReturnProejctile;

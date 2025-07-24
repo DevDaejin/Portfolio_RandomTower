@@ -39,15 +39,15 @@ public class LobbyUI : MonoBehaviour
         //_towerBuying.Initialize(OnBought);
 
         _playButton.onClick.RemoveAllListeners();
-        _playButton.onClick.AddListener(()=> OnPlay?.Invoke());
+        _playButton.onClick.AddListener(() => OnPlay?.Invoke());
 
         _backButton.onClick.RemoveAllListeners();
-        _backButton.onClick.AddListener(()=> OnBack?.Invoke());
+        _backButton.onClick.AddListener(() => OnBack?.Invoke());
 
         _optionButton.onClick.RemoveAllListeners();
         _optionButton.onClick.AddListener(() => GameManager.Instance.UI.Global.ShowMenu(OnBack));
     }
-    
+
     public void UnlockTowerClicked(TowerData data)
     {
         CurrentTowerData = data;

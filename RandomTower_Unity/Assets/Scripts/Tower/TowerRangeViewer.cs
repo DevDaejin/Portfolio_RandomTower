@@ -11,17 +11,17 @@ public class TowerRangeViewer : MonoBehaviour
 
     private void Update()
     {
-        if(_line.gameObject.activeInHierarchy && _plane.activeInHierarchy)
+        if (_line.gameObject.activeInHierarchy && _plane.activeInHierarchy)
         {
             RotateLine();
         }
     }
 
-    public void Active(float radius, Vector3 centerPosition)
+    public void Active(float radius)
     {
         Show(true);
 
-        transform.SetPositionAndRotation(centerPosition, Quaternion.identity);
+        transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
         SetLine(radius);
         SetPlane(radius);
@@ -34,9 +34,7 @@ public class TowerRangeViewer : MonoBehaviour
 
     private void SetLine(float radius)
     {
-        _line.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-
-        if(_line.positionCount != LineSegment + 1)
+        if (_line.positionCount != LineSegment + 1)
         {
             _line.positionCount = LineSegment + 1;
         }
@@ -49,6 +47,7 @@ public class TowerRangeViewer : MonoBehaviour
 
             _line.SetPosition(index, position);
         }
+        _line.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
     }
 
     private void RotateLine()
@@ -61,7 +60,7 @@ public class TowerRangeViewer : MonoBehaviour
         float diameter = 2 * radius;
         Vector3 scale = (Vector3.right + Vector3.forward) * diameter + (Vector3.up * PlaneHeight);
         _plane.transform.localScale = scale;
-        _plane.transform.localPosition = Vector3.zero;
+        _plane.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
     }
 
     private void Show(bool isAct)

@@ -1,4 +1,3 @@
-using System;
 public class InGameWaveHandler
 {
     private InGameContext _context;
@@ -23,8 +22,8 @@ public class InGameWaveHandler
 
     public void Update() => _context.Wave.Update();
 
-    public bool IsWaveStooped => 
-        _context.Wave.CurrentState == WaveController.WaveState.Failed 
+    public bool IsWaveStooped =>
+        _context.Wave.CurrentState == WaveController.WaveState.Failed
         || _context.Wave.CurrentState == WaveController.WaveState.Cleared;
 
     public WaveController.WaveState GetCurrentWaveState => _context.Wave.CurrentState;
@@ -38,11 +37,11 @@ public class InGameWaveHandler
     {
         if (isSuccess)
         {
-            _context.UI.SetResult(true);
+            _context.UI.SetResult(true, _context.Network.IsConnect);
         }
         else
         {
-            _context.UI.SetResult(false);
+            _context.UI.SetResult(false, _context.Network.IsConnect);
         }
     }
 

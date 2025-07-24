@@ -5,8 +5,6 @@ using Sync;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
-using UnityEngine.InputSystem.XInput;
-using UnityEngine.PlayerLoop;
 using ResourceType = ResourceManager.ResourceType;
 
 public class InGame : MonoBehaviour
@@ -71,17 +69,17 @@ public class InGame : MonoBehaviour
         _uiHandler = new(_context, new InGameUISetting()
         {
             OnWave = OnWave,
-            OnSpawnTower = OnSpawnTower, 
+            OnSpawnTower = OnSpawnTower,
             OnUpgrade = OnUpgrade,
-            OnMerge = OnMergeTower, 
+            OnMerge = OnMergeTower,
             OnSell = OnSellTower,
-            OnRetry = OnRetry, 
+            OnRetry = OnRetry,
             OnMenu = OnMenu,
             OnGoToLobby = OnGoToLobby,
-            OnSpawnPrice = OnSpawnPrice, 
-            OnUpgradePrice = OnUpgradePrice, 
+            OnSpawnPrice = OnSpawnPrice,
+            OnUpgradePrice = OnUpgradePrice,
             OnUpgradeProbability = OnUpgradeProbabilty,
-            OnSuccessReward = OnSuccessReward, 
+            OnSuccessReward = OnSuccessReward,
             OnFailedReward = OnFailedReward
         });
 
@@ -102,7 +100,7 @@ public class InGame : MonoBehaviour
         _inputController.OnDragEnd = OnSwapTower;
 
         _initialGold = new KeyValuePair<ResourceType, int>(ResourceType.Gold, InitialGoldAmount);
-        
+
         _context.Resource.Initialize(_initialGold);
         _context.Resource.SetCallback(ResourceType.Gold, _uiHandler.SetGold);
 
@@ -111,7 +109,7 @@ public class InGame : MonoBehaviour
         _networkHandler.Initialize();
         _waveHandler.Initialize();
         _uiHandler.Initialize();
-        
+
         TowerGridSelectionHandler.OnSelect = SelectGrid;
         TowerGridSelectionHandler.OnDeselect = _uiHandler.DeselectTowerUI;
 
@@ -243,7 +241,7 @@ public class InGame : MonoBehaviour
 
     private void OnSellTower()
     {
-        var grid = TowerGridSelectionHandler.Current;        
+        var grid = TowerGridSelectionHandler.Current;
         _towerHandler.SellTower(grid.GetTower());
         grid.RemoveTower();
 

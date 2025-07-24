@@ -27,7 +27,7 @@ public class LaserProjectile : Projectile
 
     public override void Move(Transform transform, BaseEnemy target, float speed)
     {
-        
+
     }
 
     protected override void Update()

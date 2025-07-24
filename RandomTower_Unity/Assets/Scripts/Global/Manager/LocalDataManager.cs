@@ -15,13 +15,13 @@ public class LocalDataManager
         _towerDB = towerDB;
 
         if (!PlayerPrefs.HasKey(Key))
-        { 
+        {
             Loaded = new();
 
             List<int> basicTowers = new();
-            foreach(var towerData in _towerDB.Towers)
+            foreach (var towerData in _towerDB.Towers)
             {
-                if(towerData.Data.Grade == 1)
+                if (towerData.Data.Grade == 1)
                 {
                     basicTowers.Add(towerData.Data.ID);
                 }
@@ -52,7 +52,7 @@ public class LocalDataManager
     public SaveData Loaded { get; private set; }
 
     private const int BasicGem = 3;
-    private const int BasicReachedStage = 1; 
+    private const int BasicReachedStage = 1;
     private const string Key = "LocalProgress";
 
     public SaveData Load()
@@ -60,7 +60,7 @@ public class LocalDataManager
         string json = PlayerPrefs.GetString(Key);
         Loaded = JsonUtility.DeserializeObject<SaveData>(json);
 
-        foreach(var tower in _towerDB.Towers)
+        foreach (var tower in _towerDB.Towers)
         {
             tower.Data.Level = Loaded.TowerLevelDict[tower.Data.ID];
         }
@@ -101,4 +101,4 @@ public class LocalDataManager
         PlayerPrefs.DeleteAll();
     }
 }
- 
+

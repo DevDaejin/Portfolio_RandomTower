@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Sound
@@ -12,7 +11,7 @@ public class Sound
         this.volume = volume;
         var audios = Root.GetComponentsInChildren<AudioSource>(true);
 
-        foreach(var audio in audios)
+        foreach (var audio in audios)
         {
             audio.volume = this.volume;
         }

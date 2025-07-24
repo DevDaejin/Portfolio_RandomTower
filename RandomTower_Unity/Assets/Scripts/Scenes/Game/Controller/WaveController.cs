@@ -1,13 +1,10 @@
-using System;
-using UnityEngine;
-
 public class WaveController
 {
     private Timer _timer;
 
     public WaveSetting Setting => _setting;
     private WaveSetting _setting;
-    
+
     public enum WaveState { Idle, InProgress, Waiting, Failed, Cleared }
     public WaveState CurrentState { get; private set; } = WaveState.Idle;
     public int CurrentWaveIndex { get; private set; }
@@ -87,7 +84,7 @@ public class WaveController
         }
 
         if (IsFinalWave && alive == 0 && !_setting.GetSpawningState.Invoke())
-        {            
+        {
             ClearStage();
         }
     }

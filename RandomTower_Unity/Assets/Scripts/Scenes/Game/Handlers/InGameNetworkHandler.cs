@@ -23,7 +23,7 @@ public class InGameNetworkHandler
 
             _context.Network.SpawnService.OnEnemySpawned = OnReceivedEnemyPacket;
             _context.Network.SpawnService.OnTowerSpawned = OnReceivedSpawnTowerPacket;
-            _context.Network.SpawnService.OnProjectileSpawned =  OnReceivedProjectilePacket;
+            _context.Network.SpawnService.OnProjectileSpawned = OnReceivedProjectilePacket;
             _context.Network.GameStateService.OnWaveStart += OnWaveStart;
             _context.Network.DespawnService.OnTowerDespawned = OnReceivedDespawnTowerPacket;
         }
@@ -52,7 +52,7 @@ public class InGameNetworkHandler
         TowerData data = _context.Tower.TowerDB.GetTowerByID(int.Parse(packet.SpawnId)).Data;
         BaseTower tower = _context.Tower.CreateTower(new TowerCreateSetting
         {
-            Data = data, 
+            Data = data,
             GridPosition = Vector3.down,
         });
 

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
@@ -44,7 +43,7 @@ public class GameManager : MonoBehaviour
     public LocalDataManager Data => _dataManager ??= GetDataManager();
     private LocalDataManager _dataManager;
 
-    public ResourceManager Resource=> _rescoureManager ??= new ResourceManager();
+    public ResourceManager Resource => _rescoureManager ??= new ResourceManager();
     private ResourceManager _rescoureManager;
 
     public enum Scenes { Main, Lobby, Game };

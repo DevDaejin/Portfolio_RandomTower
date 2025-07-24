@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 public class TowerFactory
 {
-    private readonly  Transform _towerGroup;
+    private readonly Transform _towerGroup;
     private readonly Dictionary<int, GameObjectPool<BaseTower>> _towerPools = new();
     private readonly Dictionary<int, IProjectilePool> _projectilePools = new();
     public Dictionary<int, IProjectilePool> ProjectilePool => _projectilePools;
@@ -45,7 +45,7 @@ public class TowerFactory
 
     private GameObjectPool<BaseTower> GetTowerPool(TowerData data)
     {
-        if(!_towerPools.TryGetValue(data.ID, out GameObjectPool<BaseTower> pool))
+        if (!_towerPools.TryGetValue(data.ID, out GameObjectPool<BaseTower> pool))
         {
             pool = new GameObjectPool<BaseTower>(data.TowerPrefab, _towerGroup);
             _towerPools.Add(data.ID, pool);
@@ -99,7 +99,7 @@ public class TowerFactory
 
     public void Release(BaseTower tower)
     {
-        if(tower is BaseTower baseTower &&
+        if (tower is BaseTower baseTower &&
             _towerPools.TryGetValue(baseTower.Data.ID, out GameObjectPool<BaseTower> pool))
         {
             pool.Release(baseTower);
@@ -116,7 +116,7 @@ public class TowerFactory
 
     public void ReleaseAllProjectile()
     {
-        foreach(var pool in _projectilePools)
+        foreach (var pool in _projectilePools)
         {
             pool.Value.Release();
         }

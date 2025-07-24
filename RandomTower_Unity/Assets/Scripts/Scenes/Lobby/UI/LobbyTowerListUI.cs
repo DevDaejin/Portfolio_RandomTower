@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class LobbyTowerListUI : MonoBehaviour
 {
@@ -23,9 +22,9 @@ public class LobbyTowerListUI : MonoBehaviour
     {
         var children = _towerContainer.GetComponentsInChildren<Transform>().ToList();
         children.Remove(_towerContainer);
-        foreach(var child in children)
+        foreach (var child in children)
         {
-            if(child != null && child.parent == _towerContainer)
+            if (child != null && child.parent == _towerContainer)
             {
                 Destroy(child.gameObject);
             }
@@ -61,7 +60,7 @@ public class LobbyTowerListUI : MonoBehaviour
     {
         foreach (var button in createdButtons)
         {
-            if(button.Data.TowerName == data.TowerName)
+            if (button.Data.TowerName == data.TowerName)
             {
                 button.Initialize(data, _onUnlockTowerClicked, null);
                 return;

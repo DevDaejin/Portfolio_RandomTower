@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class EnemyFactory
@@ -39,7 +38,7 @@ public class EnemyFactory
 
     public void Release(BaseEnemy enemy)
     {
-        if(Pools.TryGetValue(enemy.Data.ID, out GameObjectPool<BaseEnemy> pool))
+        if (Pools.TryGetValue(enemy.Data.ID, out GameObjectPool<BaseEnemy> pool))
         {
             pool.Release(enemy);
         }
@@ -47,7 +46,7 @@ public class EnemyFactory
 
     public void ReleaseAll()
     {
-        foreach(GameObjectPool<BaseEnemy> pool in Pools.Values)
+        foreach (GameObjectPool<BaseEnemy> pool in Pools.Values)
         {
             pool.ReleaseAll();
         }

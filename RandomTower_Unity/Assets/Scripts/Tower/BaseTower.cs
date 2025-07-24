@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,7 +33,7 @@ public class BaseTower : MonoBehaviour
         if (direction != Vector3.zero)
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 2);
-        }        
+        }
 
         if (_fireElapsed >= 1f / Data.FireRate)
         {
@@ -63,7 +62,7 @@ public class BaseTower : MonoBehaviour
 
     public void ShowRange(bool isAct)
     {
-        if(isAct) _rangeViewer.Active(Data.Range, _setting.GridPosition);
+        if (isAct) _rangeViewer.Active(Data.Range);
         else _rangeViewer.Deactive();
     }
 }

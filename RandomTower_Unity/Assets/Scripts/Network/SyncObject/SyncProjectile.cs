@@ -14,7 +14,7 @@ public class SyncProjectile : BaseSync<SyncProjectileData>
         base.Awake();
         _lineRenderer = GetComponentInChildren<LineRenderer>();
         if (_isLaser)
-        {    
+        {
             _lineRenderer.positionCount = 2;
         }
         projectile = GetComponent<Projectile>();

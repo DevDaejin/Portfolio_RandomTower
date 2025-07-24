@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using UnityEngine;
 
 public static class JsonUtility
 {
@@ -19,7 +18,7 @@ public static class JsonUtility
         return JsonConvert.SerializeObject(target, settings);
     }
 
-    public static T DeserializeObject<T> (string json)
+    public static T DeserializeObject<T>(string json)
     {
         return JsonConvert.DeserializeObject<T>(json, settings);
     }

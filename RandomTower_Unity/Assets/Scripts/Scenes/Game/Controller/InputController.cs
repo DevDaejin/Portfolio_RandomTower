@@ -22,7 +22,7 @@ public class InputController
 
     public void Raycast()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             _startPosition = Input.mousePosition;
             _isDragging = false;
@@ -33,10 +33,10 @@ public class InputController
             }
         }
 
-        if(Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0))
         {
             var sqrDistacne = (_startPosition - Input.mousePosition).sqrMagnitude;
-            if(IsDragable(sqrDistacne))
+            if (IsDragable(sqrDistacne))
             {
                 _isDragging = true;
                 if (Raycast(_startPosition, out var hit))
@@ -46,7 +46,7 @@ public class InputController
                 }
             }
 
-            if(_isDragging)
+            if (_isDragging)
             {
                 if (Raycast(Input.mousePosition, out var hit))
                 {
@@ -55,23 +55,33 @@ public class InputController
             }
         }
 
-        if(Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0))
         {
-            if(_isDragging)
+            if (_isDragging)
             {
                 if (Raycast(Input.mousePosition, out var hit))
                 {
                     _endWorldPosition = hit.transform.position;
                     _dragTarget?.OnEndDrag(_endWorldPosition);
+
                     OnDragEnd?.Invoke(_startWorldPosition, _endWorldPosition);
+                }
+                else
+                {
+                    _dragTarget?.OnEndDrag(_startPosition);
                 }
             }
             else
             {
                 if (Raycast(Input.mousePosition, out var hit))
                 {
-                    _selectTarget?.OnDeselect();
-                    _selectTarget = hit.collider.GetComponent<ISelect>();
+                    var newSelect = hit.collider.GetComponent<ISelect>();
+                    if (_selectTarget != newSelect)
+                    {
+                        _selectTarget?.OnDeselect();
+                    }
+
+                    _selectTarget = newSelect;
                     _selectTarget?.OnSelect();
                 }
                 else

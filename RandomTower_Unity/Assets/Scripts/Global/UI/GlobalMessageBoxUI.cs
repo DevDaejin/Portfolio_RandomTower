@@ -49,7 +49,7 @@ public class GlobalMessageBoxUI : MonoBehaviour
         SetButtons(box.PositiveButtonText, box.NegativeButtonText, box.OnPositiveButtonClick, box.OnNegativeButtonClick);
 
         ActiveUI(true);
-     }
+    }
 
     private void Resize(Vector2 messageBoxSize, Vector2 descriptionSize)
     {
@@ -68,7 +68,7 @@ public class GlobalMessageBoxUI : MonoBehaviour
     private void SetSizeDelta(RectTransform target, Vector2 size)
     {
         var endSize = size == Vector2.zero ? GetBasicSize(target) : size;
-        
+
         var originPivot = target.pivot;
         var originAnchorMin = target.anchorMin;
         var originAnchorMax = target.anchorMax;
@@ -89,7 +89,7 @@ public class GlobalMessageBoxUI : MonoBehaviour
     private Vector2 GetBasicSize(RectTransform target)
     {
         Vector2 size = Vector2.zero;
-        if(target == _messageBoxArea)
+        if (target == _messageBoxArea)
         {
             size = BasicMessageBoxSize;
         }
@@ -103,34 +103,20 @@ public class GlobalMessageBoxUI : MonoBehaviour
     }
 
 
-    private void SetTitle(string title)
-    {
-        SetText(_titleTxt, title);
-    }
-
-    private void SetDescription(string description)
-    {
-        SetText(_descriptionTxt, description);
-    }
-
+    private void SetTitle(string title) => _titleTxt.text = title;
+    private void SetDescription(string description) => _descriptionTxt.text = description;
     private void SetButtons(string positiveText, string negativeText, Action onPositiveCallback, Action onNegativeCallback)
     {
-        SetText(_positiveButtonTxt, positiveText);
-        SetText(_negativeButtonTxt, negativeText);
+        SetButtonText(_positiveButtonTxt, _positiveButton, positiveText);
+        SetButtonText(_negativeButtonTxt, _negativeButton, negativeText);
 
         if (onPositiveCallback != null) _onPositiveCallback = onPositiveCallback;
         if (onNegativeCallback != null) _onNegativeCallback = onNegativeCallback;
     }
 
-    private void SetText(TMP_Text target, string text)
+    private void SetButtonText(TMP_Text target, Button targetButton, string text)
     {
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            target.gameObject.SetActive(false);
-            return;
-        }
-
-        target.gameObject.SetActive(true);
+        targetButton?.gameObject.SetActive(!string.IsNullOrWhiteSpace(text));
         target.text = text;
     }
 

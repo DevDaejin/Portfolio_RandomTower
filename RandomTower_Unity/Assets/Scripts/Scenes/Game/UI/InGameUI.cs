@@ -36,7 +36,7 @@ public class InGameUI : MonoBehaviour
         _setting = setting;
 
         _resultUI.Intialize(_setting.OnSuccessReward, _setting.OnFailedReward);
-        _towerOptionUI.Initialize(_setting.OnMerge, _setting.OnSell);        
+        _towerOptionUI.Initialize(_setting.OnMerge, _setting.OnSell);
 
         SetWave(0, _setting.MaxWave);
         SetEnemyCount(0, _setting.MaxEnemy);
@@ -97,7 +97,7 @@ public class InGameUI : MonoBehaviour
         result = UpdateInfoProbability(result, _setting.OnUpgradeProbability.Invoke());
         result = UpdateInfoPrice(result, type);
         _infoText.text = result.ToString();
-     
+
         UpdateInfoPanel();
     }
 
@@ -138,16 +138,15 @@ public class InGameUI : MonoBehaviour
         _infoPanelRectTransform.sizeDelta = _infoText.rectTransform.sizeDelta;
     }
 
-    public void SetResult(bool isSuccess)
+    public void SetResult(bool isSuccess, bool isMulti)
     {
-        _resultUI.SetResult(isSuccess);
+        _resultUI.SetResult(isSuccess, isMulti);
     }
 
     private void ActiveInfoPanel() => _infoPanel.SetActive(true);
     private void DeactiveInfoPanel() => _infoPanel.SetActive(false);
     public void SetInteractableWaveButton(bool isAct) => WaveButton.interactable = isAct;
     public void ActiveTowerOptionMenuUI(bool isAct) => _towerOptionUI.ActiveUI(isAct);
-    public void MoveTowerOptionMenuUI(Vector3 position) => _towerOptionUI.MoveUI(position);
     public void SetInteractableMergeButton(bool isAct) => _towerOptionUI.SetInterableMergeButton(isAct);
     public void SetInteractableUpgradeButton(bool isAct) => UpgradeButton.interactable = isAct;
     public void SetWave(int current, int max) => _statusUI.SetWave(current, max);

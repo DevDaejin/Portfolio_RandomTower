@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,7 +26,7 @@ public class SoundManager : MonoBehaviour
         _basicGameObject.transform.SetParent(root);
         var source = _basicGameObject.AddComponent<AudioSource>();
         source.playOnAwake = false;
-        
+
         var bgm = CreateNewGameObject(BGMName, root).transform;
         var sfx = CreateNewGameObject(SFXName, root).transform;
 

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour, IEnemyProvider
@@ -19,7 +18,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     public int GetAlivedEnemyCount => _spawnedEnemies.Count;
 
     public Action<int, ISyncObject> OnSendSpawnPacket;
-    public Action<string> OnSendEnemyReturn; 
+    public Action<string> OnSendEnemyReturn;
     public Action<int> OnReward;
 
     private const float SpawnInterval = 0.5f;
@@ -79,7 +78,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     {
         foreach (var config in _enemyDatas)
         {
-            if(config.Data.ID == id)
+            if (config.Data.ID == id)
             {
                 return config.Data;
             }
@@ -169,7 +168,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
     {
         foreach (var pair in _spawnCoroutine)
         {
-            if(pair.Value != null)
+            if (pair.Value != null)
             {
                 return true;
             }

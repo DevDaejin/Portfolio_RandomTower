@@ -59,7 +59,7 @@ public class TowerManager : MonoBehaviour
         if (grid == null)
         {
             grid = _gridController.GetGridDifferentID(data);
-            
+
             if (grid == null)
             {
                 Debug.Log($"{data.TowerName}을 소환할 공간이 없습니다.");
@@ -71,9 +71,9 @@ public class TowerManager : MonoBehaviour
 
         BaseTower tower = CreateTower(new TowerCreateSetting
         {
-            Data = data, 
-            GridPosition = grid.transform.position, 
-            EnemyProvider = _enemyProvider, 
+            Data = data,
+            GridPosition = grid.transform.position,
+            EnemyProvider = _enemyProvider,
             OnSendReturnProjectile = OnSendReturnProejctile
         });
 
@@ -82,7 +82,7 @@ public class TowerManager : MonoBehaviour
             _towerFactory.Release(tower);
         }
         else
-        { 
+        {
             ISyncObject syncObject = tower.Transform.gameObject.GetComponent<ISyncObject>();
             OnSendSpawnTowerPacket?.Invoke(data.ID, syncObject);
             OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
@@ -106,14 +106,15 @@ public class TowerManager : MonoBehaviour
 
         var newGrid = _gridController.GetGridDifferentID(data);
         if (newGrid == null) newGrid = grid;
-        BaseTower newTower = CreateTower(new TowerCreateSetting{
-            Data = data, 
-            GridPosition = newGrid.transform.position, 
-            EnemyProvider = _enemyProvider, 
+        BaseTower newTower = CreateTower(new TowerCreateSetting
+        {
+            Data = data,
+            GridPosition = newGrid.transform.position,
+            EnemyProvider = _enemyProvider,
             OnAttack = OnTowerAttack,
             OnSendReturnProjectile = OnSendReturnProejctile,
         });
-        if(!grid.TryAddTower(newTower))
+        if (!grid.TryAddTower(newTower))
         {
             _towerFactory.Release(newTower);
         }
@@ -148,18 +149,22 @@ public class TowerManager : MonoBehaviour
         var grid1 = _gridController.GetGridByPosition(gridPosition1);
         var grid2 = _gridController.GetGridByPosition(gridPosition2);
 
-        var grid2Positions = grid1.GetTowerPostions(grid2.GetTowerCount());
-        var grid1Positions = grid2.GetTowerPostions(grid1.GetTowerCount());
-
         var grid1Towers = new List<BaseTower>(grid1.GetTowerList);
         var grid2Towers = new List<BaseTower>(grid2.GetTowerList);
 
-        grid1.RemoveTowerAll();
-        grid2.RemoveTowerAll();
+        if (grid1Towers.Count != 0)
+        {
+            var grid1Positions = grid2.GetTowerPostions(grid1Towers.Count);
+            grid1.RemoveTowerAll();
+            MoveToGrid(grid1Towers, grid2);
+        }
 
-
-        MoveToGrid(grid1Towers, grid2);
-        MoveToGrid(grid2Towers, grid1);
+        if (grid2Towers.Count != 0)
+        {
+            var grid2Positions = grid1.GetTowerPostions(grid2Towers.Count);
+            grid2.RemoveTowerAll();
+            MoveToGrid(grid2Towers, grid1);
+        }
     }
 
     private void MoveToGrid(List<BaseTower> towers, TowerGrid grid)
@@ -181,7 +186,7 @@ public class TowerManager : MonoBehaviour
     {
         OnSendSpawnProjectilePacket?.Invoke(id, syncable);
     }
-     
+
     public Transform[] GetChildrenTransformArray(Transform root)
     {
         Transform[] all = root.GetComponentsInChildren<Transform>(true);
@@ -211,9 +216,9 @@ public class TowerManager : MonoBehaviour
 
         foreach (var tower in pool.GetActivedTowers)
         {
-            if(tower.TryGetComponent<ISyncable>(out var sync))
+            if (tower.TryGetComponent<ISyncable>(out var sync))
             {
-                if(sync.ObjectID == objectId)
+                if (sync.ObjectID == objectId)
                 {
                     target = tower;
                     break;

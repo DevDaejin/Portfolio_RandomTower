@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class GenericPool<T> where T : new()
 {
@@ -23,7 +21,7 @@ public class GenericPool<T> where T : new()
 
     public void ReleaseAll()
     {
-        foreach(T t in _actived)
+        foreach (T t in _actived)
         {
             Release(t);
         }

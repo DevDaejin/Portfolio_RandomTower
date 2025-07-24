@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class BaseEnemy : MonoBehaviour
 {
     public EnemyData Data { get; private set; }
-    
+
     private bool _isInitailized = false;
     private Transform[] _routes;
     private NavMeshAgent _agent;
@@ -24,7 +23,7 @@ public class BaseEnemy : MonoBehaviour
 
     private void Update()
     {
-        if(_routes != null && IsArrived())
+        if (_routes != null && IsArrived())
         {
             NextDestination();
         }
@@ -40,7 +39,7 @@ public class BaseEnemy : MonoBehaviour
             _syncObject = GetComponent<ISyncObject>();
             InitializeRoutes(routeGroup);
         }
-        
+
         InitializeEnemyData(data);
 
         _targetIndex = 0;
@@ -73,7 +72,7 @@ public class BaseEnemy : MonoBehaviour
     private void NextDestination()
     {
         _targetIndex++;
-        
+
         if (_targetIndex >= _routes.Length) _targetIndex = 0;
 
         _destination = _routes[_targetIndex].position;
@@ -94,7 +93,7 @@ public class BaseEnemy : MonoBehaviour
         CurrentHP -= amount;
         OnTakeDamage?.Invoke(this, amount);
 
-        if(CurrentHP <= 0)
+        if (CurrentHP <= 0)
         {
             _onReturn?.Invoke(_syncObject.ObjectID);
             Die();

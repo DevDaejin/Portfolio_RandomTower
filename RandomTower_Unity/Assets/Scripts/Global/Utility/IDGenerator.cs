@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class IDGenerator
 {
     private readonly string _clientID;

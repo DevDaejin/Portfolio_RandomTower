@@ -99,7 +99,7 @@ public class Lobby : MonoBehaviour
     private void OnUpgrade()
     {
         if (_ui.CurrentTowerData.LevelUp()
-            &&_resource.Spend(ResourceManager.ResourceType.Gem, _ui.CurrentTowerData.UpgradeCost))
+            && _resource.Spend(ResourceManager.ResourceType.Gem, _ui.CurrentTowerData.UpgradeCost))
         {
             _ui.UpdateTowerInfoPanel(_ui.CurrentTowerData);
         }
@@ -132,4 +132,3 @@ public class Lobby : MonoBehaviour
         GameManager.Instance.LoadScene(GameManager.Scenes.Game);
     }
 }
- 

@@ -52,7 +52,6 @@ public class InGameUIHandler
 
         _context.UI.ActiveTowerOptionMenuUI(true);
         _context.UI.SetInteractableMergeButton(isMergeable);
-        _context.UI.MoveTowerOptionMenuUI(tower.transform.position);
     }
 
     public void SetGold(int amount) => _context.UI.SetGoldCount(amount);

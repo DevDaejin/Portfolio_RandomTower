@@ -50,7 +50,7 @@ public class TowerData
 
     public bool LevelUp()
     {
-        if(Level < MaxLevel)
+        if (Level < MaxLevel)
         {
             Level++;
             return true;

@@ -70,7 +70,7 @@ public class LobbyTowerInfoUI : MonoBehaviour
         string price = string.Empty;
         Action callback = null;
 
-        switch(type)
+        switch (type)
         {
             case ButtonType.Unlock:
                 buttonText = UnlockText;

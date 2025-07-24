@@ -133,9 +133,9 @@ public class TowerGridController
 
     public TowerGrid GetGridByPosition(Vector3 gridPosition)
     {
-        foreach(var grid in _grids)
+        foreach (var grid in _grids)
         {
-            if(grid.transform.position == gridPosition)
+            if (grid.transform.position == gridPosition)
             {
                 return grid;
             }

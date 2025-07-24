@@ -16,8 +16,8 @@ public class GlobalUI : MonoBehaviour
     {
         _optionUI.Initialize(optionData);
         _menuUI.Initilaize(
-            ()=>ShowOption(), 
-            ()=>ShowQuit(Application.Quit, null)
+            () => ShowOption(),
+            () => ShowQuit(Application.Quit, null)
         );
 
         _optionUI.ActiveUI(false);

@@ -12,12 +12,12 @@ public class SceneLoader : MonoBehaviour
 
     public void LoadSceneAsync(string name)
     {
-        if(_isLoading)
+        if (_isLoading)
         {
             Debug.Log("duplicated load blocked");
             return;
         }
-        
+
         if (!Application.CanStreamedLevelBeLoaded(name))
         {
             Debug.Log($"Invalid scene : {name}");

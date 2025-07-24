@@ -1,5 +1,4 @@
 using Sync;
-using UnityEngine;
 
 public class SyncHP : BaseSync<SyncHPData>
 {
@@ -20,7 +19,7 @@ public class SyncHP : BaseSync<SyncHPData>
 
     protected override void ApplyData(SyncHPData data)
     {
-        if(data.Hp < 0)
+        if (data.Hp < 0)
         {
             _enemy.Die();
         }
@@ -38,4 +37,3 @@ public class SyncHP : BaseSync<SyncHPData>
         return a.Hp == b.Hp;
     }
 }
- 

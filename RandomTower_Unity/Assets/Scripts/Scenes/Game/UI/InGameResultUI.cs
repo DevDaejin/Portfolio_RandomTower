@@ -1,7 +1,6 @@
 using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class InGameResultUI : MonoBehaviour
@@ -31,10 +30,14 @@ public class InGameResultUI : MonoBehaviour
         _lobbyButton.onClick.RemoveAllListeners();
     }
 
-    public void ActiveUI(bool isAct) => _resultPanel.SetActive(isAct);
-
-    public void SetResult(bool isSuccess)
+    public void ActiveUI(bool isAct)
     {
+        _resultPanel.SetActive(isAct);
+    }
+
+    public void SetResult(bool isSuccess, bool isMulti)
+    {
+        _retryButton.gameObject.SetActive(!isMulti);
         ActiveUI(true);
         _resultTitleText.text = isSuccess ? SuccessText : FailedText;
         _resultDescriptionText.text = isSuccess ? SeuccessDescription : FailedDescription;

@@ -12,8 +12,8 @@ public class DamageUI : MonoBehaviour
     private float _elapsed;
     private Color _origin;
 
-    public  Action<DamageUI> OnReturn;
-    
+    public Action<DamageUI> OnReturn;
+
     private void Awake()
     {
         _rectTransform = GetComponent<RectTransform>();

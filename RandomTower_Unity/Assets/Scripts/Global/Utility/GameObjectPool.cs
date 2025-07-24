@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,7 +21,7 @@ public class GameObjectPool<T> where T : Component
         T instance = _pooled.Count > 0 ? _pooled.Pop() : UnityEngine.Object.Instantiate(_prefab).GetComponent<T>();
         instance.transform.SetParent(_parent);
         instance.gameObject.SetActive(true);
-  
+
         _actived.Add(instance);
         return instance;
     }
@@ -30,7 +29,7 @@ public class GameObjectPool<T> where T : Component
     public void Release(T target)
     {
         target.gameObject.SetActive(false);
-        
+
         _actived.Remove(target);
         _pooled.Push(target);
     }
@@ -45,7 +44,7 @@ public class GameObjectPool<T> where T : Component
 
     public void Clear()
     {
-        while(_pooled.Count > 0)
+        while (_pooled.Count > 0)
         {
             UnityEngine.Object.Destroy(_pooled.Pop().gameObject);
         }

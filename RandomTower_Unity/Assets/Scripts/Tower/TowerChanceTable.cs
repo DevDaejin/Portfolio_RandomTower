@@ -7,11 +7,11 @@ public class TowerChanceTable
     public int HighestLevel => _chances.Count;
     public TowerChanceTable()
     {
-        _chances.Add(1, new[] { 100,    0,      0 });
-        _chances.Add(2, new[] { 80,     20,     0 });
-        _chances.Add(3, new[] { 70,     30,     0 });
-        _chances.Add(4, new[] { 65,     30,     5 });
-        _chances.Add(5, new[] { 60,     30,    10 });
+        _chances.Add(1, new[] { 100, 0, 0 });
+        _chances.Add(2, new[] { 80, 20, 0 });
+        _chances.Add(3, new[] { 70, 30, 0 });
+        _chances.Add(4, new[] { 65, 30, 5 });
+        _chances.Add(5, new[] { 60, 30, 10 });
     }
 
     public int[] GetProbability(int level)
@@ -38,7 +38,7 @@ public class TowerChanceTable
         for (int index = 0; index < weight.Length; index++)
         {
             sum += weight[index];
-            if(random <= sum)
+            if (random <= sum)
             {
                 return index + 1;
             }

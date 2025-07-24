@@ -23,7 +23,7 @@ public class Resource
 
     public bool Spend(int amount)
     {
-        if(_value - amount >= 0)
+        if (_value - amount >= 0)
         {
             _value -= amount;
             Invoke();

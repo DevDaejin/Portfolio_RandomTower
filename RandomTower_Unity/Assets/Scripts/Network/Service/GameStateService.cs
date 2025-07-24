@@ -12,7 +12,7 @@ public class GameStateService
 
     public void OnReceive(GameStatePacket packet)
     {
-        switch(packet.State)
+        switch (packet.State)
         {
             case GameStateType.StartWave:
                 OnWaveStart?.Invoke();

@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    public enum UIType {None, Main, InGame, Lobby, Global}
+    public enum UIType { None, Main, InGame, Lobby, Global }
 
     public GlobalUI Global => _globalUI;
     [SerializeField] private GlobalUI _globalUI;
@@ -19,7 +18,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private InGameUI _inGameUI;
 
     private Dictionary<UIType, GameObject> _uis = new();
-    
+
     private void Start()
     {
         _uis.Add(UIType.Global, Global.gameObject);
@@ -32,7 +31,7 @@ public class UIManager : MonoBehaviour
 
     public void Initialize(UIType type)
     {
-        foreach( KeyValuePair<UIType, GameObject> pair in _uis )
+        foreach (KeyValuePair<UIType, GameObject> pair in _uis)
         {
             pair.Value.SetActive(pair.Key == type);
         }

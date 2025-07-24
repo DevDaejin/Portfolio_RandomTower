@@ -1,8 +1,4 @@
-using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -88,7 +84,7 @@ public class TowerGrid : MonoBehaviour, IDrag, ISelect, IPointerDownHandler
     {
         List<Vector3> positions = new();
 
-        if(towerCount == 1)
+        if (towerCount == 1)
         {
             positions.Add(_transform.position);
         }
@@ -107,12 +103,12 @@ public class TowerGrid : MonoBehaviour, IDrag, ISelect, IPointerDownHandler
             }
         }
 
-         return positions.ToArray();
+        return positions.ToArray();
     }
 
     public void OnSelect()
     {
-        if(_towers.Count == 0)
+        if (_towers.Count == 0)
         {
             return;
         }
