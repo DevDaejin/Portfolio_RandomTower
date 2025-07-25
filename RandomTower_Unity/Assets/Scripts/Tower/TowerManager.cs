@@ -94,14 +94,14 @@ public class TowerManager : MonoBehaviour
         if (grid == null) return;
 
         int towerGrade = grid.GetTower().Data.Grade + 1;
+        var data = _towerFactory.GetTowerRandomData(towerGrade);
+        if (data == null) return;
 
         foreach (var tower in grid.GetTowerList)
         {
             RemoveTower(tower);
         }
         grid.RemoveTowerAll();
-
-        var data = _towerFactory.GetTowerRandomData(towerGrade);
 
         var newGrid = _gridController.GetGridDifferentID(data);
         if (newGrid == null) newGrid = grid;

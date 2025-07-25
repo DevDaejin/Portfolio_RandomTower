@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour
         return _dataManager;
     }
 
-    private void LoadActivedTowers()
+    public void LoadActivedTowers()
     {
         _towerDB.ActiveTowers.Clear();
         foreach (var towerID in Data.Loaded.GainedTowerID)

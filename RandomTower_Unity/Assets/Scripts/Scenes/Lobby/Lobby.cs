@@ -82,17 +82,15 @@ public class Lobby : MonoBehaviour
     private void OnBought()
     {
         var data = _ui.CurrentTowerData;
-        var gem = _resource.Get(ResourceManager.ResourceType.Gem);
-        if (data.BuyingCoast <= gem)
+        if (_resource.Spend(ResourceManager.ResourceType.Gem, data.BuyingCoast))
         {
             _ui.UnlockTowerClicked(data);
             _ui.RefreshUnlockedButton(data);
 
-            if (_resource.Spend(ResourceManager.ResourceType.Gem, data.BuyingCoast))
-            {
-                _data.AddGainedTowerID(data.ID);
-                _data.Save();
-            }
+            _data.AddGainedTowerID(data.ID);
+            _data.Save();
+
+            GameManager.Instance.LoadActivedTowers();
         }
     }
 

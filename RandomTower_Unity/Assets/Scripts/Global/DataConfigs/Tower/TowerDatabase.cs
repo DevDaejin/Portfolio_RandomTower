@@ -35,7 +35,7 @@ public class TowerDatabase : ScriptableObject
         Initialize();
         List<TowerDataConfig> result = new();
 
-        foreach (var tower in Towers)
+        foreach (var tower in ActiveTowers)
         {
             if (tower.Data.Grade == grade)
             {

@@ -161,7 +161,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
             }
         }
 
-        return _cachingList;
+        return new(_cachingList);
     }
 
     public List<BaseEnemy> FindClosestWithCount(Vector3 position, float range, int count)
@@ -179,7 +179,7 @@ public class EnemyManager : MonoBehaviour, IEnemyProvider
             _cachingSortedList.RemoveRange(count, _cachingSortedList.Count - count);
         }
 
-        return _cachingSortedList;
+        return new(_cachingSortedList);
     }
 
     public bool IsSpawningState()

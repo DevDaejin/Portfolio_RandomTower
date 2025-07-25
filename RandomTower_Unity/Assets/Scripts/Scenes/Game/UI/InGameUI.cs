@@ -11,6 +11,7 @@ public class InGameUI : MonoBehaviour
     [SerializeField] private InGameStatusUI _statusUI;
     [SerializeField] private InGameResultUI _resultUI;
     [SerializeField] private InGameTowerOptionUI _towerOptionUI;
+    [SerializeField] private InGameUniqueUI _uniqueUI;
 
     [SerializeField] private Button _menuButton;
     public Button WaveButton => _waveButton;

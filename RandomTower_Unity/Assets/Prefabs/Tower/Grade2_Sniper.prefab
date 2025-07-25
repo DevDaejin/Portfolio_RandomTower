@@ -80,6 +80,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _firePoint: {fileID: 4318020961266834670}
+  _animator: {fileID: 5041275987364779817}
 --- !u!114 &-7755113504495629198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493,7 +494,7 @@ PrefabInstance:
     - target: {fileID: 9500000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 2f9c69dc4e2e91445b4b9d7bd96090b1, type: 2}
+      objectReference: {fileID: 9100000, guid: 41a8f659bbc784e4da5d23ffa14303b6, type: 2}
     - target: {fileID: 13700000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -504,7 +505,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 400040, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4318020961266834670}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 100060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 233505004635844801}
   m_SourcePrefab: {fileID: 100100000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
 --- !u!4 &5041275987355203809 stripped
 Transform:
@@ -514,6 +518,28 @@ Transform:
 --- !u!4 &5041275987355203829 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
+  m_PrefabInstance: {fileID: 5041275987355329097}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5041275987355296917 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
+  m_PrefabInstance: {fileID: 5041275987355329097}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &233505004635844801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5041275987355296917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eea9087d7485ed45a9ceafc89eb354d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!95 &5041275987364779817 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9500000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
   m_PrefabInstance: {fileID: 5041275987355329097}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6255094148333716481
