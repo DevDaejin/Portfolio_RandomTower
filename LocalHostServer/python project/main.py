@@ -4,6 +4,7 @@ import asyncio
 import datetime
 import websockets
 import uuid
+import sys
 
 from client_context import ClientContext
 from room_manager import RoomManager
@@ -18,14 +19,22 @@ from proto.despawn_pb2 import DespawnPacketData
 from proto.game_pb2 import GameStatePacket
 from proto.room_pb2 import RoomPacket
 
+def get_server_config():
+    if len(sys.argv) >= 3:
+        ip = sys.argv[1]
+        port = int(sys.argv[2])
+    else:
+        ip = input("IP Address (default 0.0.0.0): ") or "0.0.0.0"
+        port_input = input("Port (default 6112): ") or "6112"
+        port = int(port_input)
+    return ip, port
+
 room_manager = RoomManager()
 spawn_manager = SpawnManager(room_manager)
 despawn_manager = DespawnManager(room_manager)
 sync_manager = SyncManager(room_manager)
 game_state_manager = GameStateManager(room_manager)
 
-ADDR = "127.0.0.1"
-PORT = 8765
 client = {}
 
 async def handler(websocket):
@@ -105,8 +114,9 @@ async def handle_room_packet(context, packet: RoomPacket):
         print("[Warn] Unknown RoomPacket field")
 
 async def main():
-    async with websockets.serve(handler, ADDR, PORT):
-        print(f"WebSocket Server running on {ADDR}:{PORT}")
+    ip, port = get_server_config()
+    async with websockets.serve(handler, ip, port):
+        print(f"WebSocket Server running on {ip}:{port}")
         await asyncio.Future()
 
 if __name__ == "__main__":
