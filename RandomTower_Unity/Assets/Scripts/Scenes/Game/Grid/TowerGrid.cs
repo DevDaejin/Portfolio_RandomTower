@@ -36,7 +36,7 @@ public class TowerGrid : MonoBehaviour, IDrag, ISelect
 
     public bool TryAddTower(BaseTower tower)
     {
-        if (_towers.Count >= MaxCount || (_towers.Count > 0 && _towers[0].Data.IsSpecial))
+        if (_towers.Count >= MaxCount || (_towers.Count > 0 && _towers[0].Data.IsUnique))
         {
             return false;
         }
@@ -57,18 +57,39 @@ public class TowerGrid : MonoBehaviour, IDrag, ISelect
     public void RemoveTower()
     {
         if (_towers.Count <= 0) return;
-
         _towers.Remove(GetTower());
+
+        UpdateTowerPosition();
     }
 
-    public void RemoveTowerAll() => _towers.Clear();
+    public void RemoveTower(BaseTower tower)
+    {
+        _towers.Remove(tower);
+        UpdateTowerPosition();
+    }
+
+    public void RemoveTowerAll()
+    {
+        int count = _towers.Count;
+
+        for (int i = 0; i < count; i++)
+        {
+            RemoveTower();
+        }
+
+        _towers.Clear();
+    }
 
     private void UpdateTowerPosition()
     {
-        var positions = GetTowerPostions(_towers.Count);
-        for (int index = 0; index < _towers.Count; index++)
+        int count = _towers.Count;
+        if (count > 0)
         {
-            _towers[index].transform.position = positions[index];
+            var positions = GetTowerPostions(_towers.Count);
+            for (int index = 0; index < _towers.Count; index++)
+            {
+                _towers[index].transform.position = positions[index];
+            }
         }
     }
 
@@ -84,6 +105,7 @@ public class TowerGrid : MonoBehaviour, IDrag, ISelect
         {
             Vector3[] offsets = towerCount switch
             {
+                1 => new Vector3[] {Vector3.zero},
                 2 => Positions2,
                 3 => Positions3,
                 _ => null

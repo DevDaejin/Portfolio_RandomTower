@@ -22,3 +22,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 83ac940d2a76ee14b90dc44aa4b8ae34, type: 2}
   - {fileID: 11400000, guid: b74779e80095b284aab281f95382b23f, type: 2}
   - {fileID: 11400000, guid: f54ea764bb096ae4f8dc59af608040ec, type: 2}
+  - {fileID: 11400000, guid: ceb38ca49c54ef34b840537020acaf76, type: 2}
+  ActiveTowers:
+  - {fileID: 11400000, guid: 3761a15b70e1e86419bf437e899ade5c, type: 2}
+  - {fileID: 11400000, guid: d91a147e8469c7b4d9b515abff6e31af, type: 2}
+  - {fileID: 11400000, guid: 0bad5e314792e6c40abdaa1e37fc446c, type: 2}
+  - {fileID: 11400000, guid: 527eaa1f29132344dbfafeb66b31f577, type: 2}
+  - {fileID: 11400000, guid: f54ea764bb096ae4f8dc59af608040ec, type: 2}
+  - {fileID: 11400000, guid: ceb38ca49c54ef34b840537020acaf76, type: 2}
+  Combinations:
+  - {fileID: 11400000, guid: 9d10f524f59a4ca4692484b0c10719ec, type: 2}

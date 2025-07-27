@@ -50,42 +50,44 @@ public class TowerManager : MonoBehaviour
         _gridController = new TowerGridController(tree, _dragIndicator);
     }
 
-    public void SpawnTower(int towerSpawnChancePassiveLevel)
+    private bool TrySpawnToGrid(TowerData data)
     {
-        int towerGrade = _towerChanceTable.GetRandomGrade(towerSpawnChancePassiveLevel);
-        TowerData data = _towerFactory.GetTowerRandomData(towerGrade);
         TowerGrid grid = _gridController.GetTowerInstallableGrid(data);
+        if (grid == null) return false;
 
-        if (grid == null)
-        {
-            grid = _gridController.GetGridDifferentID(data);
-
-            if (grid == null)
-            {
-                Debug.Log($"{data.TowerName}을 소환할 공간이 없습니다.");
-                return;
-            }
-
-            data = grid.GetTower().Data;
-        }
-
-        BaseTower tower = CreateTower(new TowerCreateSetting
+        var tower = CreateTower(new TowerCreateSetting
         {
             Data = data,
             GridPosition = grid.transform.position,
             EnemyProvider = _enemyProvider,
+            OnAttack = OnTowerAttack,
             OnSendReturnProjectile = OnSendReturnProejctile
         });
 
         if (!grid.TryAddTower(tower))
         {
+            _gridController.RemoveTowerInGrid(tower);
             _towerFactory.Release(tower);
+            return false;
         }
-        else
+
+        if (tower.TryGetComponent<ISyncObject>(out var sync))
         {
-            ISyncObject syncObject = tower.Transform.gameObject.GetComponent<ISyncObject>();
-            OnSendSpawnTowerPacket?.Invoke(data.ID, syncObject);
-            OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
+            OnSendSpawnTowerPacket?.Invoke(data.ID, sync);
+        }
+
+        OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
+        return true;
+    }
+
+    public void SpawnTower(int towerSpawnChancePassiveLevel, Action onFailed)
+    {
+        int towerGrade = _towerChanceTable.GetRandomGrade(towerSpawnChancePassiveLevel);
+        TowerData data = _towerFactory.GetTowerRandomData(towerGrade);
+
+        if(!TrySpawnToGrid(data))
+        {
+            onFailed?.Invoke();
         }
     }
 
@@ -93,44 +95,24 @@ public class TowerManager : MonoBehaviour
     {
         if (grid == null) return;
 
-        int towerGrade = grid.GetTower().Data.Grade + 1;
-        var data = _towerFactory.GetTowerRandomData(towerGrade);
+        int grade = grid.GetTower().Data.Grade + 1;
+        var data = _towerFactory.GetTowerRandomData(grade);
         if (data == null) return;
 
-        foreach (var tower in grid.GetTowerList)
+        int count = grid.GetTowerList.Count;
+        for (int i = 0; i < count; i++)
         {
-            RemoveTower(tower);
+            RemoveTower(grid.GetTower());
         }
-        grid.RemoveTowerAll();
 
-        var newGrid = _gridController.GetGridDifferentID(data);
-        if (newGrid == null) newGrid = grid;
-        BaseTower newTower = CreateTower(new TowerCreateSetting
-        {
-            Data = data,
-            GridPosition = newGrid.transform.position,
-            EnemyProvider = _enemyProvider,
-            OnAttack = OnTowerAttack,
-            OnSendReturnProjectile = OnSendReturnProejctile,
-        });
-        if (!grid.TryAddTower(newTower))
-        {
-            _towerFactory.Release(newTower);
-        }
-        else
-        {
-            ISyncObject syncObject = newTower.Transform.gameObject.GetComponent<ISyncObject>();
-            OnSendSpawnTowerPacket?.Invoke(data.ID, syncObject);
-            OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
-        }
+        TrySpawnToGrid(data);
     }
 
     public void SellTower(BaseTower tower, Action<int> onSellTower)
     {
         onSellTower?.Invoke(Mathf.RoundToInt(tower.Data.SpawnCoast * 0.5f));
         RemoveTower(tower);
-        int count = _towerFactory.GetTowerCount();
-        OnTowerUpdated(count, _installableCount);
+        OnTowerUpdated(_towerFactory.GetTowerCount(), _installableCount);
     }
 
     private void RemoveTower(BaseTower tower)
@@ -138,6 +120,7 @@ public class TowerManager : MonoBehaviour
         ISyncObject syncObject = tower.GetComponent<ISyncObject>();
         OnSendDespawnTowerPacket?.Invoke(tower.Data.ID, syncObject);
         _towerFactory.Release(tower);
+        _gridController.RemoveTowerInGrid(tower);
     }
 
     public void SwapTower(Vector3 gridPosition1, Vector3 gridPosition2)
@@ -154,7 +137,7 @@ public class TowerManager : MonoBehaviour
         grid2.RemoveTowerAll();
 
         if (grid1Towers.Count != 0)
-        {   
+        {
             MoveToGrid(grid1Towers, grid2);
         }
 
@@ -178,6 +161,22 @@ public class TowerManager : MonoBehaviour
     {
         return _towerFactory.CreateTower(setting);
     }
+
+    public List<TowerCombinationData> GetAvailableCombinations() => _towerFactory.GetAvailableCombinations();
+
+    public void TryCombineTowers(TowerCombinationData data)
+    {
+        if (_towerFactory.TryCombine(data, out TowerData result, out List<BaseTower> usedTowers))
+        {
+            foreach(var tower in usedTowers)
+            {
+                RemoveTower(tower);
+            }
+
+            TrySpawnToGrid(result);
+        }
+    }
+
 
     private void OnTowerAttack(int id, ISyncObject syncable)
     {

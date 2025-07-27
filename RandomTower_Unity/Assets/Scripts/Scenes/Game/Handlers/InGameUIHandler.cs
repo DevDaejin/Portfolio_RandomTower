@@ -1,3 +1,7 @@
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+
 public class InGameUIHandler
 {
     private InGameContext _context;
@@ -40,6 +44,10 @@ public class InGameUIHandler
         _context.UI.SetTowerCount(count, _context.Tower.MaxTower);
     }
 
+    public void RefreshUnique(List<TowerCombinationData> datas, Action<TowerCombinationData> onSpawnUnique) => _context.UI.RefreshUnique(datas, onSpawnUnique);
+
+    public void SetGold(int amount) => _context.UI.SetGoldCount(amount);
+
     public void SetInteractableMergeButton(bool isAct) => _context.UI.SetInteractableMergeButton(isAct);
 
     public void SetInteractableWaveButton(bool isAct) => _context.UI.SetInteractableWaveButton(isAct);
@@ -53,8 +61,6 @@ public class InGameUIHandler
         _context.UI.ActiveTowerOptionMenuUI(true);
         _context.UI.SetInteractableMergeButton(isMergeable);
     }
-
-    public void SetGold(int amount) => _context.UI.SetGoldCount(amount);
 
     public void DeselectTowerUI() => _context.UI.ActiveTowerOptionMenuUI(false);
 

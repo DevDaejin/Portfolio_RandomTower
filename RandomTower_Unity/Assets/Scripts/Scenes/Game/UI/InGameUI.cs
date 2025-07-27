@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using TMPro;
 using UnityEngine;
@@ -8,11 +9,7 @@ using UnityEngine.UI;
 
 public class InGameUI : MonoBehaviour
 {
-    [SerializeField] private InGameStatusUI _statusUI;
-    [SerializeField] private InGameResultUI _resultUI;
-    [SerializeField] private InGameTowerOptionUI _towerOptionUI;
-    [SerializeField] private InGameUniqueUI _uniqueUI;
-
+    [Header("Main UI")]
     [SerializeField] private Button _menuButton;
     public Button WaveButton => _waveButton;
     [SerializeField] private Button _waveButton;
@@ -21,9 +18,17 @@ public class InGameUI : MonoBehaviour
     public Button UpgradeButton => _upgradeButton;
     [SerializeField] private Button _upgradeButton;
 
+    [Header("Sub UI")]
+    [SerializeField] private InGameStatusUI _statusUI;
+    [SerializeField] private InGameResultUI _resultUI;
+    [SerializeField] private InGameTowerOptionUI _towerOptionUI;
+    [SerializeField] private InGameUniqueUI _uniqueUI;
+
+    [Header("Info")]
     [SerializeField] private GameObject _infoPanel;
     [SerializeField] private TMP_Text _infoText;
 
+    [Header("Localized")]
     [SerializeField] private LocalizedString _localizedGrade;
     [SerializeField] private LocalizedString _localizedSpawnPrice;
     [SerializeField] private LocalizedString _localizedUpgradePrice;
@@ -41,12 +46,15 @@ public class InGameUI : MonoBehaviour
 
     private enum ButtonType { Spawn, Upgrade }
 
+    private const string Impossible = "-";
+
     public void Initialize(InGameUISetting setting)
     {
         _setting = setting;
 
         _resultUI.Intialize(_setting.OnSuccessReward, _setting.OnFailedReward);
         _towerOptionUI.Initialize(_setting.OnMerge, _setting.OnSell);
+        _uniqueUI.Initialize();
 
         SetWave(0, _setting.MaxWave);
         SetEnemyCount(0, _setting.MaxEnemy);
@@ -138,7 +146,7 @@ public class InGameUI : MonoBehaviour
                 break;
             case ButtonType.Upgrade:
                 var price = _setting.OnUpgradePrice.Invoke();
-                _priceArgs[0] = price == 0 ? "-" : price.ToString();
+                _priceArgs[0] = price == 0 ? Impossible : price.ToString();
                 _localizedUpgradePrice.Arguments = _priceArgs;
                 builder.AppendLine(_localizedUpgradePrice.GetLocalizedString());
                 break;
@@ -157,11 +165,14 @@ public class InGameUI : MonoBehaviour
         _infoPanelRectTransform.sizeDelta = _infoText.rectTransform.sizeDelta;
     }
 
-    public void SetResult(bool isSuccess, bool isMulti)
+    public void RefreshUnique(List<TowerCombinationData> datas, Action<TowerCombinationData> onSpawnUnique)
     {
-        _resultUI.SetResult(isSuccess, isMulti);
+        foreach(var data in datas)
+        {
+            _uniqueUI.ActiveButton(data, onSpawnUnique);
+        }
     }
-
+    public void SetResult(bool isSuccess, bool isMulti) => _resultUI.SetResult(isSuccess, isMulti);
     private void ActiveInfoPanel() => _infoPanel.SetActive(true);
     private void DeactiveInfoPanel() => _infoPanel.SetActive(false);
     public void SetInteractableWaveButton(bool isAct) => WaveButton.interactable = isAct;

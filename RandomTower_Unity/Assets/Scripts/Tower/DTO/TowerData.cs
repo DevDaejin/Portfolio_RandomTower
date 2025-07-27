@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using System;
 using UnityEngine;
 
@@ -48,6 +49,8 @@ public class TowerData
 
     public int Level { get; set; } = 1;
 
+    public bool IsUnique => Grade == MaxGrade;
+    
     public bool LevelUp()
     {
         if (Level < MaxLevel)
@@ -61,7 +64,5 @@ public class TowerData
 
     private int MaxLevel = 5;
     public bool IsUpgradeable => Level < MaxLevel;
-
-    public bool IsSpecial => Grade == MaxGrade;
     private const int MaxGrade = 4;
 }

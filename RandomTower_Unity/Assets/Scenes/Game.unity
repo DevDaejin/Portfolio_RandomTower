@@ -19565,6 +19565,8 @@ MonoBehaviour:
   _enemyUIManager: {fileID: 1195791143}
   _enemyDatas:
   - {fileID: 11400000, guid: 6b1eb705a677eb64b8e953ed5e952ca2, type: 2}
+  - {fileID: 11400000, guid: 606e261367cf22149bfa539f1273c731, type: 2}
+  - {fileID: 11400000, guid: f8ee2347f6d42e94dae36a7c5925f26b, type: 2}
 --- !u!114 &1195791143
 MonoBehaviour:
   m_ObjectHideFlags: 0

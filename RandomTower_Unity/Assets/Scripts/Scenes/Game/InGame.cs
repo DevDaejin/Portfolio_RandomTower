@@ -3,9 +3,7 @@ using Google.Protobuf;
 using Net;
 using Sync;
 using System.Collections.Generic;
-using Unity.AI.Navigation;
 using UnityEngine;
-using UnityEngine.Localization.SmartFormat.Core.Parsing;
 using ResourceType = ResourceManager.ResourceType;
 
 public class InGame : MonoBehaviour
@@ -46,7 +44,7 @@ public class InGame : MonoBehaviour
     private const int MaxEnemy = 20;
 
     private const float WaveDuration = 40;
-    private const int InitialGoldAmount = 50;
+    private const int InitialGoldAmount = 500;
 
     private void Awake()
     {
@@ -222,8 +220,9 @@ public class InGame : MonoBehaviour
 
         if (_context.Resource.Spend(ResourceType.Gold, price))
         {
-            _towerHandler.OnSpawnTower(_currentChanceLevel);
+            _towerHandler.OnSpawnTower(_currentChanceLevel, () => _context.Resource.Earn(ResourceType.Gold, price));
         }
+        RefreshUniqueUI();
     }
 
     private void OnMergeTower()
@@ -233,7 +232,16 @@ public class InGame : MonoBehaviour
         {
             _towerHandler.MergeTower(grid);
         }
+        RefreshUniqueUI();
     }
+
+    private void RefreshUniqueUI()
+    {
+        List<TowerCombinationData> results = _towerHandler.GetAvailableCombinations();
+        _uiHandler.RefreshUnique(results, OnSpawnUnique);
+    }
+
+    private void OnSpawnUnique(TowerCombinationData data) => _towerHandler.TryCombineTowers(data);
 
     private void OnSellTower()
     {
@@ -241,8 +249,6 @@ public class InGame : MonoBehaviour
         if (selected is TowerGrid grid)
         {
             _towerHandler.SellTower(grid.GetTower());
-            grid.RemoveTower();
-
             var tower = grid.GetTower();
             if (tower == null)
             {
@@ -258,7 +264,12 @@ public class InGame : MonoBehaviour
         }
     }
 
-    private void OnSwapTower(Vector3 position1, Vector3 position2) => _towerHandler.SwapTower(position1, position2);
+    private void OnSwapTower(Vector3 position1, Vector3 position2)
+    {
+        if(_towerHandler.)
+
+        _towerHandler.SwapTower(position1, position2);
+    }
 
     private void OnSellTower(int sellingPrice) => _context.Resource.Earn(ResourceType.Gold, sellingPrice);
 

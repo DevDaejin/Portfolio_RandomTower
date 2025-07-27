@@ -21,7 +21,7 @@ public class TowerGridController
     {
         TowerGrid availableGrid = null;
 
-        if (!data.IsSpecial)
+        if (!data.IsUnique)
         {
             availableGrid = GetSameTowerInstalledGrid(data);
         }
@@ -107,7 +107,7 @@ public class TowerGridController
         return sameTowerGrids;
     }
 
-    private TowerGrid GetNullTowerGrid()
+    public TowerGrid GetNullTowerGrid()
     {
         int count = 0;
         for (int i = 0; i < _grids.Count; i++)
@@ -142,6 +142,21 @@ public class TowerGridController
         }
 
         return null;
+    }
+
+    public void RemoveTowerInGrid(BaseTower tower)
+    {
+        foreach(var grid in _grids)
+        {
+            foreach(var towerInGrid in grid.GetTowerList)
+            {
+                if(towerInGrid.GetInstanceID() == tower.GetInstanceID())
+                {
+                    grid.RemoveTower(tower);
+                    return;
+                }
+            }
+        }
     }
 
     public void RemoveAllTower()

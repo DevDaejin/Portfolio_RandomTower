@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 public class TowerFactory
 {
     private readonly Transform _towerGroup;
+    public Dictionary<int, GameObjectPool<BaseTower>> TowerPools => _towerPools;
     private readonly Dictionary<int, GameObjectPool<BaseTower>> _towerPools = new();
     private readonly Dictionary<int, IProjectilePool> _projectilePools = new();
     public Dictionary<int, IProjectilePool> ProjectilePool => _projectilePools;
@@ -95,6 +96,73 @@ public class TowerFactory
         }
 
         return count;
+    }
+
+    public List<TowerCombinationData> GetAvailableCombinations()
+    {
+        List<int> installedIds = new();
+
+        foreach(var pool in _towerPools)
+        {
+            var towers = pool.Value.GetActivedTowers;
+
+            for (int i = 0; i < towers.Count; i++)
+            {
+                installedIds.Add(towers[i].Data.ID);
+            }
+        }
+
+        return _database.GetAvailableCombinations(installedIds);
+    }
+
+    public bool TryCombine(TowerCombinationData combineData, out TowerData resultData, out List<BaseTower> usedTowers)
+    {
+        resultData = null;
+        usedTowers = new();
+
+        Dictionary<int, List<BaseTower>> idToTowers = new();
+
+        foreach (var pool in _towerPools)
+        {
+            foreach (var tower in pool.Value.GetActivedTowers)
+            {
+                int id = tower.Data.ID;
+                if (!idToTowers.ContainsKey(id))
+                {
+                    idToTowers[id] = new();
+                }
+
+                idToTowers[id].Add(tower);
+            }
+        }
+
+        Dictionary<int, int> requiredCounts = new();
+
+        foreach (var required in combineData.RequiredTowers)
+        {
+            int id = required.Data.ID;
+            if (!requiredCounts.ContainsKey(id)) requiredCounts[id] = 0;
+            requiredCounts[id]++;
+        }
+
+        foreach (var pair in requiredCounts)
+        {
+            if (!idToTowers.ContainsKey(pair.Key) || idToTowers[pair.Key].Count < pair.Value)
+            {
+                return false;
+            }
+        }
+
+        foreach(var pair in requiredCounts)
+        {
+            for (int i = 0; i < pair.Value; i++)
+            {
+                usedTowers.Add(idToTowers[pair.Key][i]);
+            }
+        }
+
+        resultData = combineData.ResultTower.Data;
+        return true;
     }
 
     public void Release(BaseTower tower)

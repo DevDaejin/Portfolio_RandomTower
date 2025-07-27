@@ -94,7 +94,14 @@ public class InputController
         {
             _endWorldPosition = hit.transform.position;
             _dragTarget?.OnEndDrag(_endWorldPosition);
-            OnDragEnd?.Invoke(_startWorldPosition, _endWorldPosition);
+
+            if(_dragTarget is TowerGrid grid)
+            {
+                if (grid.GetTowerCount() != 0)
+                {
+                    OnDragEnd?.Invoke(_startWorldPosition, _endWorldPosition);
+                }
+            }   
         }
         else
         {

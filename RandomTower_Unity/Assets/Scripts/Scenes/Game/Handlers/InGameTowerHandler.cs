@@ -1,6 +1,7 @@
 using Despawn;
 using Spawn;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class InGameTowerHandler
@@ -57,10 +58,12 @@ public class InGameTowerHandler
         }
     }
 
+    public List<TowerCombinationData> GetAvailableCombinations() => _context.Tower.GetAvailableCombinations();
+    public void TryCombineTowers(TowerCombinationData data) => _context.Tower.TryCombineTowers(data);
     public void SellTower(BaseTower tower) => _context.Tower.SellTower(tower, _onSellTower);
     public void MergeTower(TowerGrid grid) => _context.Tower.MergeTower(grid);
     public void SwapTower(Vector3 position1, Vector3 position2) => _context.Tower.SwapTower(position1, position2);
-    public void OnSpawnTower(int towerSpawnChancePassiveLevel) => _context.Tower.SpawnTower(towerSpawnChancePassiveLevel);
+    public void OnSpawnTower(int towerSpawnChancePassiveLevel, Action onFailed) => _context.Tower.SpawnTower(towerSpawnChancePassiveLevel, onFailed);
     public bool IsUpgradeMax(int level) => _context.Tower.GetHighestLevel() <= level;
     public int[] GetProbability(int level) => _context.Tower.GetProbability(level);
     public void Reset() => _context.Tower.ReleaseAll();
