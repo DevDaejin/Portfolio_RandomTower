@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
@@ -63,6 +62,12 @@ public class InGameUIHandler
     }
 
     public void DeselectTowerUI() => _context.UI.ActiveTowerOptionMenuUI(false);
+
+    public void CloseMessageBox() => _context.GlobalUI.CloseMessageBox();
+
+    public void ShowNetworkError(Action confirm) => _context.GlobalUI.ShowNetworkError(confirm);
+
+    public void ShowWaitForCompanion(Action cancel) => _context.GlobalUI.ShowWaitForCompanion(cancel);
 
     public void Reset() => Initialize();
 }

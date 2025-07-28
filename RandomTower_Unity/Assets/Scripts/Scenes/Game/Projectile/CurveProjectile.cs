@@ -24,12 +24,15 @@ public class CurveProjectile : Projectile
     public override void Move(Transform transform, BaseEnemy target, float speed)
     {
         _elapsed += Time.deltaTime;
+        Vector3 destination = target.transform.position;
 
         float timeRatio = Mathf.Clamp01(_elapsed / Duration);
 
-        Vector3 mid = (_origin + target.transform.position) * 0.5f + Vector3.up * 2;
+        Vector3 mid = (_origin + destination) * 0.5f + Vector3.up * 2;
         Vector3 a = Vector3.Lerp(_origin, mid, timeRatio);
-        Vector3 b = Vector3.Lerp(mid, target.transform.position, timeRatio);
+        Vector3 b = Vector3.Lerp(mid, destination, timeRatio);
+
+        transform.rotation = Quaternion.LookRotation(_origin - destination);
         transform.position = Vector3.Lerp(a, b, timeRatio);
     }
 }

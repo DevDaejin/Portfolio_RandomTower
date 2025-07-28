@@ -146,11 +146,11 @@ public class TowerGridController
 
     public void RemoveTowerInGrid(BaseTower tower)
     {
-        foreach(var grid in _grids)
+        foreach (var grid in _grids)
         {
-            foreach(var towerInGrid in grid.GetTowerList)
+            foreach (var towerInGrid in grid.GetTowerList)
             {
-                if(towerInGrid.GetInstanceID() == tower.GetInstanceID())
+                if (towerInGrid.GetInstanceID() == tower.GetInstanceID())
                 {
                     grid.RemoveTower(tower);
                     return;

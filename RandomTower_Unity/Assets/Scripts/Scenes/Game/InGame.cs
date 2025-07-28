@@ -33,6 +33,7 @@ public class InGame : MonoBehaviour
     private int _maxWave = 0;
     private int _spawnCount = 0;
 
+    private int _currentCount = 0;
 
     private const int StartSpawnPrice = 10;
     private const int SpawnPriceWeight = 2;
@@ -113,22 +114,24 @@ public class InGame : MonoBehaviour
         RefreshAlivedEnemyCount();
 
         _sound.PlayBGM(_bgmClip);
+
+        if (_networkHandler.IsConnected)
+        {
+            _networkHandler.SetUserCountCallback(UpdateUserCount);
+
+            if (_networkHandler.IsHost) _uiHandler.ShowWaitForCompanion(GoToLobby);
+        }
     }
 
     private void Update()
     {
         UpdateWave();
         _inputController.Raycast();
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            _ = _networkHandler.LeaveRoom();
-            GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
-        }
     }
 
     private void SelectGrid(ISelect selected)
     {
-        if(selected is TowerGrid grid)
+        if (selected is TowerGrid grid)
         {
             _uiHandler.SelectTowerUI(grid.GetTower(), grid.IsMergeable);
         }
@@ -266,8 +269,6 @@ public class InGame : MonoBehaviour
 
     private void OnSwapTower(Vector3 position1, Vector3 position2)
     {
-        if(_towerHandler.)
-
         _towerHandler.SwapTower(position1, position2);
     }
 
@@ -275,11 +276,7 @@ public class InGame : MonoBehaviour
 
     private void OnMenu()
     {
-        GameManager.Instance.UI.Global.ShowMenu(() =>
-        {
-            GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
-            _ = _networkHandler.LeaveRoom();
-        });
+        GameManager.Instance.UI.Global.ShowMenu(GoToLobby);
     }
 
     private void OnGoToLobby() => GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
@@ -338,5 +335,27 @@ public class InGame : MonoBehaviour
         _enemyHandler.Reset();
 
         return reward;
+    }
+
+    private void UpdateUserCount(int count)
+    {
+        if (_networkHandler.IsHost && count > 1)
+        {
+            _uiHandler.CloseMessageBox();
+        }
+
+        if (_currentCount == 2 && count <= 1)
+        {
+            _uiHandler.ShowNetworkError(GoToLobby);
+        }
+
+        _currentCount = count;
+    }
+
+    private void GoToLobby()
+    {
+        GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
+        _ = _networkHandler.LeaveRoom();
+        _uiHandler.CloseMessageBox();
     }
 }

@@ -1,7 +1,5 @@
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,10 +20,10 @@ public class InGameUniqueUI : MonoBehaviour
 
     private void Update()
     {
-        if(_contianer.activeInHierarchy)
+        if (_contianer.activeInHierarchy)
         {
             bool active = false;
-            foreach(Transform child in _contianer.transform)
+            foreach (Transform child in _contianer.transform)
             {
                 if (child.gameObject.activeSelf)
                 {
@@ -74,12 +72,12 @@ public class InGameUniqueUI : MonoBehaviour
             }
             else
             {
-                
+
                 target.gameObject.SetActive(true);
                 target.sprite = towers[i].TowerSprite;
             }
         }
-        
+
         _infoPanel.SetActive(true);
     }
 

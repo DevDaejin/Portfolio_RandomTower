@@ -58,6 +58,14 @@ MonoBehaviour:
     m_Localized: Do you want to reset your game data?
     m_Metadata:
       m_Items: []
+  - m_Id: 1452289959620608
+    m_Localized: Your companion has not yet arrived.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1452564892053504
+    m_Localized: The adventure will start once your companion joins.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -24,6 +24,8 @@ public class StraightProjectile : Projectile
     {
         _elapsed += Time.deltaTime;
         float timeRatio = Mathf.Clamp01(_elapsed / Duration);
-        transform.position = Vector3.Lerp(_origin, target.transform.position, timeRatio * speed);
+        Vector3 destination = target.transform.position;
+        transform.rotation = Quaternion.LookRotation(_origin - destination);
+        transform.position = Vector3.Lerp(_origin, destination, timeRatio * speed);
     }
 }

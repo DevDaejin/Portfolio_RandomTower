@@ -1,6 +1,7 @@
 using Despawn;
 using Google.Protobuf;
 using Spawn;
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -81,9 +82,14 @@ public class InGameNetworkHandler
         _context.Network.SyncService.OnSyncObjectSpawned(syncObject);
     }
 
+    public void SetUserCountCallback(Action<int> action) => _context.Network.RoomService.OnUserCountUpdated = action;
+
     private void OnWaveStart()
     {
-        if (!_context.Network.IsHost) _context.Wave.StartWave();
+        if (!_context.Network.IsHost)
+        {
+            _context.Wave.StartWave();
+        }
     }
 
     public async Task LeaveRoom() => await _context.Network.RoomService.LeaveRoom();

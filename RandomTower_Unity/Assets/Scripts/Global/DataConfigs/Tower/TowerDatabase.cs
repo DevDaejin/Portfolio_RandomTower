@@ -61,7 +61,7 @@ public class TowerDatabase : ScriptableObject
                 requiredIds.Add(combinationData.RequiredTowers[j].Data.ID);
             }
 
-            if(CheckContainsRequiredIds(installedIds, requiredIds))
+            if (CheckContainsRequiredIds(installedIds, requiredIds))
             {
                 results.Add(combinationData);
             }
@@ -99,7 +99,7 @@ public class TowerDatabase : ScriptableObject
 
         foreach (var id in ids)
         {
-            if(!countDict.ContainsKey(id))
+            if (!countDict.ContainsKey(id))
             {
                 countDict[id] = 0;
             }
@@ -107,9 +107,9 @@ public class TowerDatabase : ScriptableObject
             countDict[id]++;
         }
 
-        foreach(var id in requiredIds)
+        foreach (var id in requiredIds)
         {
-            if(!countDict.ContainsKey(id) || countDict[id] == 0)
+            if (!countDict.ContainsKey(id) || countDict[id] == 0)
             {
                 return false;
             }

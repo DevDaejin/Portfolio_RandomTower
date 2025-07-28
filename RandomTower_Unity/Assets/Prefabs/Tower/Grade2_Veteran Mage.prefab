@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -1800645393543553892}
   - component: {fileID: 6675841346909777707}
   m_Layer: 0
-  m_Name: Grade2_Mage
+  m_Name: Grade2_Veteran Mage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

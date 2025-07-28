@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
-using UnityEngine.UIElements;
 
 public class GlobalUI : MonoBehaviour
 {
@@ -12,7 +11,7 @@ public class GlobalUI : MonoBehaviour
     [SerializeField] private GlobalOptionUI _optionUI;
     [SerializeField] private GlobalMenuUI _menuUI;
 
-    public enum MessageBoxOption { None, NetworkingWaiting, Quit, NetworkingError, Reset };
+    public enum MessageBoxOption { None, NetworkingWaiting, Quit, NetworkingError, Reset, WaitForCompanion };
     private MessageBoxOption _currentOption = MessageBoxOption.None;
     private Dictionary<MessageBoxOption, MessageBoxData> _messageBoxes = new();
 
@@ -67,11 +66,22 @@ public class GlobalUI : MonoBehaviour
         var data = GetMessageBoxData(MessageBoxOption.NetworkingWaiting);
         _messageBoxUI.ShowContext(data, _background);
     }
-    public void ShowNetworkError()
+
+    public void ShowWaitForCompanion(Action cancael)
+    {
+        gameObject.SetActive(true);
+        _optionUI.ActiveUI(false);
+        var data = GetMessageBoxData(MessageBoxOption.WaitForCompanion);
+        data.OnNegativeButtonClick = cancael;
+        _messageBoxUI.ShowContext(data, _background);
+    }
+
+    public void ShowNetworkError(Action confirm)
     {
         gameObject.SetActive(true);
         _optionUI.ActiveUI(false);
         var data = GetMessageBoxData(MessageBoxOption.NetworkingError);
+        data.OnPositiveButtonClick = confirm;
         _messageBoxUI.ShowContext(data, _background);
     }
 
@@ -91,6 +101,8 @@ public class GlobalUI : MonoBehaviour
         MoveBackground(_menuUI.Panel);
         _menuUI.ShowContent(backCallback);
     }
+
+    public void CloseMessageBox() => _messageBoxUI.ActiveUI(false);
 
     private MessageBoxData GetMessageBoxData(MessageBoxOption option)
     {
@@ -119,6 +131,7 @@ public class GlobalUI : MonoBehaviour
                     NegativeButtonText = GetLocalized("취소"),
                 };
                 break;
+
             case MessageBoxOption.NetworkingError:
                 data = new()
                 {
@@ -128,13 +141,22 @@ public class GlobalUI : MonoBehaviour
                 };
                 break;
 
+            case MessageBoxOption.WaitForCompanion:
+                data = new()
+                {
+                    Title = GetLocalized("동료 대기 중.."),
+                    Description = GetLocalized("동료 입장 시 시작 됩니다."),
+                    NegativeButtonText = GetLocalized("취소"),
+                };
+                break;
+
             case MessageBoxOption.Quit:
                 data = new()
                 {
                     Title = GetLocalized("게임 종료"),
                     Description = GetLocalized("정말로 게임을 종료하시겠습니까?"),
                     PositiveButtonText = GetLocalized("확인"),
-                    NegativeButtonText = GetLocalized("취소"), 
+                    NegativeButtonText = GetLocalized("취소"),
                 };
                 break;
 
@@ -160,7 +182,7 @@ public class GlobalUI : MonoBehaviour
         {
             CreateMessageBoxData(key, true);
 
-            if(key == _currentOption && _messageBoxUI.gameObject.activeInHierarchy)
+            if (key == _currentOption && _messageBoxUI.gameObject.activeInHierarchy)
             {
                 _messageBoxUI.ShowContext(GetMessageBoxData(key), _background);
             }

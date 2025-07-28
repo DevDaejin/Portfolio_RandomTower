@@ -78,15 +78,15 @@ public class GameManager : MonoBehaviour
 
     private void BindNetworkErroCallback()
     {
-        Network.OnConnectFailed += ActiveNetowrkPanel;
-        Network.OnError += ActiveNetowrkPanel;
-        Network.OnClose += ActiveNetowrkPanel;
+        Network.OnConnectFailed += ShowNetowrkPanel;
+        Network.OnError += ShowNetowrkPanel;
+        Network.OnClose += ShowNetowrkPanel;
     }
 
-    private void ActiveNetowrkPanel()
+    private void ShowNetowrkPanel()
     {
         UI.Main.DeactiveConnectPanel();
-        UI.Global.ShowNetworkError();
+        UI.Global.ShowNetworkError(() => LoadScene(Scenes.Game));
     }
 
     private void SetGemResource()
@@ -95,18 +95,7 @@ public class GameManager : MonoBehaviour
         Resource.Initialize(loadedGem);
     }
 
-    public void LoadScene(Scenes scene)
-    {
-        string sceneName = scene switch
-        {
-            Scenes.Main => Main,
-            Scenes.Game => Game,
-            Scenes.Lobby => Lobby,
-            _ => string.Empty,
-        };
-
-        Scene.LoadSceneAsync(sceneName);
-    }
+    public void LoadScene(Scenes scene) => Scene.LoadSceneAsync(scene);
 
     private LocalDataManager GetDataManager()
     {

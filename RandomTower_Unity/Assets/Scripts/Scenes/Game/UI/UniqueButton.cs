@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,7 +27,7 @@ public class UniqueButton : MonoBehaviour
         if (_trigger.triggers.Capacity != 0) return;
 
         List<TowerData> requiredDatas = new();
-        foreach(var required in _data.RequiredTowers)
+        foreach (var required in _data.RequiredTowers)
         {
             requiredDatas.Add(required.Data);
         }

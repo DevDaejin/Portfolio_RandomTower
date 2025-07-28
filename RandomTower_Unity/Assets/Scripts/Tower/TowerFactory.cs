@@ -102,7 +102,7 @@ public class TowerFactory
     {
         List<int> installedIds = new();
 
-        foreach(var pool in _towerPools)
+        foreach (var pool in _towerPools)
         {
             var towers = pool.Value.GetActivedTowers;
 
@@ -153,7 +153,7 @@ public class TowerFactory
             }
         }
 
-        foreach(var pair in requiredCounts)
+        foreach (var pair in requiredCounts)
         {
             for (int i = 0; i < pair.Value; i++)
             {

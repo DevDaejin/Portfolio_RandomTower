@@ -32,16 +32,16 @@ public class GlobalMessageBoxUI : MonoBehaviour
 
         _positiveButton.onClick.AddListener(() =>
         {
-            _onPositiveCallback?.Invoke();
             ActiveUI(false);
             SetBackground(false);
+            _onPositiveCallback?.Invoke();
         });
 
         _negativeButton.onClick.AddListener(() =>
         {
-            _onNegativeCallback?.Invoke();
             ActiveUI(false);
             SetBackground(false);
+            _onNegativeCallback?.Invoke();
         });
     }
 
@@ -63,14 +63,12 @@ public class GlobalMessageBoxUI : MonoBehaviour
 
         if (isAct)
         {
-            _background.SetParent(transform.parent);
+            _background.SetParent(isAct 
+                ? _meesageBoxPanel.transform 
+                : _meesageBoxPanel.transform.parent);
+
             _background.SetAsFirstSibling();
-            _background = null;
-        }
-        else
-        {
-            _background.SetParent(transform);
-            _background.SetAsFirstSibling();
+            _background.gameObject.SetActive(isAct);
         }
     }
 

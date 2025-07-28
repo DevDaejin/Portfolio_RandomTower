@@ -167,7 +167,7 @@ public class InGameUI : MonoBehaviour
 
     public void RefreshUnique(List<TowerCombinationData> datas, Action<TowerCombinationData> onSpawnUnique)
     {
-        foreach(var data in datas)
+        foreach (var data in datas)
         {
             _uniqueUI.ActiveButton(data, onSpawnUnique);
         }

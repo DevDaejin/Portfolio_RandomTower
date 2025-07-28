@@ -1,5 +1,14 @@
 import uuid
-from proto.room_pb2 import RoomCreated, RoomJoined, RoomList, RoomLeft, RoomPacket, RoomInfo, JoinRoomRequest
+from proto.room_pb2 import (
+    RoomCreated,
+    RoomJoined,
+    RoomList,
+    RoomLeft,
+    RoomPacket,
+    RoomInfo,
+    JoinRoomRequest,
+    RoomUserCount
+)
 from proto.net_pb2 import Envelope
 
 class Room:
@@ -52,6 +61,8 @@ class RoomManager:
         )
         await self._send(client, joined)
 
+        await self._broadcast_user_count(room)
+
     async def leave_room(self, client):
         room_id = client.room_id
         if not room_id:
@@ -64,6 +75,7 @@ class RoomManager:
 
         is_owner = room.owner_id == client.client_id
         room.clients.discard(client)
+
         print(f"[Room] Client {client.client_id} left room {room_id}")
 
         if is_owner:
@@ -76,6 +88,9 @@ class RoomManager:
         elif not room.clients:
             print(f"[Room] Room {room_id} is now empty and will be deleted")
             del self.rooms[room_id]
+
+        else:
+            await self._broadcast_user_count(room)
 
         client.room_id = None
         await self._send(client, RoomLeft(room_id=room_id))
@@ -111,3 +126,15 @@ class RoomManager:
         envelope.payload = packet.SerializeToString()
 
         await client.websocket.send(envelope.SerializeToString())
+
+    async def _broadcast_user_count(self, room):
+        packet = RoomUserCount(count=len(room.clients))
+        room_packet = RoomPacket()
+        room_packet.user_count.CopyFrom(packet)
+
+        envelope = Envelope()
+        envelope.type = "room"
+        envelope.payload = room_packet.SerializeToString()
+
+        for client in room.clients:
+            await client.websocket.send(envelope.SerializeToString())

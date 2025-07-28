@@ -7,6 +7,7 @@ public class RoomService
 {
     private readonly NetworkClient _client;
     public Action<List<RoomInfo>> OnRoomListUpdated;
+    public Action<int> OnUserCountUpdated;
 
     public RoomService(NetworkClient client)
     {
@@ -17,19 +18,23 @@ public class RoomService
     {
         switch (packet.PayloadCase)
         {
-            case RoomPacket.PayloadOneofCase.RoomCreated:
+            case RoomPacket.PayloadOneOfCase.RoomCreated:
                 _client.RoomID = packet.RoomCreated.RoomId;
                 _client.ClientID = packet.RoomCreated.ClientId;
                 break;
 
-            case RoomPacket.PayloadOneofCase.RoomJoined:
+            case RoomPacket.PayloadOneOfCase.RoomJoined:
                 _client.RoomID = packet.RoomJoined.RoomId;
                 _client.ClientID = packet.RoomJoined.ClientId;
                 _client.RoomOwnerID = packet.RoomJoined.OwnerId;
                 break;
 
-            case RoomPacket.PayloadOneofCase.RoomList:
+            case RoomPacket.PayloadOneOfCase.RoomList:
                 OnRoomListUpdated?.Invoke(new List<RoomInfo>(packet.RoomList.Rooms));
+                break;
+
+            case RoomPacket.PayloadOneOfCase.UserCount:
+                OnUserCountUpdated?.Invoke(packet.UserCount.Count);
                 break;
         }
     }

@@ -17,7 +17,7 @@ MonoBehaviour:
     _id: 31
     _towerName: "\uC7A5\uC778 \uC804\uC0AC"
     _towerPrefab: {fileID: 5521364266558028829, guid: e8ea2ba9d9196c442bb5475e12eb77a3, type: 3}
-    _towerSprite: {fileID: 21300000, guid: 9031ddff7d13d6c4fad61bb77e53414f, type: 3}
+    _towerSprite: {fileID: 21300000, guid: de837f8983cb4274698554a36fcdcb64, type: 3}
     _projectilePrefab: {fileID: 8195383268220158610, guid: 29b63f1afb7dee840b296dcbf0f2de18, type: 3}
     _projectileSpeed: 2
     _damage: 3

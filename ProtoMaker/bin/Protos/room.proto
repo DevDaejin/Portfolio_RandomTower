@@ -44,15 +44,21 @@ message RoomInfo {
   int32 client_count = 3;
 }
 
+message RoomUserCount{
+  int32 count = 1;
+}
+
 message RoomPacket {
   oneof payload {
     CreateRoomRequest create_room = 1;
     JoinRoomRequest join_room = 2;
     LeaveRoomRequest leave_room = 3;
     ListRoomRequest list_room = 4;
+    
     RoomCreated room_created = 5;
     RoomJoined room_joined = 6;
     RoomList room_list = 7;
     RoomLeft room_left = 8;
+    RoomUserCount user_count = 9;
   }
 }

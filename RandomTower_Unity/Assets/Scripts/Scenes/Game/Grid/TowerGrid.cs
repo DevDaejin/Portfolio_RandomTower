@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class TowerGrid : MonoBehaviour, IDrag, ISelect
 {
@@ -105,7 +103,7 @@ public class TowerGrid : MonoBehaviour, IDrag, ISelect
         {
             Vector3[] offsets = towerCount switch
             {
-                1 => new Vector3[] {Vector3.zero},
+                1 => new Vector3[] { Vector3.zero },
                 2 => Positions2,
                 3 => Positions3,
                 _ => null

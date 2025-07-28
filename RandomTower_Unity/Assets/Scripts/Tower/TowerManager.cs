@@ -85,7 +85,7 @@ public class TowerManager : MonoBehaviour
         int towerGrade = _towerChanceTable.GetRandomGrade(towerSpawnChancePassiveLevel);
         TowerData data = _towerFactory.GetTowerRandomData(towerGrade);
 
-        if(!TrySpawnToGrid(data))
+        if (!TrySpawnToGrid(data))
         {
             onFailed?.Invoke();
         }
@@ -168,7 +168,7 @@ public class TowerManager : MonoBehaviour
     {
         if (_towerFactory.TryCombine(data, out TowerData result, out List<BaseTower> usedTowers))
         {
-            foreach(var tower in usedTowers)
+            foreach (var tower in usedTowers)
             {
                 RemoveTower(tower);
             }

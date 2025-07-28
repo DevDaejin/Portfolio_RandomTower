@@ -1,9 +1,7 @@
 // InputController.cs
 
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class InputController
 {
@@ -95,13 +93,13 @@ public class InputController
             _endWorldPosition = hit.transform.position;
             _dragTarget?.OnEndDrag(_endWorldPosition);
 
-            if(_dragTarget is TowerGrid grid)
+            if (_dragTarget is TowerGrid grid)
             {
                 if (grid.GetTowerCount() != 0)
                 {
                     OnDragEnd?.Invoke(_startWorldPosition, _endWorldPosition);
                 }
-            }   
+            }
         }
         else
         {
@@ -151,5 +149,5 @@ public class InputController
         return !_isDragging && sqrDistance > (_dragThreshold * _dragThreshold) && _dragTarget != null;
     }
 
-   
+
 }

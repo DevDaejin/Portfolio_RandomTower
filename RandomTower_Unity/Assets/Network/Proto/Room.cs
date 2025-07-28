@@ -33,16 +33,17 @@ namespace Room {
             "ASgJEhEKCWNsaWVudF9pZBgDIAEoCRIQCghvd25lcl9pZBgEIAEoCSIpCghS",
             "b29tTGlzdBIdCgVyb29tcxgBIAMoCzIOLnJvb20uUm9vbUluZm8iGwoIUm9v",
             "bUxlZnQSDwoHcm9vbV9pZBgBIAEoCSI/CghSb29tSW5mbxIPCgdyb29tX2lk",
-            "GAEgASgJEgwKBG5hbWUYAiABKAkSFAoMY2xpZW50X2NvdW50GAMgASgFIusC",
-            "CgpSb29tUGFja2V0Ei4KC2NyZWF0ZV9yb29tGAEgASgLMhcucm9vbS5DcmVh",
-            "dGVSb29tUmVxdWVzdEgAEioKCWpvaW5fcm9vbRgCIAEoCzIVLnJvb20uSm9p",
-            "blJvb21SZXF1ZXN0SAASLAoKbGVhdmVfcm9vbRgDIAEoCzIWLnJvb20uTGVh",
-            "dmVSb29tUmVxdWVzdEgAEioKCWxpc3Rfcm9vbRgEIAEoCzIVLnJvb20uTGlz",
-            "dFJvb21SZXF1ZXN0SAASKQoMcm9vbV9jcmVhdGVkGAUgASgLMhEucm9vbS5S",
-            "b29tQ3JlYXRlZEgAEicKC3Jvb21fam9pbmVkGAYgASgLMhAucm9vbS5Sb29t",
-            "Sm9pbmVkSAASIwoJcm9vbV9saXN0GAcgASgLMg4ucm9vbS5Sb29tTGlzdEgA",
-            "EiMKCXJvb21fbGVmdBgIIAEoCzIOLnJvb20uUm9vbUxlZnRIAEIJCgdwYXls",
-            "b2FkYgZwcm90bzM="));
+            "GAEgASgJEgwKBG5hbWUYAiABKAkSFAoMY2xpZW50X2NvdW50GAMgASgFIh4K",
+            "DVJvb21Vc2VyQ291bnQSDQoFY291bnQYASABKAUilgMKClJvb21QYWNrZXQS",
+            "LgoLY3JlYXRlX3Jvb20YASABKAsyFy5yb29tLkNyZWF0ZVJvb21SZXF1ZXN0",
+            "SAASKgoJam9pbl9yb29tGAIgASgLMhUucm9vbS5Kb2luUm9vbVJlcXVlc3RI",
+            "ABIsCgpsZWF2ZV9yb29tGAMgASgLMhYucm9vbS5MZWF2ZVJvb21SZXF1ZXN0",
+            "SAASKgoJbGlzdF9yb29tGAQgASgLMhUucm9vbS5MaXN0Um9vbVJlcXVlc3RI",
+            "ABIpCgxyb29tX2NyZWF0ZWQYBSABKAsyES5yb29tLlJvb21DcmVhdGVkSAAS",
+            "JwoLcm9vbV9qb2luZWQYBiABKAsyEC5yb29tLlJvb21Kb2luZWRIABIjCgly",
+            "b29tX2xpc3QYByABKAsyDi5yb29tLlJvb21MaXN0SAASIwoJcm9vbV9sZWZ0",
+            "GAggASgLMg4ucm9vbS5Sb29tTGVmdEgAEikKCnVzZXJfY291bnQYCSABKAsy",
+            "Ey5yb29tLlJvb21Vc2VyQ291bnRIAEIJCgdwYXlsb2FkYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -55,7 +56,8 @@ namespace Room {
             new pbr::GeneratedClrTypeInfo(typeof(global::Room.RoomList), global::Room.RoomList.Parser, new[]{ "Rooms" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Room.RoomLeft), global::Room.RoomLeft.Parser, new[]{ "RoomId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Room.RoomInfo), global::Room.RoomInfo.Parser, new[]{ "RoomId", "Name", "ClientCount" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Room.RoomPacket), global::Room.RoomPacket.Parser, new[]{ "CreateRoom", "JoinRoom", "LeaveRoom", "ListRoom", "RoomCreated", "RoomJoined", "RoomList", "RoomLeft" }, new[]{ "Payload" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Room.RoomUserCount), global::Room.RoomUserCount.Parser, new[]{ "Count" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Room.RoomPacket), global::Room.RoomPacket.Parser, new[]{ "CreateRoom", "JoinRoom", "LeaveRoom", "ListRoom", "RoomCreated", "RoomJoined", "RoomList", "RoomLeft", "UserCount" }, new[]{ "Payload" }, null, null, null)
           }));
     }
     #endregion
@@ -2093,6 +2095,204 @@ namespace Room {
   }
 
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class RoomUserCount : pb::IMessage<RoomUserCount>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<RoomUserCount> _parser = new pb::MessageParser<RoomUserCount>(() => new RoomUserCount());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<RoomUserCount> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Room.RoomReflection.Descriptor.MessageTypes[9]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RoomUserCount() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RoomUserCount(RoomUserCount other) : this() {
+      count_ = other.count_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RoomUserCount Clone() {
+      return new RoomUserCount(this);
+    }
+
+    /// <summary>Field number for the "count" field.</summary>
+    public const int CountFieldNumber = 1;
+    private int count_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int Count {
+      get { return count_; }
+      set {
+        count_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as RoomUserCount);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(RoomUserCount other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Count != other.Count) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Count != 0) hash ^= Count.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Count != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Count);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Count != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Count);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Count != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Count);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(RoomUserCount other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Count != 0) {
+        Count = other.Count;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Count = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Count = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class RoomPacket : pb::IMessage<RoomPacket>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2107,7 +2307,7 @@ namespace Room {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Room.RoomReflection.Descriptor.MessageTypes[9]; }
+      get { return global::Room.RoomReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2128,29 +2328,32 @@ namespace Room {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public RoomPacket(RoomPacket other) : this() {
       switch (other.PayloadCase) {
-        case PayloadOneofCase.CreateRoom:
+        case PayloadOneOfCase.CreateRoom:
           CreateRoom = other.CreateRoom.Clone();
           break;
-        case PayloadOneofCase.JoinRoom:
+        case PayloadOneOfCase.JoinRoom:
           JoinRoom = other.JoinRoom.Clone();
           break;
-        case PayloadOneofCase.LeaveRoom:
+        case PayloadOneOfCase.LeaveRoom:
           LeaveRoom = other.LeaveRoom.Clone();
           break;
-        case PayloadOneofCase.ListRoom:
+        case PayloadOneOfCase.ListRoom:
           ListRoom = other.ListRoom.Clone();
           break;
-        case PayloadOneofCase.RoomCreated:
+        case PayloadOneOfCase.RoomCreated:
           RoomCreated = other.RoomCreated.Clone();
           break;
-        case PayloadOneofCase.RoomJoined:
+        case PayloadOneOfCase.RoomJoined:
           RoomJoined = other.RoomJoined.Clone();
           break;
-        case PayloadOneofCase.RoomList:
+        case PayloadOneOfCase.RoomList:
           RoomList = other.RoomList.Clone();
           break;
-        case PayloadOneofCase.RoomLeft:
+        case PayloadOneOfCase.RoomLeft:
           RoomLeft = other.RoomLeft.Clone();
+          break;
+        case PayloadOneOfCase.UserCount:
+          UserCount = other.UserCount.Clone();
           break;
       }
 
@@ -2168,10 +2371,10 @@ namespace Room {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Room.CreateRoomRequest CreateRoom {
-      get { return payloadCase_ == PayloadOneofCase.CreateRoom ? (global::Room.CreateRoomRequest) payload_ : null; }
+      get { return payloadCase_ == PayloadOneOfCase.CreateRoom ? (global::Room.CreateRoomRequest) payload_ : null; }
       set {
         payload_ = value;
-        payloadCase_ = value == null ? PayloadOneofCase.None : PayloadOneofCase.CreateRoom;
+        payloadCase_ = value == null ? PayloadOneOfCase.None : PayloadOneOfCase.CreateRoom;
       }
     }
 
@@ -2180,10 +2383,10 @@ namespace Room {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Room.JoinRoomRequest JoinRoom {
-      get { return payloadCase_ == PayloadOneofCase.JoinRoom ? (global::Room.JoinRoomRequest) payload_ : null; }
+      get { return payloadCase_ == PayloadOneOfCase.JoinRoom ? (global::Room.JoinRoomRequest) payload_ : null; }
       set {
         payload_ = value;
-        payloadCase_ = value == null ? PayloadOneofCase.None : PayloadOneofCase.JoinRoom;
+        payloadCase_ = value == null ? PayloadOneOfCase.None : PayloadOneOfCase.JoinRoom;
       }
     }
 
@@ -2192,10 +2395,10 @@ namespace Room {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Room.LeaveRoomRequest LeaveRoom {
-      get { return payloadCase_ == PayloadOneofCase.LeaveRoom ? (global::Room.LeaveRoomRequest) payload_ : null; }
+      get { return payloadCase_ == PayloadOneOfCase.LeaveRoom ? (global::Room.LeaveRoomRequest) payload_ : null; }
       set {
         payload_ = value;
-        payloadCase_ = value == null ? PayloadOneofCase.None : PayloadOneofCase.LeaveRoom;
+        payloadCase_ = value == null ? PayloadOneOfCase.None : PayloadOneOfCase.LeaveRoom;
       }
     }
 
@@ -2204,10 +2407,10 @@ namespace Room {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Room.ListRoomRequest ListRoom {
-      get { return payloadCase_ == PayloadOneofCase.ListRoom ? (global::Room.ListRoomRequest) payload_ : null; }
+      get { return payloadCase_ == PayloadOneOfCase.ListRoom ? (global::Room.ListRoomRequest) payload_ : null; }
       set {
         payload_ = value;
-        payloadCase_ = value == null ? PayloadOneofCase.None : PayloadOneofCase.ListRoom;
+        payloadCase_ = value == null ? PayloadOneOfCase.None : PayloadOneOfCase.ListRoom;
       }
     }
 
@@ -2216,10 +2419,10 @@ namespace Room {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Room.RoomCreated RoomCreated {
-      get { return payloadCase_ == PayloadOneofCase.RoomCreated ? (global::Room.RoomCreated) payload_ : null; }
+      get { return payloadCase_ == PayloadOneOfCase.RoomCreated ? (global::Room.RoomCreated) payload_ : null; }
       set {
         payload_ = value;
-        payloadCase_ = value == null ? PayloadOneofCase.None : PayloadOneofCase.RoomCreated;
+        payloadCase_ = value == null ? PayloadOneOfCase.None : PayloadOneOfCase.RoomCreated;
       }
     }
 
@@ -2228,10 +2431,10 @@ namespace Room {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Room.RoomJoined RoomJoined {
-      get { return payloadCase_ == PayloadOneofCase.RoomJoined ? (global::Room.RoomJoined) payload_ : null; }
+      get { return payloadCase_ == PayloadOneOfCase.RoomJoined ? (global::Room.RoomJoined) payload_ : null; }
       set {
         payload_ = value;
-        payloadCase_ = value == null ? PayloadOneofCase.None : PayloadOneofCase.RoomJoined;
+        payloadCase_ = value == null ? PayloadOneOfCase.None : PayloadOneOfCase.RoomJoined;
       }
     }
 
@@ -2240,10 +2443,10 @@ namespace Room {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Room.RoomList RoomList {
-      get { return payloadCase_ == PayloadOneofCase.RoomList ? (global::Room.RoomList) payload_ : null; }
+      get { return payloadCase_ == PayloadOneOfCase.RoomList ? (global::Room.RoomList) payload_ : null; }
       set {
         payload_ = value;
-        payloadCase_ = value == null ? PayloadOneofCase.None : PayloadOneofCase.RoomList;
+        payloadCase_ = value == null ? PayloadOneOfCase.None : PayloadOneOfCase.RoomList;
       }
     }
 
@@ -2252,16 +2455,28 @@ namespace Room {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Room.RoomLeft RoomLeft {
-      get { return payloadCase_ == PayloadOneofCase.RoomLeft ? (global::Room.RoomLeft) payload_ : null; }
+      get { return payloadCase_ == PayloadOneOfCase.RoomLeft ? (global::Room.RoomLeft) payload_ : null; }
       set {
         payload_ = value;
-        payloadCase_ = value == null ? PayloadOneofCase.None : PayloadOneofCase.RoomLeft;
+        payloadCase_ = value == null ? PayloadOneOfCase.None : PayloadOneOfCase.RoomLeft;
+      }
+    }
+
+    /// <summary>Field number for the "user_count" field.</summary>
+    public const int UserCountFieldNumber = 9;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Room.RoomUserCount UserCount {
+      get { return payloadCase_ == PayloadOneOfCase.UserCount ? (global::Room.RoomUserCount) payload_ : null; }
+      set {
+        payload_ = value;
+        payloadCase_ = value == null ? PayloadOneOfCase.None : PayloadOneOfCase.UserCount;
       }
     }
 
     private object payload_;
     /// <summary>Enum of possible cases for the "payload" oneof.</summary>
-    public enum PayloadOneofCase {
+    public enum PayloadOneOfCase {
       None = 0,
       CreateRoom = 1,
       JoinRoom = 2,
@@ -2271,18 +2486,19 @@ namespace Room {
       RoomJoined = 6,
       RoomList = 7,
       RoomLeft = 8,
+      UserCount = 9,
     }
-    private PayloadOneofCase payloadCase_ = PayloadOneofCase.None;
+    private PayloadOneOfCase payloadCase_ = PayloadOneOfCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public PayloadOneofCase PayloadCase {
+    public PayloadOneOfCase PayloadCase {
       get { return payloadCase_; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void ClearPayload() {
-      payloadCase_ = PayloadOneofCase.None;
+      payloadCase_ = PayloadOneOfCase.None;
       payload_ = null;
     }
 
@@ -2309,6 +2525,7 @@ namespace Room {
       if (!object.Equals(RoomJoined, other.RoomJoined)) return false;
       if (!object.Equals(RoomList, other.RoomList)) return false;
       if (!object.Equals(RoomLeft, other.RoomLeft)) return false;
+      if (!object.Equals(UserCount, other.UserCount)) return false;
       if (PayloadCase != other.PayloadCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -2317,14 +2534,15 @@ namespace Room {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (payloadCase_ == PayloadOneofCase.CreateRoom) hash ^= CreateRoom.GetHashCode();
-      if (payloadCase_ == PayloadOneofCase.JoinRoom) hash ^= JoinRoom.GetHashCode();
-      if (payloadCase_ == PayloadOneofCase.LeaveRoom) hash ^= LeaveRoom.GetHashCode();
-      if (payloadCase_ == PayloadOneofCase.ListRoom) hash ^= ListRoom.GetHashCode();
-      if (payloadCase_ == PayloadOneofCase.RoomCreated) hash ^= RoomCreated.GetHashCode();
-      if (payloadCase_ == PayloadOneofCase.RoomJoined) hash ^= RoomJoined.GetHashCode();
-      if (payloadCase_ == PayloadOneofCase.RoomList) hash ^= RoomList.GetHashCode();
-      if (payloadCase_ == PayloadOneofCase.RoomLeft) hash ^= RoomLeft.GetHashCode();
+      if (payloadCase_ == PayloadOneOfCase.CreateRoom) hash ^= CreateRoom.GetHashCode();
+      if (payloadCase_ == PayloadOneOfCase.JoinRoom) hash ^= JoinRoom.GetHashCode();
+      if (payloadCase_ == PayloadOneOfCase.LeaveRoom) hash ^= LeaveRoom.GetHashCode();
+      if (payloadCase_ == PayloadOneOfCase.ListRoom) hash ^= ListRoom.GetHashCode();
+      if (payloadCase_ == PayloadOneOfCase.RoomCreated) hash ^= RoomCreated.GetHashCode();
+      if (payloadCase_ == PayloadOneOfCase.RoomJoined) hash ^= RoomJoined.GetHashCode();
+      if (payloadCase_ == PayloadOneOfCase.RoomList) hash ^= RoomList.GetHashCode();
+      if (payloadCase_ == PayloadOneOfCase.RoomLeft) hash ^= RoomLeft.GetHashCode();
+      if (payloadCase_ == PayloadOneOfCase.UserCount) hash ^= UserCount.GetHashCode();
       hash ^= (int) payloadCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -2376,6 +2594,10 @@ namespace Room {
         output.WriteRawTag(66);
         output.WriteMessage(RoomLeft);
       }
+      if (payloadCase_ == PayloadOneofCase.UserCount) {
+        output.WriteRawTag(74);
+        output.WriteMessage(UserCount);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2386,37 +2608,41 @@ namespace Room {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (payloadCase_ == PayloadOneofCase.CreateRoom) {
+      if (payloadCase_ == PayloadOneOfCase.CreateRoom) {
         output.WriteRawTag(10);
         output.WriteMessage(CreateRoom);
       }
-      if (payloadCase_ == PayloadOneofCase.JoinRoom) {
+      if (payloadCase_ == PayloadOneOfCase.JoinRoom) {
         output.WriteRawTag(18);
         output.WriteMessage(JoinRoom);
       }
-      if (payloadCase_ == PayloadOneofCase.LeaveRoom) {
+      if (payloadCase_ == PayloadOneOfCase.LeaveRoom) {
         output.WriteRawTag(26);
         output.WriteMessage(LeaveRoom);
       }
-      if (payloadCase_ == PayloadOneofCase.ListRoom) {
+      if (payloadCase_ == PayloadOneOfCase.ListRoom) {
         output.WriteRawTag(34);
         output.WriteMessage(ListRoom);
       }
-      if (payloadCase_ == PayloadOneofCase.RoomCreated) {
+      if (payloadCase_ == PayloadOneOfCase.RoomCreated) {
         output.WriteRawTag(42);
         output.WriteMessage(RoomCreated);
       }
-      if (payloadCase_ == PayloadOneofCase.RoomJoined) {
+      if (payloadCase_ == PayloadOneOfCase.RoomJoined) {
         output.WriteRawTag(50);
         output.WriteMessage(RoomJoined);
       }
-      if (payloadCase_ == PayloadOneofCase.RoomList) {
+      if (payloadCase_ == PayloadOneOfCase.RoomList) {
         output.WriteRawTag(58);
         output.WriteMessage(RoomList);
       }
-      if (payloadCase_ == PayloadOneofCase.RoomLeft) {
+      if (payloadCase_ == PayloadOneOfCase.RoomLeft) {
         output.WriteRawTag(66);
         output.WriteMessage(RoomLeft);
+      }
+      if (payloadCase_ == PayloadOneOfCase.UserCount) {
+        output.WriteRawTag(74);
+        output.WriteMessage(UserCount);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -2428,29 +2654,32 @@ namespace Room {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (payloadCase_ == PayloadOneofCase.CreateRoom) {
+      if (payloadCase_ == PayloadOneOfCase.CreateRoom) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(CreateRoom);
       }
-      if (payloadCase_ == PayloadOneofCase.JoinRoom) {
+      if (payloadCase_ == PayloadOneOfCase.JoinRoom) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(JoinRoom);
       }
-      if (payloadCase_ == PayloadOneofCase.LeaveRoom) {
+      if (payloadCase_ == PayloadOneOfCase.LeaveRoom) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(LeaveRoom);
       }
-      if (payloadCase_ == PayloadOneofCase.ListRoom) {
+      if (payloadCase_ == PayloadOneOfCase.ListRoom) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(ListRoom);
       }
-      if (payloadCase_ == PayloadOneofCase.RoomCreated) {
+      if (payloadCase_ == PayloadOneOfCase.RoomCreated) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(RoomCreated);
       }
-      if (payloadCase_ == PayloadOneofCase.RoomJoined) {
+      if (payloadCase_ == PayloadOneOfCase.RoomJoined) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(RoomJoined);
       }
-      if (payloadCase_ == PayloadOneofCase.RoomList) {
+      if (payloadCase_ == PayloadOneOfCase.RoomList) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(RoomList);
       }
-      if (payloadCase_ == PayloadOneofCase.RoomLeft) {
+      if (payloadCase_ == PayloadOneOfCase.RoomLeft) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(RoomLeft);
+      }
+      if (payloadCase_ == PayloadOneOfCase.UserCount) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(UserCount);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2465,53 +2694,59 @@ namespace Room {
         return;
       }
       switch (other.PayloadCase) {
-        case PayloadOneofCase.CreateRoom:
+        case PayloadOneOfCase.CreateRoom:
           if (CreateRoom == null) {
             CreateRoom = new global::Room.CreateRoomRequest();
           }
           CreateRoom.MergeFrom(other.CreateRoom);
           break;
-        case PayloadOneofCase.JoinRoom:
+        case PayloadOneOfCase.JoinRoom:
           if (JoinRoom == null) {
             JoinRoom = new global::Room.JoinRoomRequest();
           }
           JoinRoom.MergeFrom(other.JoinRoom);
           break;
-        case PayloadOneofCase.LeaveRoom:
+        case PayloadOneOfCase.LeaveRoom:
           if (LeaveRoom == null) {
             LeaveRoom = new global::Room.LeaveRoomRequest();
           }
           LeaveRoom.MergeFrom(other.LeaveRoom);
           break;
-        case PayloadOneofCase.ListRoom:
+        case PayloadOneOfCase.ListRoom:
           if (ListRoom == null) {
             ListRoom = new global::Room.ListRoomRequest();
           }
           ListRoom.MergeFrom(other.ListRoom);
           break;
-        case PayloadOneofCase.RoomCreated:
+        case PayloadOneOfCase.RoomCreated:
           if (RoomCreated == null) {
             RoomCreated = new global::Room.RoomCreated();
           }
           RoomCreated.MergeFrom(other.RoomCreated);
           break;
-        case PayloadOneofCase.RoomJoined:
+        case PayloadOneOfCase.RoomJoined:
           if (RoomJoined == null) {
             RoomJoined = new global::Room.RoomJoined();
           }
           RoomJoined.MergeFrom(other.RoomJoined);
           break;
-        case PayloadOneofCase.RoomList:
+        case PayloadOneOfCase.RoomList:
           if (RoomList == null) {
             RoomList = new global::Room.RoomList();
           }
           RoomList.MergeFrom(other.RoomList);
           break;
-        case PayloadOneofCase.RoomLeft:
+        case PayloadOneOfCase.RoomLeft:
           if (RoomLeft == null) {
             RoomLeft = new global::Room.RoomLeft();
           }
           RoomLeft.MergeFrom(other.RoomLeft);
+          break;
+        case PayloadOneOfCase.UserCount:
+          if (UserCount == null) {
+            UserCount = new global::Room.RoomUserCount();
+          }
+          UserCount.MergeFrom(other.UserCount);
           break;
       }
 
@@ -2606,6 +2841,15 @@ namespace Room {
             RoomLeft = subBuilder;
             break;
           }
+          case 74: {
+            global::Room.RoomUserCount subBuilder = new global::Room.RoomUserCount();
+            if (payloadCase_ == PayloadOneofCase.UserCount) {
+              subBuilder.MergeFrom(UserCount);
+            }
+            input.ReadMessage(subBuilder);
+            UserCount = subBuilder;
+            break;
+          }
         }
       }
     #endif
@@ -2627,7 +2871,7 @@ namespace Room {
             break;
           case 10: {
             global::Room.CreateRoomRequest subBuilder = new global::Room.CreateRoomRequest();
-            if (payloadCase_ == PayloadOneofCase.CreateRoom) {
+            if (payloadCase_ == PayloadOneOfCase.CreateRoom) {
               subBuilder.MergeFrom(CreateRoom);
             }
             input.ReadMessage(subBuilder);
@@ -2636,7 +2880,7 @@ namespace Room {
           }
           case 18: {
             global::Room.JoinRoomRequest subBuilder = new global::Room.JoinRoomRequest();
-            if (payloadCase_ == PayloadOneofCase.JoinRoom) {
+            if (payloadCase_ == PayloadOneOfCase.JoinRoom) {
               subBuilder.MergeFrom(JoinRoom);
             }
             input.ReadMessage(subBuilder);
@@ -2645,7 +2889,7 @@ namespace Room {
           }
           case 26: {
             global::Room.LeaveRoomRequest subBuilder = new global::Room.LeaveRoomRequest();
-            if (payloadCase_ == PayloadOneofCase.LeaveRoom) {
+            if (payloadCase_ == PayloadOneOfCase.LeaveRoom) {
               subBuilder.MergeFrom(LeaveRoom);
             }
             input.ReadMessage(subBuilder);
@@ -2654,7 +2898,7 @@ namespace Room {
           }
           case 34: {
             global::Room.ListRoomRequest subBuilder = new global::Room.ListRoomRequest();
-            if (payloadCase_ == PayloadOneofCase.ListRoom) {
+            if (payloadCase_ == PayloadOneOfCase.ListRoom) {
               subBuilder.MergeFrom(ListRoom);
             }
             input.ReadMessage(subBuilder);
@@ -2663,7 +2907,7 @@ namespace Room {
           }
           case 42: {
             global::Room.RoomCreated subBuilder = new global::Room.RoomCreated();
-            if (payloadCase_ == PayloadOneofCase.RoomCreated) {
+            if (payloadCase_ == PayloadOneOfCase.RoomCreated) {
               subBuilder.MergeFrom(RoomCreated);
             }
             input.ReadMessage(subBuilder);
@@ -2672,7 +2916,7 @@ namespace Room {
           }
           case 50: {
             global::Room.RoomJoined subBuilder = new global::Room.RoomJoined();
-            if (payloadCase_ == PayloadOneofCase.RoomJoined) {
+            if (payloadCase_ == PayloadOneOfCase.RoomJoined) {
               subBuilder.MergeFrom(RoomJoined);
             }
             input.ReadMessage(subBuilder);
@@ -2681,7 +2925,7 @@ namespace Room {
           }
           case 58: {
             global::Room.RoomList subBuilder = new global::Room.RoomList();
-            if (payloadCase_ == PayloadOneofCase.RoomList) {
+            if (payloadCase_ == PayloadOneOfCase.RoomList) {
               subBuilder.MergeFrom(RoomList);
             }
             input.ReadMessage(subBuilder);
@@ -2690,11 +2934,20 @@ namespace Room {
           }
           case 66: {
             global::Room.RoomLeft subBuilder = new global::Room.RoomLeft();
-            if (payloadCase_ == PayloadOneofCase.RoomLeft) {
+            if (payloadCase_ == PayloadOneOfCase.RoomLeft) {
               subBuilder.MergeFrom(RoomLeft);
             }
             input.ReadMessage(subBuilder);
             RoomLeft = subBuilder;
+            break;
+          }
+          case 74: {
+            global::Room.RoomUserCount subBuilder = new global::Room.RoomUserCount();
+            if (payloadCase_ == PayloadOneOfCase.UserCount) {
+              subBuilder.MergeFrom(UserCount);
+            }
+            input.ReadMessage(subBuilder);
+            UserCount = subBuilder;
             break;
           }
         }

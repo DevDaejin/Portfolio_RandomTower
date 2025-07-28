@@ -42,7 +42,7 @@ public class InGameResultUI : MonoBehaviour
     {
         _retryButton.gameObject.SetActive(!isMulti);
         ActiveUI(true);
-        
+
         _resultTitleText.text = isSuccess
             ? _localizedSuccessTitle.GetLocalizedString()
             : _localizedFailedTitle.GetLocalizedString();
