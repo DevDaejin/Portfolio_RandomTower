@@ -41,7 +41,7 @@
   - [Battle Wizard Poly Art](https://assetstore.unity.com/packages/3d/characters/humanoids/fantasy/battle-wizard-poly-art-128097)
   - [Low Poly Soldiers Demo](https://assetstore.unity.com/packages/3d/characters/low-poly-soldiers-demo-73611)
   - [Robot Hero : PBR HP Polyart](https://assetstore.unity.com/packages/3d/characters/robots/robot-hero-pbr-hp-polyart-106154)
-  - [Giant Monster Model - Golem](https://assetstore.unity.com/packages/3d/characters/humanoids/fantasy/giant-monster-model-golem-278960)
+  - [Robot Sphere]([https://assetstore.unity.com/packages/3d/characters/humanoids/fantasy/giant-monster-model-golem-278960](https://assetstore.unity.com/packages/3d/characters/robots/robot-sphere-136226))
 - Enviroment
   - [RPG Poly Pack - Lite](https://assetstore.unity.com/packages/3d/environments/landscapes/rpg-poly-pack-lite-148410)
 - UI
