@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
 public class LobbyTowerInfoUI : MonoBehaviour
@@ -28,6 +29,8 @@ public class LobbyTowerInfoUI : MonoBehaviour
     [SerializeField] private LocalizedString _localizedDamage;
     [SerializeField] private LocalizedString _localizedRange;
     [SerializeField] private LocalizedString _localizedFirerate;
+
+    private LocalizedString _localizedName;
 
     private object[] _priceArgs = new object[1];
     private object[] _infoArgs = new object[1];
@@ -59,22 +62,25 @@ public class LobbyTowerInfoUI : MonoBehaviour
     public void UpdatePanel(TowerData data)
     {
         _picture.sprite = data.TowerSprite;
-        _name.text = data.TowerName;
+
+        _localizedName?.Clear();
+        _localizedName = new LocalizedString("TowerName", data.TowerName);
+        BindLocalizedText(_localizedName, _name);
 
         _infoArgs[0] = data.Grade;
-        _grade.text = GetLocalizedStringToText(_localizedGrade, _infoArgs);
+        BindLocalizedText(_localizedGrade, _grade, _infoArgs);
 
         _infoArgs[0] = data.Level;
-        _level.text = GetLocalizedStringToText(_localizedLevel, _infoArgs);
+        BindLocalizedText(_localizedLevel, _level, _infoArgs);
 
         _infoArgs[0] = data.Damage;
-        _damage.text = GetLocalizedStringToText(_localizedDamage, _infoArgs);
+        BindLocalizedText(_localizedDamage, _damage, _infoArgs);
 
         _infoArgs[0] = data.Range;
-        _range.text = GetLocalizedStringToText(_localizedRange, _infoArgs);
+        BindLocalizedText(_localizedRange, _range, _infoArgs);
 
         _infoArgs[0] = data.FireRate;
-        _firerate.text = GetLocalizedStringToText(_localizedFirerate, _infoArgs);
+        BindLocalizedText(_localizedFirerate, _firerate, _infoArgs);
 
         _purchaseButton.interactable = data.IsUpgradeable;
     }
@@ -83,36 +89,27 @@ public class LobbyTowerInfoUI : MonoBehaviour
     {
         _purchaseButtonText ??= _purchaseButton.GetComponentInChildren<TMP_Text>();
 
-        string buttonText = string.Empty;
-        string price = string.Empty;
-        Action callback = null;
-
-        switch (type)
+        LocalizedString localized = type switch
         {
-            case ButtonType.Unlock:
-                buttonText = _localizedUnlock.GetLocalizedString();
-                price = unlockPrice.ToString();
-                callback = _onUnlock;
-                break;
+            ButtonType.Unlock => _localizedUnlock,
+            ButtonType.Upgrade => _localizedUpgrade,
+            _ => null
+        };
 
-            case ButtonType.Upgrade:
-                buttonText = _localizedUpgrade.GetLocalizedString();
-                price = upgradePrice.ToString();
-                callback = _onUpgrade;
-                break;
-        }
+        BindLocalizedText(localized, _purchaseButtonText);
 
-        _priceArgs[0] = price;
-        _localizedPrice.Arguments = _priceArgs;
-        _priceText.text = _localizedPrice.GetLocalizedString();
-        _purchaseButtonText.text = buttonText;
-        _buttonCallback = callback;
+        _priceArgs[0] = type == ButtonType.Unlock ? unlockPrice.ToString() : upgradePrice.ToString();
+        BindLocalizedText(_localizedPrice, _priceText, _priceArgs);
+
+        _buttonCallback = type == ButtonType.Unlock ? _onUnlock : _onUpgrade;
     }
 
-    private string GetLocalizedStringToText(LocalizedString localized, object[] objects)
+
+    private void BindLocalizedText(LocalizedString localized, TMP_Text target, object[] argument = null)
     {
-        localized.Arguments = objects;
-        return localized.GetLocalizedString();
+        localized.Arguments = argument;
+        localized.StringChanged += (v) => target.text = v;
+        localized.RefreshString();
     }
 
     public void ActiveUI(bool isAct)

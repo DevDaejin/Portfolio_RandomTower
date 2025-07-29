@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df4f3ab9de6411a4fa159a58ac754b2f, type: 3}
-  m_Name: TowerCombinationData
+  m_Name: UniqueSniperTowerCombinationData
   m_EditorClassIdentifier: 
   RequiredTowers:
   - {fileID: 11400000, guid: 0bad5e314792e6c40abdaa1e37fc446c, type: 2}

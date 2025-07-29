@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df4f3ab9de6411a4fa159a58ac754b2f, type: 3}
+  m_Name: SphereTowerCombinationData
+  m_EditorClassIdentifier: 
+  RequiredTowers:
+  - {fileID: 11400000, guid: 3761a15b70e1e86419bf437e899ade5c, type: 2}
+  - {fileID: 11400000, guid: 527eaa1f29132344dbfafeb66b31f577, type: 2}
+  - {fileID: 11400000, guid: b74779e80095b284aab281f95382b23f, type: 2}
+  ResultTower: {fileID: 11400000, guid: 8c79d296b80ade04caff2a01c2c3a65d, type: 2}

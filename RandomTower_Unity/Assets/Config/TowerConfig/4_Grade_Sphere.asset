@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fd5000039b63434092159bc3de298b2, type: 3}
+  m_Name: 4_Grade_Sphere
+  m_EditorClassIdentifier: 
+  _data:
+    _grade: 4
+    _id: 42
+    _towerName: "\uC2A4\uD53C\uC5B4"
+    _towerPrefab: {fileID: 5521364266558028829, guid: 6fdf62dd9909bee4fb72f42f5f094056, type: 3}
+    _towerSprite: {fileID: 21300000, guid: 5cc9f3bb9c0bf3142a2cd8750ba0af28, type: 3}
+    _projectilePrefab: {fileID: 8195383268220158610, guid: bec908a5d08ff5146a964bb73ffaf1b2, type: 3}
+    _projectileSpeed: 6
+    _damage: 10
+    _range: 4
+    _fireRate: 1
+    _targetCount: 20
+    _spawnCoast: 0
+    _buyingCoast: 10
+    _upgradeCost: 1

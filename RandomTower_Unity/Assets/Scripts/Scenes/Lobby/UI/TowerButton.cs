@@ -1,6 +1,9 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
 public class TowerButton : MonoBehaviour
@@ -15,11 +18,21 @@ public class TowerButton : MonoBehaviour
     public TowerData Data { get; private set; }
     private bool _isLocked = false;
 
+    private void OnEnable()
+    {
+        LocalizationSettings.SelectedLocaleChanged += OnChanged;
+    }
+
+    private void OnChanged(Locale locale)
+    {
+        _name.text = LocalizationSettings.StringDatabase.GetLocalizedString("TowerName", Data.TowerName);
+    }
+
     public void Initialize(TowerData data, Action<TowerData> onButton, Action<TowerData> onLockButton = null)
     {
         Data = data;
+        _name.text = LocalizationSettings.StringDatabase.GetLocalizedString("TowerName", Data.TowerName);
 
-        _name.text = Data.TowerName;
         _picture.sprite = Data.TowerSprite;
 
         _onButton = onButton;
@@ -36,5 +49,10 @@ public class TowerButton : MonoBehaviour
         }
 
         _lockerButton.transform.gameObject.SetActive(_isLocked);
+    }
+
+    private void OnDisable()
+    {
+        LocalizationSettings.SelectedLocaleChanged -= OnChanged;
     }
 }
