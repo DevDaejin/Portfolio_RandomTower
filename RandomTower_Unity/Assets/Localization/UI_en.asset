@@ -198,6 +198,18 @@ MonoBehaviour:
     m_Localized: 'Grade : {0}'
     m_Metadata:
       m_Items: []
+  - m_Id: 32947973558226944
+    m_Localized: Fullscreen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32948018613440512
+    m_Localized: Borderless
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32948119637446656
+    m_Localized: Window
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

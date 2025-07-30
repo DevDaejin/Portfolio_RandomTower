@@ -33,6 +33,7 @@ public class GlobalOptionUI : MonoBehaviour
         BindDropdown(_languageDropdown, _data.LanguageDict);
         BindDropdown(_resolutionDropdown, _data.ResolutionDict);
         BindDropdown(_screenModeDropdown, _data.ScreenModeDict);
+        _screenModeDropdown.GetComponent<LocalizedDropdown>().Initialzie();
 
         BindSlider(_bgmSlider, _bgmValueTxt, _data.BGMSliderCallback);
         BindSlider(_sfxSlider, _sfxValueTxt, _data.SFXliderCallback);

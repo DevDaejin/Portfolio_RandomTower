@@ -23,9 +23,9 @@ public class OptionManager : MonoBehaviour
 
     private Dictionary<FullScreenMode, string> _screenModeDict = new()
     {
-        {FullScreenMode.ExclusiveFullScreen, "Full screen"},
-        { FullScreenMode.FullScreenWindow, "Boderless"},
-        { FullScreenMode.MaximizedWindow, "window"}
+        { FullScreenMode.ExclusiveFullScreen, "전체 화면"},
+        { FullScreenMode.FullScreenWindow, "테두리 없음"},
+        { FullScreenMode.MaximizedWindow, "윈도우"}
     };
 
 
