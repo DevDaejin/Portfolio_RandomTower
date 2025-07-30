@@ -8,10 +8,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _uiManagerPrefab;
     [SerializeField] private TowerDatabase _towerDB;
 
-    private const string Main = "Main";
-    private const string Lobby = "Lobby";
-    private const string Game = "Game";
-
     public UIManager UI
     {
         get
@@ -70,10 +66,10 @@ public class GameManager : MonoBehaviour
 
         UI.Initialize(UIManager.UIType.None);
 
+        Sound.Initialize();
         Option.Initialize(
             (volume) => Sound.SetVolume(SoundManager.SoundType.BGM, volume),
             (volume) => Sound.SetVolume(SoundManager.SoundType.SFX, volume));
-        Sound.Initialize();
     }
 
     private void BindNetworkErroCallback()

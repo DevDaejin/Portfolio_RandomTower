@@ -149,6 +149,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Loading UI Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 5614802444284525134, guid: ee9a7ac7d11ef774890c80884eb28444, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8253988801064955012, guid: ee9a7ac7d11ef774890c80884eb28444, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

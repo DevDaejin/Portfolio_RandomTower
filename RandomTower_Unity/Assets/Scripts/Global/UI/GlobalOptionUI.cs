@@ -104,6 +104,6 @@ public class GlobalOptionUI : MonoBehaviour
     public void ActiveUI(bool isAct, bool includeReset = false)
     {
         _optionPanel.SetActive(isAct);
-        _resetDataButton.gameObject.SetActive(includeReset);
+        _resetDataButton.interactable = includeReset;
     }
 }

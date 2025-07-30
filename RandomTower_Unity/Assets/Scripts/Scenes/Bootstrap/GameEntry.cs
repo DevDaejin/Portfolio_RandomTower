@@ -6,13 +6,13 @@ public class GameEntry : MonoBehaviour
 
     private void Awake()
     {
+        Application.targetFrameRate = 60;
         Instantiate(GameManagerPrefab).GetComponent<GameManager>();
         GameManager.Instance.Initialize();
     }
 
     private void Start()
     {
-        Application.targetFrameRate = 60;
         GameManager.Instance.LoadScene(GameManager.Scenes.Main);
     }
 }

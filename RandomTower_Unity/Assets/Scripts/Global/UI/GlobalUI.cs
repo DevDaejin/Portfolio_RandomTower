@@ -41,8 +41,8 @@ public class GlobalUI : MonoBehaviour
     public void ShowOption(bool includeResetButton = false)
     {
         gameObject.SetActive(true);
+        _menuUI.ActiveUI(true);
         _optionUI.ActiveUI(true, includeResetButton);
-        MoveBackground(_optionUI.Panel);
         _messageBoxUI.ActiveUI(false);
     }
 
@@ -102,7 +102,12 @@ public class GlobalUI : MonoBehaviour
         _menuUI.ShowContent(backCallback);
     }
 
-    public void CloseMessageBox() => _messageBoxUI.ActiveUI(false);
+    public void CloseMessageBox()
+    {
+        MoveBackground(_messageBoxUI.transform.parent.gameObject);
+        _messageBoxUI.ActiveUI(false);
+    }
+
 
     private MessageBoxData GetMessageBoxData(MessageBoxOption option)
     {
