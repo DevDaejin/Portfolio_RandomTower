@@ -7,6 +7,7 @@ using UnityEngine.Localization.Settings;
 
 public class OptionManager : MonoBehaviour
 {
+    private OptionSaveData _option;
     private Coroutine _localeRoutine = null;
     private Dictionary<string, string> _localeDict = new()
     {
@@ -28,13 +29,12 @@ public class OptionManager : MonoBehaviour
         { FullScreenMode.MaximizedWindow, "윈도우"}
     };
 
-
     public void Initialize(Action<float> OnChagnedBGMVolume, Action<float> OnChagnedSFXVolume)
     {
         GlobalUI globalUI = GameManager.Instance.UI.Global;
         LocalDataManager dataManager = GameManager.Instance.Data;
 
-        var optionData = new OptionSetting
+        var setting = new OptionSetting
         {
             LanguageDict = InitializeLanguage(),
             ResolutionDict = InitializeResolution(),
@@ -46,7 +46,8 @@ public class OptionManager : MonoBehaviour
             ResetButtonCallback = dataManager.Reset
         };
 
-        globalUI.Initialize(optionData);
+        globalUI.Initialize(setting, dataManager.Loaded.Option);
+
     }
 
     private Dictionary<string, Action> InitializeLanguage()

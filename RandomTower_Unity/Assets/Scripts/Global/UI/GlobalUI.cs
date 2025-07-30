@@ -15,9 +15,9 @@ public class GlobalUI : MonoBehaviour
     private MessageBoxOption _currentOption = MessageBoxOption.None;
     private Dictionary<MessageBoxOption, MessageBoxData> _messageBoxes = new();
 
-    public void Initialize(OptionSetting optionData)
+    public void Initialize(OptionSetting setting, OptionSaveData data)
     {
-        _optionUI.Initialize(optionData);
+        _optionUI.Initialize(setting, data);
         _menuUI.Initilaize(
             () => ShowOption(),
             () => ShowQuit(Application.Quit, null)

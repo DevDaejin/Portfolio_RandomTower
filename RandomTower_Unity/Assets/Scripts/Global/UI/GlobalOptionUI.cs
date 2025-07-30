@@ -24,24 +24,33 @@ public class GlobalOptionUI : MonoBehaviour
     private TMP_Text _bgmValueTxt;
     private TMP_Text _sfxValueTxt;
 
-    private OptionSetting _data;
+    private OptionSetting _setting;
+    private OptionSaveData _saveData;
 
-    public void Initialize(OptionSetting data)
+    public void Initialize(OptionSetting setting, OptionSaveData saveData)
     {
-        _data = data;
+        _setting = setting;
+        _saveData = saveData;
 
-        BindDropdown(_languageDropdown, _data.LanguageDict);
-        BindDropdown(_resolutionDropdown, _data.ResolutionDict);
-        BindDropdown(_screenModeDropdown, _data.ScreenModeDict);
+        BindDropdown(_languageDropdown, _setting.LanguageDict);
+        BindDropdown(_resolutionDropdown, _setting.ResolutionDict);
+        BindDropdown(_screenModeDropdown, _setting.ScreenModeDict);
         _screenModeDropdown.GetComponent<LocalizedDropdown>().Initialzie();
 
-        BindSlider(_bgmSlider, _bgmValueTxt, _data.BGMSliderCallback);
-        BindSlider(_sfxSlider, _sfxValueTxt, _data.SFXliderCallback);
+        BindSlider(_bgmSlider, _bgmValueTxt, _setting.BGMSliderCallback);
+        BindSlider(_sfxSlider, _sfxValueTxt, _setting.SFXliderCallback);
 
         InitializeResetButton();
 
         _closeButton.onClick.RemoveAllListeners();
         _closeButton.onClick.AddListener(() => ActiveUI(false));
+
+        _languageDropdown.onValueChanged.Invoke(saveData.LanguageCode);
+        _resolutionDropdown.onValueChanged.Invoke(saveData.ResolutionCode);
+        _screenModeDropdown.onValueChanged.Invoke(saveData.ScreenModeCode);
+
+        _bgmSlider.onValueChanged.Invoke(saveData.BGM);
+        _sfxSlider.onValueChanged.Invoke(saveData.SFX);
     }
 
     private void BindDropdown(TMP_Dropdown dropdown, Dictionary<string, Action> options)
@@ -82,7 +91,7 @@ public class GlobalOptionUI : MonoBehaviour
         _resetDataButton.onClick.AddListener(OnResetButton);
     }
 
-    private void OnResetButton() => GameManager.Instance.UI.Global.ShowReset(_data.ResetButtonCallback);
+    private void OnResetButton() => GameManager.Instance.UI.Global.ShowReset(_setting.ResetButtonCallback);
 
     private void ResizeDropdownTemplate(TMP_Dropdown dropdown)
     {

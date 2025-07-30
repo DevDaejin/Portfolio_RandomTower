@@ -9,9 +9,6 @@ public class LocalDataManager
 
     public LocalDataManager(TowerDatabase towerDB)
     {
-        //TODO : 임시 코드
-        //Remove();
-
         _towerDB = towerDB;
         Load();
     }
@@ -23,6 +20,8 @@ public class LocalDataManager
         public Dictionary<int, int> TowerLevelDict = new();
         public int Gem = BasicGem;
         public int ReachedStage = BasicReachedStage;
+
+        public OptionSaveData Option = new();
     }
 
     public SaveData Loaded { get; private set; }
@@ -36,7 +35,7 @@ public class LocalDataManager
         if (PlayerPrefs.HasKey(Key))
         {
             string json = PlayerPrefs.GetString(Key);
-            Loaded = JsonUtility.DeserializeObject<SaveData>(json) ?? new SaveData();
+            Loaded = JsonUtility.DeserializeObject<SaveData>(json);
         }
         else
         {
