@@ -10,34 +10,10 @@ public class LocalDataManager
     public LocalDataManager(TowerDatabase towerDB)
     {
         //TODO : 임시 코드
-        Remove();
+        //Remove();
 
         _towerDB = towerDB;
-
-        if (!PlayerPrefs.HasKey(Key))
-        {
-            Loaded = new();
-
-            List<int> basicTowers = new();
-            foreach (var towerData in _towerDB.Towers)
-            {
-                if (towerData.Data.Grade == 1)
-                {
-                    basicTowers.Add(towerData.Data.ID);
-                }
-
-                Loaded.TowerLevelDict[towerData.Data.ID] = 1;
-                towerData.Data.Level = 1;
-            }
-
-            Loaded.GainedTowerID.AddRange(basicTowers);
-            //TODO : 추 후 업데이트
-            //Save();
-        }
-        else
-        {
-            Load();
-        }
+        Load();
     }
 
     [Serializable]
@@ -55,22 +31,66 @@ public class LocalDataManager
     private const int BasicReachedStage = 1;
     private const string Key = "LocalProgress";
 
-    public SaveData Load()
+    public void Load()
     {
-        string json = PlayerPrefs.GetString(Key);
-        Loaded = JsonUtility.DeserializeObject<SaveData>(json);
+        if (PlayerPrefs.HasKey(Key))
+        {
+            string json = PlayerPrefs.GetString(Key);
+            Loaded = JsonUtility.DeserializeObject<SaveData>(json) ?? new SaveData();
+        }
+        else
+        {
+            Loaded = new SaveData();
+        }
+
+        AddBasicTower();
 
         foreach (var tower in _towerDB.Towers)
         {
-            tower.Data.Level = Loaded.TowerLevelDict[tower.Data.ID];
+            int id = tower.Data.ID;
+
+            if(!Loaded.TowerLevelDict.ContainsKey(id))
+            {
+                Loaded.TowerLevelDict[id] = 1;
+            }
+
+            if(Loaded.GainedTowerID.Contains(id))
+            {
+                _towerDB.ActiveTowers.Add(_towerDB.GetTowerByID(id));
+            }
+
+            tower.Data.Level = Loaded.TowerLevelDict[id];
         }
 
-        return Loaded;
+        Save();
+    }
+
+    private void AddBasicTower()
+    {
+        foreach (var towerData in _towerDB.Towers)
+        {
+            int id = towerData.Data.ID;
+
+            if (towerData.Data.Grade == 1 && !Loaded.GainedTowerID.Contains(id))
+            {
+                Loaded.GainedTowerID.Add(id);
+            }
+
+            if(!Loaded.TowerLevelDict.ContainsKey(id))
+            {
+                Loaded.TowerLevelDict[id] = 1;
+            }
+
+            towerData.Data.Level = Loaded.TowerLevelDict[id];
+        }
     }
 
     public void AddGainedTowerID(int id)
     {
-        Loaded.GainedTowerID.Add(id);
+        if (!Loaded.GainedTowerID.Contains(id))
+        {
+            Loaded.GainedTowerID.Add(id);
+        }
     }
 
     public void UpdateGem(int gems)
@@ -94,11 +114,12 @@ public class LocalDataManager
     public void Remove()
     {
         PlayerPrefs.DeleteKey(Key);
+        _towerDB.ActiveTowers.Clear();
     }
 
     public void Reset()
     {
-        PlayerPrefs.DeleteAll();
+        Remove();
+        Load();
     }
 }
-

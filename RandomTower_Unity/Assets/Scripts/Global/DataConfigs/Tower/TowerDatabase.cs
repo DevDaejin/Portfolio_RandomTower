@@ -127,10 +127,4 @@ public class TowerDatabase : ScriptableObject
         Initialize();
         return _nameDict.TryGetValue(name, out var data) ? data : null;
     }
-
-    public TowerDataConfig GetToweByID(int id)
-    {
-        Initialize();
-        return _idDict.TryGetValue(id, out var data) ? data : null;
-    }
 }
