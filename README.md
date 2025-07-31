@@ -1,4 +1,6 @@
 # Portfolio_RandomTower
+재직 중 1인 개발, 초회 빌드까지 약 3개월 소모,
+개발 중 난항은 개발 보단 기획, 리소스 수급이였습니다. 현재도 관련으로 아쉬움이 많고 꾸준히 업데이트 진행해 보겠습니다.
 
 ## 개요
 본 프로젝트는 랜덤 타워 디펜스 장르를 구현하면서, 게임 로직 외에 네트워크 구조 설계까지 함께 경험해보기 위해 진행한 포트폴리오입니다.
@@ -9,9 +11,7 @@
 `작업중`
 
 ## 실행 파일
-`작업중`
-- Client
-- Server
+[Release Link](https://github.com/DevDaejin/Portfolio_RandomTower/releases/tag/Publish)
 
 ## 실행 방법
 `작업중`
