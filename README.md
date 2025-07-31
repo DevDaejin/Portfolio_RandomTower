@@ -8,10 +8,10 @@
 단순 싱글 플레이와 실시간 멀티 플레이 기능을 직접 구축한 소켓 서버를 통해 Unity에서 자주 사용 되는 포톤 네트워크와 유사한 방식의 매치메이킹 시스템을 설계, 구현하는 것을 목표로 하였습니다.
 
 ## 플레이 화면
-https://www.youtube.com/watch?v=Wm8T2JbfT-E&ab_channel=DevDaejin
+[영상 보기](https://www.youtube.com/watch?v=Wm8T2JbfT-E&ab_channel=DevDaejin)
 
 ## 실행 파일
-[영상 보기](https://www.youtube.com/watch?v=Wm8T2JbfT-E&ab_channel=DevDaejin)
+[Release](https://github.com/DevDaejin/Portfolio_RandomTower/releases/tag/Publish)
 
 ## 실행 방법
 `작업중`
