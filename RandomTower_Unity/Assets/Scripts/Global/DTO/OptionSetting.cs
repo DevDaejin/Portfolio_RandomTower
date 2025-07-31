@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 public class OptionSetting
 {
-    public Dictionary<string, Action> LanguageDict = null;
-    public Dictionary<string, Action> ResolutionDict = null;
-    public Dictionary<string, Action> ScreenModeDict = null;
-    public Action<float> BGMSliderCallback = null;
-    public Action<float> SFXliderCallback = null;
+    public Dictionary<string, Action<int>> LanguageDict = null;
+    public Dictionary<string, Action<int>> ResolutionDict = null;
+    public Dictionary<string, Action<int>> ScreenModeDict = null;
+    public Action<int> BGMSliderCallback = null;
+    public Action<int> SFXliderCallback = null;
     public Action ResetButtonCallback = null;
 }

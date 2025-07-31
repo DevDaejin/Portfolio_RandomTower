@@ -63,7 +63,7 @@ public class InGameUIHandler
 
     public void DeselectTowerUI() => _context.UI.ActiveTowerOptionMenuUI(false);
 
-    public void CloseMessageBox() => _context.GlobalUI.CloseMessageBox();
+    public void CloseUI() => _context.GlobalUI.Close();
 
     public void ShowNetworkError(Action confirm) => _context.GlobalUI.ShowNetworkError(confirm);
 

@@ -68,8 +68,18 @@ public class GameManager : MonoBehaviour
 
         Sound.Initialize();
         Option.Initialize(
-            (volume) => Sound.SetVolume(SoundManager.SoundType.BGM, volume),
-            (volume) => Sound.SetVolume(SoundManager.SoundType.SFX, volume));
+            (volume) =>
+            {
+                Sound.SetVolume(SoundManager.SoundType.BGM, volume);
+                Data.SavedData.Option.BGM = volume;
+                Data.SaveOption();
+            },
+            (volume) =>
+            {
+                Sound.SetVolume(SoundManager.SoundType.SFX, volume);
+                Data.SavedData.Option.SFX = volume;
+                Data.SaveOption();
+            });
     }
 
     private void BindNetworkErroCallback()
@@ -82,12 +92,12 @@ public class GameManager : MonoBehaviour
     private void ShowNetowrkPanel()
     {
         UI.Main.DeactiveConnectPanel();
-        UI.Global.ShowNetworkError(() => LoadScene(Scenes.Game));
+        UI.Global.ShowNetworkError(() => LoadScene(Scenes.Main));
     }
 
     private void SetGemResource()
     {
-        var loadedGem = new KeyValuePair<ResourceManager.ResourceType, int>(ResourceManager.ResourceType.Gem, Data.Loaded.Gem);
+        var loadedGem = new KeyValuePair<ResourceManager.ResourceType, int>(ResourceManager.ResourceType.Gem, Data.SavedData.Game.Gem);
         Resource.Initialize(loadedGem);
     }
 
@@ -106,7 +116,7 @@ public class GameManager : MonoBehaviour
     public void LoadActivedTowers()
     {
         _towerDB.ActiveTowers.Clear();
-        foreach (var towerID in Data.Loaded.GainedTowerID)
+        foreach (var towerID in Data.SavedData.Game.GainedTowerID)
         {
             _towerDB.ActiveTowers.Add(_towerDB.GetTowerByID(towerID));
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -11,17 +12,20 @@ public class GlobalUI : MonoBehaviour
     [SerializeField] private GlobalOptionUI _optionUI;
     [SerializeField] private GlobalMenuUI _menuUI;
 
+    private Stack<GameObject> _uiStack = new();
+
     public enum MessageBoxOption { None, NetworkingWaiting, Quit, NetworkingError, Reset, WaitForCompanion };
-    private MessageBoxOption _currentOption = MessageBoxOption.None;
+    //private MessageBoxOption _currentOption = MessageBoxOption.None;
     private Dictionary<MessageBoxOption, MessageBoxData> _messageBoxes = new();
 
     public void Initialize(OptionSetting setting, OptionSaveData data)
     {
-        _optionUI.Initialize(setting, data);
+        _optionUI.Initialize(setting, data, Close);
         _menuUI.Initilaize(
             () => ShowOption(),
-            () => ShowQuit(Application.Quit, null)
-        );
+            () => ShowQuit(Application.Quit, Close),
+            Close);
+        _messageBoxUI.Initialize(Close);
 
         _optionUI.ActiveUI(false);
         _menuUI.ActiveUI(false);
@@ -30,7 +34,7 @@ public class GlobalUI : MonoBehaviour
         LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
     }
 
-    private void MoveBackground(GameObject target)
+    private void SetBackground(GameObject target)
     {
         _background.SetParent(target.transform);
         _background.anchoredPosition = Vector2.zero;
@@ -40,72 +44,82 @@ public class GlobalUI : MonoBehaviour
 
     public void ShowOption(bool includeResetButton = false)
     {
-        gameObject.SetActive(true);
-        _menuUI.ActiveUI(true);
+        Open(_optionUI.Panel);
         _optionUI.ActiveUI(true, includeResetButton);
-        _messageBoxUI.ActiveUI(false);
     }
 
     public void ShowQuit(Action positive, Action negative)
     {
-        gameObject.SetActive(true);
-        _messageBoxUI.ActiveUI(true);
-        _optionUI.ActiveUI(false);
-
         var data = GetMessageBoxData(MessageBoxOption.Quit);
         data.OnPositiveButtonClick = positive;
         data.OnNegativeButtonClick = negative;
 
-        _messageBoxUI.ShowContext(data, _background);
+        Open(_messageBoxUI.Panel);
+        _messageBoxUI.ShowContext(data);
     }
 
     public void ShowNetworkWaiting()
     {
-        gameObject.SetActive(true);
-        _optionUI.ActiveUI(false);
         var data = GetMessageBoxData(MessageBoxOption.NetworkingWaiting);
-        _messageBoxUI.ShowContext(data, _background);
+
+        Open(_messageBoxUI.Panel);
+        _messageBoxUI.ShowContext(data);
     }
 
     public void ShowWaitForCompanion(Action cancael)
     {
-        gameObject.SetActive(true);
-        _optionUI.ActiveUI(false);
         var data = GetMessageBoxData(MessageBoxOption.WaitForCompanion);
         data.OnNegativeButtonClick = cancael;
-        _messageBoxUI.ShowContext(data, _background);
+
+        Open(_messageBoxUI.Panel);
+        _messageBoxUI.ShowContext(data);
     }
 
     public void ShowNetworkError(Action confirm)
     {
-        gameObject.SetActive(true);
-        _optionUI.ActiveUI(false);
         var data = GetMessageBoxData(MessageBoxOption.NetworkingError);
         data.OnPositiveButtonClick = confirm;
-        _messageBoxUI.ShowContext(data, _background);
+
+        Open(_messageBoxUI.Panel);
+        _messageBoxUI.ShowContext(data);
     }
 
     public void ShowReset(Action resetCallback)
     {
-        _currentOption = MessageBoxOption.None;
-        gameObject.SetActive(true);
+        //_currentOption = MessageBoxOption.None;
         var data = GetMessageBoxData(MessageBoxOption.Reset);
         data.OnPositiveButtonClick = resetCallback;
-        _messageBoxUI.ShowContext(data, _background);
+
+        Open(_messageBoxUI.Panel);
+        _messageBoxUI.ShowContext(data);
     }
 
     public void ShowMenu(Action backCallback)
     {
-        _currentOption = MessageBoxOption.None;
-        gameObject.SetActive(true);
-        MoveBackground(_menuUI.Panel);
+        Open(_menuUI.Panel);
         _menuUI.ShowContent(backCallback);
+        //_currentOption = MessageBoxOption.None;
     }
 
-    public void CloseMessageBox()
+    public void Open(GameObject target)
     {
-        MoveBackground(_messageBoxUI.transform.parent.gameObject);
-        _messageBoxUI.ActiveUI(false);
+        gameObject.SetActive(true);
+        _uiStack.Push(target);
+        SetBackground(target);
+    }
+
+    public void Close()
+    {
+        if (_uiStack.Count > 0)
+        {
+            var old = _uiStack.Pop();
+            var target = _uiStack.Count == 0 ? old : _uiStack.Peek();
+            SetBackground(target);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
 
@@ -116,7 +130,7 @@ public class GlobalUI : MonoBehaviour
             CreateMessageBoxData(option);
         }
 
-        _currentOption = option;
+        //_currentOption = option;
         return _messageBoxes[option];
     }
 
@@ -187,9 +201,9 @@ public class GlobalUI : MonoBehaviour
         {
             CreateMessageBoxData(key, true);
 
-            if (key == _currentOption && _messageBoxUI.gameObject.activeInHierarchy)
+            if (/*key == _currentOption && */_messageBoxUI.gameObject.activeInHierarchy)
             {
-                _messageBoxUI.ShowContext(GetMessageBoxData(key), _background);
+                _messageBoxUI.ShowContext(GetMessageBoxData(key));
             }
         }
     }

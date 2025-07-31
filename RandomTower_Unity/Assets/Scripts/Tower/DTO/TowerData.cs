@@ -49,7 +49,6 @@ public class TowerData
     public int Level { get; set; } = 1;
 
     public bool IsUnique => Grade == MaxGrade;
-
     public bool LevelUp()
     {
         if (Level < MaxLevel)
@@ -64,4 +63,5 @@ public class TowerData
     private int MaxLevel = 5;
     public bool IsUpgradeable => Level < MaxLevel;
     private const int MaxGrade = 4;
+    public bool IsMergeableGrade => Grade < MaxGrade - 1;
 }

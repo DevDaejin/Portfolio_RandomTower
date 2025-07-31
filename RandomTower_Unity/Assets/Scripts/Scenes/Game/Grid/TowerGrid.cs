@@ -50,7 +50,7 @@ public class TowerGrid : MonoBehaviour, IDrag, ISelect
 
     public List<BaseTower> GetTowerList => _towers;
 
-    public bool IsMergeable => _towers.Count == MaxCount;
+    public bool IsMergeable => _towers.Count == MaxCount && GetTower().Data.IsMergeableGrade;
 
     public void RemoveTower()
     {

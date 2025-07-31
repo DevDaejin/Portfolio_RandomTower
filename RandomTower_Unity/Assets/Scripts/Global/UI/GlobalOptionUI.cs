@@ -21,16 +21,17 @@ public class GlobalOptionUI : MonoBehaviour
 
     [SerializeField] private Button _closeButton;
 
+    private Action _onClose;
+
     private TMP_Text _bgmValueTxt;
     private TMP_Text _sfxValueTxt;
 
     private OptionSetting _setting;
-    private OptionSaveData _saveData;
 
-    public void Initialize(OptionSetting setting, OptionSaveData saveData)
+    public void Initialize(OptionSetting setting, OptionSaveData saveData, Action onClose)
     {
         _setting = setting;
-        _saveData = saveData;
+        _onClose = onClose;
 
         BindDropdown(_languageDropdown, _setting.LanguageDict);
         BindDropdown(_resolutionDropdown, _setting.ResolutionDict);
@@ -43,17 +44,21 @@ public class GlobalOptionUI : MonoBehaviour
         InitializeResetButton();
 
         _closeButton.onClick.RemoveAllListeners();
-        _closeButton.onClick.AddListener(() => ActiveUI(false));
+        _closeButton.onClick.AddListener(() =>
+        {
+            ActiveUI(false);
+            _onClose?.Invoke();
+        });
 
-        _languageDropdown.onValueChanged.Invoke(saveData.LanguageCode);
-        _resolutionDropdown.onValueChanged.Invoke(saveData.ResolutionCode);
-        _screenModeDropdown.onValueChanged.Invoke(saveData.ScreenModeCode);
+        _languageDropdown.value = saveData.LanguageCode;
+        _screenModeDropdown.value = saveData.ScreenModeCode;
+        _resolutionDropdown.value = saveData.ResolutionCode;
 
-        _bgmSlider.onValueChanged.Invoke(saveData.BGM);
-        _sfxSlider.onValueChanged.Invoke(saveData.SFX);
+        _bgmSlider.value = saveData.BGM;
+        _sfxSlider.value = saveData.SFX;
     }
 
-    private void BindDropdown(TMP_Dropdown dropdown, Dictionary<string, Action> options)
+    private void BindDropdown(TMP_Dropdown dropdown, Dictionary<string, Action<int>> options)
     {
         dropdown.ClearOptions();
 
@@ -65,14 +70,14 @@ public class GlobalOptionUI : MonoBehaviour
         {
             if (options.TryGetValue(keys[index], out var action))
             {
-                action?.Invoke();
+                action?.Invoke(index);
             }
         });
 
         ResizeDropdownTemplate(dropdown);
     }
 
-    private void BindSlider(Slider slider, TMP_Text valueTxt, Action<float> callback)
+    private void BindSlider(Slider slider, TMP_Text valueTxt, Action<int> callback)
     {
         slider.onValueChanged.RemoveAllListeners();
 
@@ -81,7 +86,7 @@ public class GlobalOptionUI : MonoBehaviour
         slider.onValueChanged.AddListener((value) =>
         {
             valueTxt.text = (value).ToString();
-            callback?.Invoke(value / slider.maxValue);
+            callback?.Invoke((int)value);
         });
     }
 

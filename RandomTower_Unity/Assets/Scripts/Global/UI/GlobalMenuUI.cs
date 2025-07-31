@@ -12,9 +12,12 @@ public class GlobalMenuUI : MonoBehaviour
     [SerializeField] private Button _closeButton;
 
     private Action _onBack;
+    private Action _onClose;
 
-    public void Initilaize(Action onOption, Action onQuit)
+    public void Initilaize(Action onOption, Action onQuit, Action onClose)
     {
+        _onClose = onClose;
+
         _optionButton.onClick.RemoveAllListeners();
         _optionButton.onClick.AddListener(() => onOption.Invoke());
 
@@ -25,7 +28,11 @@ public class GlobalMenuUI : MonoBehaviour
         _quitButton.onClick.AddListener(() => onQuit?.Invoke());
 
         _closeButton.onClick.RemoveAllListeners();
-        _closeButton.onClick.AddListener(() => ActiveUI(false));
+        _closeButton.onClick.AddListener(() =>
+        {
+            ActiveUI(false);
+            _onClose.Invoke();
+        });
     }
 
     public void ShowContent(Action backButtonCallback)

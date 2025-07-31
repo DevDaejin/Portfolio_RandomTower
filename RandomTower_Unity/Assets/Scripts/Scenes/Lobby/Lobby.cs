@@ -50,7 +50,7 @@ public class Lobby : MonoBehaviour
 
         _ui.Initialize();
 
-        _ui.UpdateOwnedGem(GameManager.Instance.Data.Loaded.Gem);
+        _ui.UpdateOwnedGem(GameManager.Instance.Data.SavedData.Game.Gem);
         _ui.CreateTowerButtons(GameManager.Instance.TowerDB);
     }
 
@@ -88,7 +88,7 @@ public class Lobby : MonoBehaviour
             _ui.RefreshUnlockedButton(data);
 
             _data.AddGainedTowerID(data.ID);
-            _data.Save();
+            _data.SaveGame();
 
             GameManager.Instance.LoadActivedTowers();
         }
@@ -101,6 +101,7 @@ public class Lobby : MonoBehaviour
             if (_ui.CurrentTowerData.LevelUp())
             {
                 _ui.UpdateTowerInfoPanel(_ui.CurrentTowerData);
+                _data.SaveGame();
             }
             else
             {

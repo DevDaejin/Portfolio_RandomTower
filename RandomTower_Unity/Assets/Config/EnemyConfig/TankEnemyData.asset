@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TankEnemyData
   m_EditorClassIdentifier: 
   _data:
-    id: 1
+    id: 3
     enemyName: Tank
     prefab: {fileID: 2747180930477656307, guid: 021bbc5a83384a342b53875f8f9a0d23, type: 3}
     maxHP: 100

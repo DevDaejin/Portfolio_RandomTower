@@ -19,8 +19,7 @@ public class GlobalMessageBoxUI : MonoBehaviour
 
     private Action _onPositiveCallback;
     private Action _onNegativeCallback;
-
-    private Transform _background;
+    private Action _onClose;
 
     private readonly Vector2 BasicMessageBoxSize = new Vector2(920, 680);
     private readonly Vector2 BasicDescriptionSize = new Vector2(700, 250);
@@ -33,43 +32,31 @@ public class GlobalMessageBoxUI : MonoBehaviour
         _positiveButton.onClick.AddListener(() =>
         {
             ActiveUI(false);
-            SetBackground(false);
             _onPositiveCallback?.Invoke();
+            _onClose?.Invoke();
         });
 
         _negativeButton.onClick.AddListener(() =>
         {
             ActiveUI(false);
-            SetBackground(false);
             _onNegativeCallback?.Invoke();
+            _onClose?.Invoke();
         });
     }
 
-    public void ShowContext(MessageBoxData box, Transform background)
+    public void Initialize(Action onClose)
     {
-        _background = background;
-        SetBackground(true);
+        _onClose = onClose;
+    }
+
+    public void ShowContext(MessageBoxData box)
+    {
         Resize(box.MessageBoxSize, box.DescriptionSize);
         SetTitle(box.Title);
         SetDescription(box.Description);
         SetButtons(box.PositiveButtonText, box.NegativeButtonText, box.OnPositiveButtonClick, box.OnNegativeButtonClick);
 
         ActiveUI(true);
-    }
-
-    public void SetBackground(bool isAct)
-    {
-        if (_background == null) return;
-
-        if (isAct)
-        {
-            _background.SetParent(isAct 
-                ? _meesageBoxPanel.transform 
-                : _meesageBoxPanel.transform.parent);
-
-            _background.SetAsFirstSibling();
-            _background.gameObject.SetActive(isAct);
-        }
     }
 
     private void Resize(Vector2 messageBoxSize, Vector2 descriptionSize)
@@ -121,8 +108,6 @@ public class GlobalMessageBoxUI : MonoBehaviour
 
         return BasicMessageBoxSize;
     }
-
-
     private void SetTitle(string title) => _titleTxt.text = title;
     private void SetDescription(string description) => _descriptionTxt.text = description;
     private void SetButtons(string positiveText, string negativeText, Action onPositiveCallback, Action onNegativeCallback)

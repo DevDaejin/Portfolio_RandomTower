@@ -341,7 +341,7 @@ public class InGame : MonoBehaviour
     {
         if (_networkHandler.IsHost && count > 1)
         {
-            _uiHandler.CloseMessageBox();
+            _uiHandler.CloseUI();
         }
 
         if (_currentCount == 2 && count <= 1)
@@ -356,6 +356,6 @@ public class InGame : MonoBehaviour
     {
         GameManager.Instance.LoadScene(GameManager.Scenes.Lobby);
         _ = _networkHandler.LeaveRoom();
-        _uiHandler.CloseMessageBox();
+        _uiHandler.CloseUI();
     }
 }

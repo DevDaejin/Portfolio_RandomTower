@@ -1,13 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 
 public class OptionManager : MonoBehaviour
 {
-    private OptionSaveData _option;
+    LocalDataManager _dataManager => GameManager.Instance.Data;
     private Coroutine _localeRoutine = null;
     private Dictionary<string, string> _localeDict = new()
     {
@@ -26,10 +28,10 @@ public class OptionManager : MonoBehaviour
     {
         { FullScreenMode.ExclusiveFullScreen, "전체 화면"},
         { FullScreenMode.FullScreenWindow, "테두리 없음"},
-        { FullScreenMode.MaximizedWindow, "윈도우"}
+        { FullScreenMode.Windowed, "윈도우"}
     };
 
-    public void Initialize(Action<float> OnChagnedBGMVolume, Action<float> OnChagnedSFXVolume)
+    public void Initialize(Action<int> OnChagnedBGMVolume, Action<int> OnChagnedSFXVolume)
     {
         GlobalUI globalUI = GameManager.Instance.UI.Global;
         LocalDataManager dataManager = GameManager.Instance.Data;
@@ -46,41 +48,56 @@ public class OptionManager : MonoBehaviour
             ResetButtonCallback = dataManager.Reset
         };
 
-        globalUI.Initialize(setting, dataManager.Loaded.Option);
+        globalUI.Initialize(setting, dataManager.SavedData.Option);
 
     }
 
-    private Dictionary<string, Action> InitializeLanguage()
+    private Dictionary<string, Action<int>> InitializeLanguage()
     {
-        Dictionary<string, Action> dict = new();
+        Dictionary<string, Action<int>> dict = new();
 
         foreach (var codeLabel in _localeDict)
         {
-            dict.Add(codeLabel.Value, () => ChangeLocale(codeLabel.Key));
+            dict.Add(codeLabel.Value, index =>
+            {
+                ChangeLocale(codeLabel.Key);
+                _dataManager.SavedData.Option.LanguageCode = index;
+                _dataManager.SaveOption();
+            });
         }
 
         return dict;
     }
 
-    private Dictionary<string, Action> InitializeResolution()
+    private Dictionary<string, Action<int>> InitializeResolution()
     {
-        Dictionary<string, Action> dict = new();
+        Dictionary<string, Action<int>> dict = new();
 
         foreach (var resolution in _resolutionArray)
         {
-            dict.Add(ResolutionVector2ToString(resolution), () => SetResolution(resolution));
+            dict.Add(ResolutionVector2ToString(resolution), index =>
+            {
+                SetResolution(resolution);
+                _dataManager.SavedData.Option.ResolutionCode = index;
+                _dataManager.SaveOption();
+            });
         }
 
         return dict;
     }
 
-    private Dictionary<string, Action> InitializeScreenMode()
+    private Dictionary<string, Action<int>> InitializeScreenMode()
     {
-        Dictionary<string, Action> dict = new();
+        Dictionary<string, Action<int>> dict = new();
 
         foreach (var mode in _screenModeDict)
         {
-            dict.Add(mode.Value, () => SetFullscreen(mode.Key));
+            dict.Add(mode.Value, index =>
+            {
+                SetScreenMode(mode.Key);
+                _dataManager.SavedData.Option.ScreenModeCode = index;
+                _dataManager.SaveOption();
+            });
         }
 
         return dict;
@@ -105,7 +122,6 @@ public class OptionManager : MonoBehaviour
 
         foreach (var locale in LocalizationSettings.AvailableLocales.Locales)
         {
-            Debug.Log(code);
             if (locale.Identifier.Code == code)
             {
                 selected = locale;
@@ -120,9 +136,11 @@ public class OptionManager : MonoBehaviour
 
     private void SetResolution(Vector2Int resolution)
     {
-        var screenMode = Screen.fullScreen;
-        Screen.SetResolution(resolution.x, resolution.y, screenMode);
+        Screen.SetResolution(resolution.x, resolution.y, Screen.fullScreen);
     }
 
-    private void SetFullscreen(FullScreenMode mode) => Screen.fullScreenMode = mode;
+    private void SetScreenMode(FullScreenMode mode)
+    {
+        Screen.fullScreenMode = mode;
+    }
 }

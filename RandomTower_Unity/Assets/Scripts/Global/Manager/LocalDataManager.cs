@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -16,109 +15,145 @@ public class LocalDataManager
     [Serializable]
     public class SaveData
     {
-        public List<int> GainedTowerID = new();
-        public Dictionary<int, int> TowerLevelDict = new();
-        public int Gem = BasicGem;
-        public int ReachedStage = BasicReachedStage;
-
+        public GameSaveData Game = new();
         public OptionSaveData Option = new();
     }
 
-    public SaveData Loaded { get; private set; }
+    public SaveData SavedData { get; private set; } = new SaveData();
 
-    private const int BasicGem = 300;
-    private const int BasicReachedStage = 1;
-    private const string Key = "LocalProgress";
 
-    public void Load()
+    private const string GameKey = "game";
+    private const string OptionKey = "option";
+
+    public void Load(string key = null)
     {
-        if (PlayerPrefs.HasKey(Key))
+        if (string.IsNullOrEmpty(key))
         {
-            string json = PlayerPrefs.GetString(Key);
-            Loaded = JsonUtility.DeserializeObject<SaveData>(json);
+            SavedData.Game = LoadGame();
+            Save(GameKey);
+
+            SavedData.Option = LoadOption();
+            Save(OptionKey);
         }
         else
         {
-            Loaded = new SaveData();
+            if (key == GameKey)
+            {
+                SavedData.Game = LoadGame();
+                Save(GameKey);
+            }
+
+            if (key == OptionKey)
+            {
+                SavedData.Option = LoadOption();
+                Save(OptionKey);
+            }
+        }
+    }
+
+    private GameSaveData LoadGame()
+    {
+        if (PlayerPrefs.HasKey(GameKey))
+        {
+            string json = PlayerPrefs.GetString(GameKey);
+            return JsonUtility.DeserializeObject<GameSaveData>(json);
         }
 
-        AddBasicTower();
+        var gameData = new GameSaveData();
 
         foreach (var tower in _towerDB.Towers)
         {
             int id = tower.Data.ID;
 
-            if(!Loaded.TowerLevelDict.ContainsKey(id))
+            if (tower.Data.Grade == 1 && !gameData.GainedTowerID.Contains(id))
             {
-                Loaded.TowerLevelDict[id] = 1;
+                gameData.GainedTowerID.Add(id);
             }
 
-            if(Loaded.GainedTowerID.Contains(id))
+            if (!gameData.TowerLevelDict.ContainsKey(id))
+            {
+                gameData.TowerLevelDict[id] = 1;
+            }
+
+            if (gameData.GainedTowerID.Contains(id))
             {
                 _towerDB.ActiveTowers.Add(_towerDB.GetTowerByID(id));
             }
 
-            tower.Data.Level = Loaded.TowerLevelDict[id];
+            tower.Data.Level = gameData.TowerLevelDict[id];
         }
 
-        Save();
+        return gameData;
     }
 
-    private void AddBasicTower()
+    private OptionSaveData LoadOption()
     {
-        foreach (var towerData in _towerDB.Towers)
+        if (PlayerPrefs.HasKey(OptionKey))
         {
-            int id = towerData.Data.ID;
-
-            if (towerData.Data.Grade == 1 && !Loaded.GainedTowerID.Contains(id))
-            {
-                Loaded.GainedTowerID.Add(id);
-            }
-
-            if(!Loaded.TowerLevelDict.ContainsKey(id))
-            {
-                Loaded.TowerLevelDict[id] = 1;
-            }
-
-            towerData.Data.Level = Loaded.TowerLevelDict[id];
+            string json = PlayerPrefs.GetString(OptionKey);
+            return JsonUtility.DeserializeObject<OptionSaveData>(json);
         }
+
+        var optionData = new OptionSaveData();
+        return optionData;
     }
 
     public void AddGainedTowerID(int id)
     {
-        if (!Loaded.GainedTowerID.Contains(id))
+        if (!SavedData.Game.GainedTowerID.Contains(id))
         {
-            Loaded.GainedTowerID.Add(id);
+            SavedData.Game.GainedTowerID.Add(id);
         }
     }
 
     public void UpdateGem(int gems)
     {
-        Loaded.Gem = gems;
+        SavedData.Game.Gem = gems;
     }
 
     public void UpdateReachedStage()
     {
-        Loaded.ReachedStage += 1;
-        Save();
+        SavedData.Game.ReachedStage += 1;
+        Save(GameKey);
     }
 
-    public void Save()
+    public void SaveGame() => Save(GameKey);
+    public void SaveOption() => Save(OptionKey);
+
+    private void Save(string key)
     {
-        string json = JsonUtility.SerializeObject(Loaded);
-        PlayerPrefs.SetString(Key, json);
+        string json = string.Empty;
+        if (key == GameKey)
+        {
+            json = JsonUtility.SerializeObject(SavedData.Game);
+        }
+        if (key == OptionKey)
+        {
+            json = JsonUtility.SerializeObject(SavedData.Option);
+        }
+
+        PlayerPrefs.SetString(key, json);
         PlayerPrefs.Save();
     }
 
-    public void Remove()
+    public void Remove(string key)
     {
-        PlayerPrefs.DeleteKey(Key);
-        _towerDB.ActiveTowers.Clear();
+        PlayerPrefs.DeleteKey(key);
+
+        if (key == GameKey)
+        {
+            _towerDB.ActiveTowers.Clear();
+            SavedData.Game = new();
+        }
+        if (key == OptionKey)
+        {
+            SavedData.Option = new();
+        }
     }
 
     public void Reset()
     {
-        Remove();
+        Remove(GameKey);
         Load();
     }
 }
