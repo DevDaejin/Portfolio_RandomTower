@@ -52,6 +52,8 @@ public class TowerManager : MonoBehaviour
 
     private bool TrySpawnToGrid(TowerData data)
     {
+        if (data == null) return false;
+
         TowerGrid grid = _gridController.GetTowerInstallableGrid(data);
         if (grid == null) return false;
 

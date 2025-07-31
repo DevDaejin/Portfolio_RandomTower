@@ -1,11 +1,19 @@
 fileFormatVersion: 2
 guid: 486166e37f63a27418057c62e8259787
+AssetOrigin:
+  serializedVersion: 1
+  productId: 312286
+  packageName: "Neon Pulse \u2013 Free Action Arcade Music Pack"
+  packageVersion: 1.0
+  assetPath: "Assets/Soma Animus/Neon Pulse \u2013 Free Action Arcade Music Pack/01
+    - Genesis [Loop] - Soma Animus.wav"
+  uploadId: 736127
 AudioImporter:
   externalObjects: {}
   serializedVersion: 8
   defaultSettings:
     serializedVersion: 2
-    loadType: 0
+    loadType: 1
     sampleRateSetting: 0
     sampleRateOverride: 44100
     compressionFormat: 1
@@ -21,11 +29,3 @@ AudioImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 312286
-  packageName: "Neon Pulse \u2013 Free Action Arcade Music Pack"
-  packageVersion: 1.0
-  assetPath: "Assets/Soma Animus/Neon Pulse \u2013 Free Action Arcade Music Pack/01
-    - Genesis [Loop] - Soma Animus.wav"
-  uploadId: 736127
