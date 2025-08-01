@@ -14,7 +14,25 @@
 [Release](https://github.com/DevDaejin/Portfolio_RandomTower/releases/tag/Publish)
 
 ## 실행 방법
-`작업중`
+
+### 클라이언트
+1. Release에서 "Portfolio_RTD_XXXXXX_XXXX.zip"파일을 다운로드 및 압축 해제
+2.압축 해제 한 경로 내 "RandomTower.exe"을 실행
+
+### 서버
+1. Release에서 "Portfolio_RTD_Server.exe" 파일을 다운로드
+2. 서버를 구축할 윈도우 환경 컴퓨터에서 "Portfolio_RTD_Server.exe"을 실행
+3. 접속을 시킬 IP를 입력, 하기 옵션 중 택일
+  - 공인 IP : [IPv4 확인](https://whatismyipaddress.com/)
+  - 로컬 IP : 127.0.0.1
+    - 같은 공유기 환경 내에서 동작 시 유효
+  - 모든 접근 허용 : 0.0.0.0
+4. 접속 Port 입력, 하기 두 조건 충족하여야 함
+  - 모뎀이나 공유기 환경에 따라서 원한는 포트를 개방하여야 합니다. [포트포워딩](https://www.google.com/search?q=%ED%8F%AC%ED%8A%B8%ED%8F%AC%EC%9B%8C%EB%94%A9&oq=%ED%8F%AC%ED%8A%B8%ED%8F%AC%EC%9B%8C%EB%94%A9&gs_lcrp=EgZjaHJvbWUyBggAEEUYOdIBCDI0NjVqMGoxqAIAsAIA&sourceid=chrome&ie=UTF-8)
+  - PC 환경에 따라 방화벽에서 원하는 포트를 개방하여야 합니다. [방화벽 해제](https://www.google.com/search?q=%EB%B0%A9%ED%99%94%EB%B2%BD+%ED%95%B4%EC%A0%9C&oq=%EB%B0%A9%ED%99%94%EB%B2%BD+%ED%95%B4%EC%A0%9C&gs_lcrp=EgZjaHJvbWUyBggAEEUYOdIBCDE5MjFqMGo5qAIAsAIA&sourceid=chrome&ie=UTF-8)
+5. 정상 실행 시 화면
+
+    <img width="402" height="255" alt="image" src="https://github.com/user-attachments/assets/bc623a01-b066-49f9-ab22-9131b3674e31" />
 
 ## 기술 스택
 
