@@ -17,7 +17,7 @@
 
 ### 클라이언트
 1. Release에서 "Portfolio_RTD_XXXXXX_XXXX.zip"파일을 다운로드 및 압축 해제
-2.압축 해제 한 경로 내 "RandomTower.exe"을 실행
+2. 압축 해제 한 경로 내 "RandomTower.exe"을 실행
 
 ### 서버
 1. Release에서 "Portfolio_RTD_Server.exe" 파일을 다운로드
